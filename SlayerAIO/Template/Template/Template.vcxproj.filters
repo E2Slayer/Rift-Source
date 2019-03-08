@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Arquivos de Origem">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Arquivos de Cabeçalho">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Arquivos de Recurso">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="My Script Files">
+      <UniqueIdentifier>{3af5dd98-d0b7-47ea-907d-627c780477bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Headers">
+      <UniqueIdentifier>{c51a37b6-7b80-46b5-be1b-269868afd886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\SDK Extensions">
+      <UniqueIdentifier>{2d2ff738-eb7a-4d66-b234-ea2400e6f038}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\clipper.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Common.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Game.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\GameObjects.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IControl.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IDamageLib.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IEntityManager.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IEventHandler.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IHealthPrediction.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Interface Structs.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Interruptible.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IOrbwalker.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IPrediction.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ITargetSelector.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ItemID.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\KeyCodes.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Macros.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Menu.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Renderer.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\SDK Extensions.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\sdkapi.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Spell.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Vectors.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="Kalista.h">
+      <Filter>My Script Files\Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>My Script Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\clipper.cpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="Kalista.cpp">
+      <Filter>My Script Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

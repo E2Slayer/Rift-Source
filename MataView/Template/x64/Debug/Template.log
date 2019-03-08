@@ -1,0 +1,8 @@
+﻿  stdafx.cpp
+  clipper.cpp
+d:\rproject\test\rift-sdk-extensions-master\include\clipper.cpp(4630): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "stdafx.h"' to your source?
+  dllmain.cpp
+d:\rproject\test\rift-sdk-extensions-master\include\sdkapi.h(27): fatal error C1189: #error:  "The _ITERATOR_DEBUG_LEVEL must be 0 to avoid compatibility issues with the SDK, your plugins, and the game. This should be set before any CRT headers (e.g. <vector>, <string>, ...) are included."
+  Template.cpp
+d:\rproject\test\rift-sdk-extensions-master\include\sdkapi.h(27): fatal error C1189: #error:  "The _ITERATOR_DEBUG_LEVEL must be 0 to avoid compatibility issues with the SDK, your plugins, and the game. This should be set before any CRT headers (e.g. <vector>, <string>, ...) are included."
+  Generating Code...
