@@ -15,7 +15,7 @@ public:
 	static void __cdecl DrawMenu(_In_ void* UserData);
 	static void __cdecl SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData);
 	static void __cdecl SpellCastEnd(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData);
-	static void __cdecl PostAttack(AttackableUnit* Target);
+	static void __cdecl Attack(void* AI, void* TargetObject, bool StartAttack, bool StopAttack, void* UserData);
 
 	static void __cdecl UnkillableMinion(AIMinionClient* Target);
 
@@ -26,7 +26,10 @@ public:
 	static void Chase();
 
 	static void SoulBoundSaver();
+	static void KillSteal();
+	static void AlwaysJungleE();
 
+	static void Exploit();
 	
 };
 

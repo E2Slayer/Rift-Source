@@ -1,0 +1,822 @@
+#include "stdafx.h"
+#include "Template.h"
+
+AttackableUnit  MyTemplateClass::CurrentTarget;
+AttackableUnit* MyTemplateClass::OrbTarget;
+
+
+auto spellQ = Spell::Skillshot(SpellSlot::Q, 1150.0f, SkillshotType::Line, 0.25f, 2100.0f, 40.0f, DamageType::Physical, true, CollisionFlags::Default);
+auto spellW = Spell::Active(SpellSlot::W, 5000.0f, DamageType::Physical);
+auto spellE = Spell::Active(SpellSlot::E, 1000.0f, DamageType::Physical);
+auto spellR = Spell::Active(SpellSlot::R, 1200.0f, DamageType::Physical);
+
+///This gets called once, at load
+void MyTemplateClass::Init() 
+{
+	CurrentTarget = AttackableUnit();
+	OrbTarget = NULL;
+
+#pragma region RegisterCallbacks
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick,	MyTemplateClass::Tick);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update,	MyTemplateClass::Update);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, MyTemplateClass::DrawMenu);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update,	MyTemplateClass::Draw);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, MyTemplateClass::SpellCastStart);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastEnd, MyTemplateClass::SpellCastEnd);
+#pragma endregion
+}
+
+///This gets called 30 times per second, put your logics in here instead of
+///on OnUpdate so it doesnt drop too many fps
+void MyTemplateClass::Tick(void * UserData) 
+{
+	auto target_ptr
+	{ 
+		pCore->TS->GetTarget(1500.0f, DamageType::Magical) 
+	};
+
+
+	if (target_ptr) 
+	{
+		CurrentTarget = *(target_ptr);
+	}
+
+
+
+	auto minions_ptr
+	{
+		pSDK->EntityManager->GetEnemyMinions(4000.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+	
+
+
+
+
+}
+
+///This gets called X times per second, where X is your league fps.
+///Use this only to update stuff you need to validade on every frame.
+void MyTemplateClass::Update(void * UserData) 
+{
+	OrbTarget = pCore->Orbwalker->GetTarget();
+
+	if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo)) // I will get you
+	{
+		Chase();
+		Combo();
+	}
+
+	if(pCore->Orbwalker->IsModeActive(OrbwalkingMode::Mixed))
+	{
+		Combo(); //change it to harass later at this point no need to use harass function
+		//Harass();
+	}
+
+	if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::LaneClear))
+	{
+		LaneClear();
+	}
+
+	if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::JungleClear))
+	{
+		JungleClear();
+	}
+
+}
+
+void MyTemplateClass::Combo()
+{
+
+	//delay, speed, width 
+
+	auto heroes_ptr
+	{
+		pSDK->EntityManager->GetEnemyHeroes(4000.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+
+
+	// collision I gotta add it later
+
+	if (CurrentTarget.IsValid() && spellQ.IsLearned() && spellQ.IsReady() && Menu::Get<bool>("Kalista.ComboQ")) // Q usage
+	{
+		auto prediction{ pSDK->Prediction->GetPrediction(CurrentTarget.AsAIHeroClient()) };
+		if (prediction->Hitchance >= HitChance::High && spellQ.Range >= Player.Distance(&CurrentTarget))
+		{
+			spellQ.Cast(&prediction->CastPosition);
+		}
+	}
+
+
+
+
+	for (auto &[netID, heroes] : heroes_ptr)
+	{
+		if (heroes->IsValid() && heroes->IsAlive() && heroes->HasBuff("kalistaexpungemarker", false))
+		{
+			if (IsRendKillable(heroes->AsAIBaseClient()) && !heroes->HasUndyingBuff() && Menu::Get<bool>("Kalista.ComboE") )
+			{
+				if (spellE.IsInRange(heroes))
+				{
+					spellE.Cast();
+				}
+			}
+		}
+	}
+
+	/*  ======================= Exploit but need to work on somehow doesn't work yet.
+	if (Player.GetAttackSpeed() > 1.70f)
+	{
+		auto time = Game::Time();
+
+		//SdkGetGameTime()
+
+		//auto time2 = time * 1000.0f;
+
+		auto last = (float)pCore->Orbwalker->GetLastAutoAttack();
+
+		//	SdkUiConsoleWrite("ayy I'm 1.7 - %f", time);1
+
+			
+			if(time >= last + 1.0f)
+			{
+
+				Vector3 mousePos
+				{
+					Renderer::MousePos()
+				};
+				SdkUiConsoleWrite("c1");
+				pSDK->Control->Move(&mousePos);
+			}
+
+			if(time > last + 1.0f + Player.GetAttackDelay()*1000.0f - 150.0f)
+			{
+				SdkUiConsoleWrite("c2");
+				pSDK->Control->Attack(&CurrentTarget);
+			}
+			
+	}*/
+	
+}
+
+void MyTemplateClass::Harass()
+{
+
+}
+
+void MyTemplateClass::LaneClear()
+{
+	auto minions_ptr
+	{
+		pSDK->EntityManager->GetEnemyMinions(1500.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+
+	int hitNumber = Menu::Get<int>("Kalista.LaneClearEMinimum");
+	int killableNum = 0;
+	for (auto &[netID, minions] : minions_ptr)
+	{
+		
+		if (minions->IsAlive() && minions->HasBuff("kalistaexpungemarker", false) && Menu::Get<bool>("Kalista.LaneClearE") && (minions->IsLaneMinion() || minions->IsSiegeMinion() || minions->IsSuperMinion()))
+		{
+
+			if (IsRendKillable(minions->AsAIBaseClient()))
+			{
+				if (spellE.IsInRange(minions))
+				{
+					killableNum++;
+					if (killableNum >= hitNumber)
+					{
+						spellE.Cast();
+					}
+				}
+			}
+		}
+	}
+}
+
+void MyTemplateClass::JungleClear()
+{
+	if (!Menu::Get<bool>("Kalista.JungleClearQ") && !Menu::Get<bool>("Kalista.JungleClearE"))
+	{
+		return;
+	}
+
+	auto jungle_ptr
+	{
+		pSDK->EntityManager->GetJungleMonsters(2000.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+
+
+	for (auto &[netID, jungle] : jungle_ptr)
+	{
+		if (jungle->IsValid() && jungle->IsAlive() && jungle->GetCampNumber() != 0) // campnumber 0 is plant include all kind of plants
+		{
+			
+			if (Menu::Get<bool>("Kalista.JungleClearQ") && spellQ.IsInRange(jungle) && jungle->IsVisible())
+			{
+				if (spellQ.IsLearned() && spellQ.IsReady()) // Q usage
+				{
+					Vector3 junglePos{ jungle->GetServerPosition() };
+					spellQ.Cast(&junglePos);
+
+				}
+			}
+
+			if (jungle->HasBuff("kalistaexpungemarker", false) && Menu::Get<bool>("Kalista.JungleClearE"))
+			{
+				if (IsRendKillable(jungle->AsAIBaseClient()))
+				{
+					if (spellE.IsInRange(jungle))
+					{
+						spellE.Cast();
+					}
+				}
+			}
+		}
+	}
+
+}
+
+void MyTemplateClass::Chase()
+{
+	if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo)) // When combo is active
+	{
+		auto Enemies{ pSDK->EntityManager->GetEnemyHeroes() }; // Get enemies
+
+		for (auto &[netID, Enemy] : Enemies) // enemy loop
+		{
+			if (pCore->Orbwalker->GetTrueAutoAttackRange(&Player, Enemy) + 100.0f < Player.Distance(Enemy)) // if enemy location is further than player's aa range
+			{
+				Vector3 pos{ Enemy->GetPosition() }; // get enemy location
+
+				if (pos.IsValid()) // if the location is valid 
+				{
+
+					auto minions_ptr // Get enemy minions within 1000 range to kite
+					{
+						pSDK->EntityManager->GetEnemyMinions(1000.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+					};
+
+					for (auto &[netID, minions] : minions_ptr) // minion loop
+					{
+						Vector3 MinionPos{ minions->GetPosition() }; // get minion location
+
+						// if minion location is valid and orbwalker can attack and minions are in player's aa range
+						if (MinionPos.IsValid() && pCore->Orbwalker->CanAttack() && (pCore->Orbwalker->GetTrueAutoAttackRange(&Player, minions) > Player.Distance(minions)))
+						{
+							pSDK->Control->Attack(minions); // attack the proper minions
+						}
+
+					}
+
+				}
+			}
+		}
+
+	}
+}
+
+
+
+void temp()
+{
+	Vector3 mousePos
+	{
+		Renderer::MousePos()
+		//CurrentTarget.GetPosition()
+	};
+
+
+	//pSDK->EventHandler->DelayedAction(pSDK->Control->Move(&mousePos), 300);
+	pSDK->Control->Move(&mousePos);
+
+	pCore->Orbwalker->OrbwalkTo(mousePos);
+}
+
+
+
+void MyTemplateClass::SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData)
+{
+	SdkUiConsoleWrite("Spell: %s", SpellCast->Spell.Name);
+
+
+	if(strcmp(SpellCast->Spell.Name, "KalistaMysticShot") == 0)
+	{
+
+		Vector3 mousePos
+		{
+			Renderer::MousePos()
+	
+		};
+
+
+		//pSDK->EventHandler->DelayedAction(pSDK->Control->Move(&mousePos), 300);
+		pSDK->Control->Move(&mousePos);
+
+		pCore->Orbwalker->OrbwalkTo(mousePos);
+		pCore->Orbwalker->ResetAttackTimer();
+		
+
+	}
+		
+}
+
+void MyTemplateClass::SpellCastEnd(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData)
+{
+	//SdkUiConsoleWrite("2: %s", SpellCast->Spell.Name);
+
+	/*
+
+	auto hi = SpellCast->Spell.Name;
+
+	if (strcmp(hi, "KalistaMysticShot") == 0)
+	{
+
+		Vector3 mousePos
+		{
+			//Renderer::MousePos()
+			CurrentTarget.GetPosition()
+		};
+
+
+		//pSDK->EventHandler->DelayedAction(pSDK->Control->Move(&mousePos), 300);
+		pSDK->Control->Move(&mousePos);
+
+		pCore->Orbwalker->OrbwalkTo(mousePos);
+		pCore->Orbwalker->ResetAttackTimer();
+
+
+		//pCore->Orbwalker->OrbwalkTo(mousePos);
+	}*/
+
+}
+
+
+
+///This gets called X times per second, where X is your league fps.
+///Put any drawings you need here
+void MyTemplateClass::Draw(void * UserData)
+{
+	
+	//CurrentTarget is a copy of an object, so we check if its still valid.
+	if (pCore->TS->IsValidTarget(&CurrentTarget)) {
+		Vector3 pos{ CurrentTarget.GetPosition() };
+		
+		if (pos.IsValid() && pos.IsOnScreen()) {
+			//Draw::Text(&pos, NULL, "This is CurrentTarget", "Arial Narrow", &Color::Red, 20, 6);
+		}
+
+
+	}
+	
+	if (pCore->TS->IsValidTarget(OrbTarget)) {
+		Vector3 pos{ OrbTarget->GetPosition() };
+		
+		if (pos.IsValid() && pos.IsOnScreen()) {
+		
+			//We get the screen position and offset it a little so it doesnt draw over the above text
+			Vector2 screenPos{ Renderer::WorldToScreen(pos) };			
+			screenPos.y += 20.0f;
+		
+			//Draw::Text(NULL, &screenPos, "This is OrbTarget", "Arial Narrow", &Color::White, 20, 6);
+		}		
+	}
+
+	auto Enemies{ pSDK->EntityManager->GetEnemyHeroes() };
+	for (auto &[netID, Enemy] : Enemies) {
+		if (pCore->Orbwalker->GetTrueAutoAttackRange(&Player, Enemy) > Player.Distance(Enemy)) {
+			Vector3 pos{ Enemy->GetPosition() };
+
+			if (pos.IsValid() && pos.IsOnScreen()) {
+				//We get the screen position and offset it a little so it doesnt draw over the above text
+				Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+				screenPos.y -= 20.0f;
+
+				//Draw::Text(NULL, &screenPos, "In AA Range", "Arial Narrow", &Color::White, 20, 6);
+			}
+		}
+	}
+
+
+	auto minions_ptr
+	{
+		pSDK->EntityManager->GetEnemyMinions(4000.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+	for (auto &[netID, minions] : minions_ptr)
+	{
+		if (minions->IsAlive() && minions->HasBuff("kalistaexpungemarker", false) && (minions->IsLaneMinion() || minions->IsSiegeMinion()))
+		{
+			Vector3 pos{ minions->GetPosition() };
+			//kalistaexpungemarker
+
+			auto hi2 = pSDK->BuffManager->GetBuffStacks(netID, "kalistaexpungemarker", false);
+
+			//if()
+
+			Vector3 posHP{ minions->GetHealthBarScreenPos() };
+
+
+
+
+
+			float dmg = GetRendDamage(minions, hi2);
+
+
+			auto health = minions->GetHealth();
+
+			float totalHealth = health.Current + health.AllShield;
+
+
+			float calc = (dmg / totalHealth) * 100.0f;
+
+
+		//	for (auto &yop : hi)
+			{
+				if (pos.IsValid() && pos.IsOnScreen())
+				{
+					//We get the screen position and offset it a little so it doesnt draw over the above text
+					Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+					screenPos.y -= 20.0f;
+
+					Draw::Text(NULL, &screenPos, std::to_string(calc), "Arial Narrow", &Color::White, 20, 6);
+				}
+			}
+
+		}
+	}
+
+	
+	auto jungle_ptr
+	{
+		pSDK->EntityManager->GetJungleMonsters(4000.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+
+	for (auto &[netID, jungle] : jungle_ptr)
+	{
+		//if (pCore->Orbwalker->GetTrueAutoAttackRange(&Player, Enemy) > Player.Distance(Enemy)) 
+		//if(jungle->IsAlive() && jungle->HasBuff("kalistaexpungemarker", false))
+		{
+			Vector3 pos{ jungle->GetPosition() };
+			//kalistaexpungemarker
+			auto hi = pSDK->BuffManager->GetBuffs(netID);
+
+			auto hi2 = pSDK->BuffManager->GetBuffStacks(netID, "kalistaexpungemarker", false);
+
+			//if()
+
+			Vector3 posHP{ jungle->GetHealthBarScreenPos() };
+
+
+
+
+
+			float dmg = GetRendDamage(jungle, hi2);
+
+			//jungle->DrawDamageOnHP(dmg);
+
+			auto health = jungle->GetHealth();
+
+			float totalHealth = health.Current + health.AllShield;
+
+
+			float calc = (dmg / totalHealth) * 100.0f;
+
+			//	for (auto &yop : hi)
+			{
+				if (pos.IsValid() && pos.IsOnScreen())
+				{
+					//We get the screen position and offset it a little so it doesnt draw over the above text
+					Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+					screenPos.y -= 120.0f;
+
+
+					Vector2 screenPos2{ Renderer::WorldToScreen(posHP) };
+					screenPos2.y -= 60.0f;
+
+
+					Draw::Text(NULL, &screenPos, std::to_string(calc), "Arial Narrow", &Color::Green, 20, 6);
+
+
+					//Draw::Text(NULL, &screenPos, std::to_string(jungle->GetCampNumber()), "Arial Narrow", &Color::White, 20, 6);
+
+
+
+
+					
+				}
+			}
+
+		}
+	}
+
+
+
+
+
+
+	auto heroes_ptr
+	{
+		pSDK->EntityManager->GetEnemyHeroes(3000.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+	for (auto &[netID, heroes] : heroes_ptr)
+	{
+		auto buff = NumberOfRendBuff(heroes->AsAIBaseClient());
+
+		Vector3 pos{ heroes->GetPosition() };
+		Draw::Text(&pos, NULL, std::to_string(buff), "Arial Narrow", &Color::Green, 20, 6);
+
+		//if (buff >= 1)
+		{	
+			Vector2 posHP{ heroes->GetHealthBarScreenPos() };
+		
+			heroes->DrawDamageOnHP(RendDamageToHealth(heroes, true));
+			
+
+			float calc = RendDamageToHealth(heroes, false);
+
+			//	for (auto &yop : hi)
+			{
+				if (posHP.IsValid())
+				{
+					
+
+					std::stringstream ss;
+					ss.precision(0); //for decimal
+					ss.setf(std::ios_base::fixed, std::ios_base::floatfield);
+
+					ss << calc << "%";
+
+					posHP.x += 25;
+					posHP.y += 10;
+					
+					Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &Color::White, 24, 8);
+
+					
+				}
+			}
+
+		}
+	}
+
+
+}
+
+float GetRendDamage(AIBaseClient* target, int StackCount)
+{
+	if(StackCount <= 0) // no need to calculate if there is no rend stack
+	{
+		return 0;
+	}
+
+
+	float rawRendDamage [] = { 20, 30, 40, 50, 60 };
+	float rawRendDamageMultiplier [] = { 0.6f, 0.6f, 0.6f, 0.6f, 0.6f };
+	float rawRendDamagePerSpear [] = { 5, 9, 14, 25, 32 };
+	float rawRendDamagePerSpearMultiplier [] = { 0.2f, 0.2375f, 0.275f, 0.315f, 0.35f };
+
+
+	// 10, 14, 19, 
+
+	int CurrentELevel = Player.GetSpell((char)SpellSlot::E).Level -1;
+	float attackDmg = Player.GetAttackDamage();
+
+
+	float rawDmg = (rawRendDamage[CurrentELevel] + rawRendDamageMultiplier[CurrentELevel] * attackDmg) + // Base damage
+		(static_cast<float>(StackCount-1) * (rawRendDamagePerSpear[CurrentELevel] + rawRendDamagePerSpearMultiplier[CurrentELevel] * attackDmg)); // Damage per spear
+
+	auto done = pSDK->DamageLib->CalculatePhysicalDamage(Player.AsAIBaseClient(), target, rawDmg);
+
+
+
+	std::string s1(target->GetName());
+
+	if (strstr(s1.c_str(), "SRU_Dragon") || strstr(s1.c_str(), "SRU_Baron") || strstr(s1.c_str(), "SRU_RiftHerald")) //SRU_RiftHerald
+	{
+		done = done / 2.0f;
+	}
+
+	//Player.getattack
+	//SdkUiConsoleWrite("1: %f", (rawRendDamage[CurrentELevel] + (rawRendDamageMultiplier[CurrentELevel] * attackDmg)));
+	//SdkUiConsoleWrite("2: %d", StackCount);
+	//SdkUiConsoleWrite("3: %f", (rawRendDamagePerSpear[CurrentELevel] + (rawRendDamagePerSpearMultiplier[CurrentELevel] * attackDmg)));
+
+
+	return done;
+
+}
+
+
+///Your menu settings go here
+void MyTemplateClass::DrawMenu(void * UserData) 
+{
+	
+
+	UNREFERENCED_PARAMETER(UserData);
+
+	bool bKalistaExpanded = true;
+	Menu::Tree("Kalista", "Kalista.Main", &bKalistaExpanded, []()
+	{
+		//SdkUiText("MataView 1.1 [Beta] - E2Slayer");
+
+
+		bool bComboExpanded = false;
+		Menu::Tree("Combo", "Kalista.Combo", &bComboExpanded, []()
+		{
+
+			Menu::Checkbox("Use Q", "Kalista.ComboQ", true);
+
+			Menu::Checkbox("Use E", "Kalista.ComboE", true);
+
+
+
+			Menu::Checkbox("Chasing Enemy by hitting minions", "Kalista.ComboChase", true);
+			Menu::SliderInt("Chase Range", "Kalista.ComboChaseRange", 1500, 1000, 2000);
+			//Menu::Checkbox("Use E on Minions While Chasing", "Kalista.ComboE", true);
+
+
+		});
+
+
+		bool bHarassExpanded = false;
+		Menu::Tree("Harass", "Kalista.Harass", &bHarassExpanded, []()
+		{
+
+			Menu::Checkbox("Use Q", "Kalista.HarassQ", true);
+
+			Menu::Checkbox("Use E", "Kalista.HarassE", true);
+
+
+
+			Menu::Checkbox("Use E when Enemy is leaving E Range", "Kalista.HarassEleaving", true);
+
+			Menu::SliderInt("^-> Minimum Spear to use", "Kalista.ComboChase", 3, 1, 10);
+
+
+		});
+
+		bool bLaneClearExpanded = false;
+		Menu::Tree("LaneClear", "Kalista.LaneClear", &bLaneClearExpanded, []()
+		{
+
+			//Menu::Checkbox("Use Q", "Kalista.LaneClearQ", true);
+			SdkUiText("LaneClear Q will be added when Collision is implemented in SDK");
+			Menu::Checkbox("Use E", "Kalista.LaneClearE", true);
+			Menu::SliderInt("^-> Minimum Killable Minions ", "Kalista.LaneClearEMinimum", 2, 1, 10);
+
+
+		});
+
+
+
+		bool bJungleClearExpanded = false;
+		Menu::Tree("JungleClear", "Kalista.LaneClear", &bJungleClearExpanded, []()
+		{
+
+			Menu::Checkbox("Use Q", "Kalista.JungleClearQ", true);
+
+			Menu::Checkbox("Use E", "Kalista.JungleClearE", true);
+
+
+
+		});
+
+
+
+		bool bSettingsExpanded = false;
+		Menu::Tree("Misc", "Kalista.misc", &bSettingsExpanded, []()
+		{
+			//Menu::Checkbox("Use ", "Kalista.MiscE", true);
+
+
+			Menu::Checkbox("Use R to Save Ally", "Kalista.miscR", true);
+
+			Menu::SliderInt("^-> if Ally HP below # %", "Kalista.miscRHP", 20, 1, 100);
+
+		//	Menu::Checkbox("Use E on ", "Kalista.miscR", true);
+
+			
+
+
+			//Menu::Checkbox("Use E", "Kalista.JungleClearE", true);
+
+
+
+		//	Menu::SliderInt("Font Size", "Ability.FontSize", 28, 21, 50); //&_g_CheckTeamAbilities.iFontSize, 21.0f, 50.0f, "%.0f", NULL);
+		//	SDKVECTOR defaultColor = { 255, 255, 255 };
+		//	Menu::ColorPicker("Color Picker", "Ability.Color", defaultColor);
+
+			//MakeMenu::ColorPicker()
+			//SdkUiColorPicker("Color Pick", &_g_CheckTeamAbilities.m_CurrentColor, NULL);
+			//SdkUiText("Note: The settings work after pressed the Save Settings");
+			//SdkUiColoredText(&_g_ColorGreen, "Note: The settings will apply \nAfter pressed the Save Settings");
+
+
+		});
+
+
+		bool bDrawExpanded = false;
+		Menu::Tree("Drawings", "Kalista.draw", &bDrawExpanded, []()
+		{
+			//Menu::Checkbox("Use ", "Kalista.MiscE", true);
+
+
+			Menu::Checkbox("Draw Q Range", "Kalista.drawQ", true);
+			Menu::Checkbox("Draw W Range", "Kalista.drawW", true);
+			Menu::Checkbox("Draw E Range", "Kalista.drawE", true);
+			Menu::Checkbox("Draw R Range", "Kalista.drawR", true);
+
+			Menu::Checkbox("Show E Damage", "Kalista.drawEDmg", true);
+
+			//Menu::Checkbox("Draw R Range", "Kalista.drawR", true);
+
+
+
+			//Menu::DropList("Draw E Damage", "Kalista.drawEDMG", )
+
+			//MakeMenu::ColorPicker()
+			//SdkUiColorPicker("Color Pick", &_g_CheckTeamAbilities.m_CurrentColor, NULL);
+			//SdkUiText("Note: The settings work after pressed the Save Settings");
+			//SdkUiColoredText(&_g_ColorGreen, "Note: The settings will apply \nAfter pressed the Save Settings");
+
+
+		});
+
+
+
+
+	});
+
+
+
+
+}
+
+
+
+
+int NumberOfRendBuff(AIBaseClient* target)
+{
+	return pSDK->BuffManager->GetBuffCount(target->GetNetworkID(), "kalistaexpungemarker", false);
+}
+
+float RendDamageToHealth(AIBaseClient* target, bool rawDamage)
+{
+
+	auto hi2 = pSDK->BuffManager->GetBuffStacks(target->GetNetworkID(), "kalistaexpungemarker", false);
+
+	float dmg = GetRendDamage(target, hi2);
+
+	if(rawDamage)
+	{
+		return dmg;
+	}
+
+
+	auto health = target->GetHealth();
+
+	float totalHealth = health.Current + health.AllShield;
+
+	float calc = ((dmg / totalHealth) * 100.0f);
+	return calc;
+}
+
+
+bool IsRendKillable(AIBaseClient* target)
+{
+	/*
+	auto id = pSDK->BuffManager->GetBuffCount(netID, "kalistaexpungemarker", false);
+
+	float dmg = GetRendDamage(target, id);
+
+	float totalHealth = target->GetHealth().Current + target->GetHealth().AllShield;
+
+	float calc = (dmg / totalHealth) * 100.0f;
+
+	*/
+
+
+
+
+	auto hi2 = pSDK->BuffManager->GetBuffStacks(target->GetNetworkID(), "kalistaexpungemarker", false);
+
+	float dmg = GetRendDamage(target, hi2);
+
+	auto health = target->GetHealth();
+
+	float totalHealth = health.Current + health.AllShield;
+
+	float calc = ((dmg / totalHealth) * 100.0f);
+
+	//SdkUiConsoleWrite("Im attacking: %s", target->GetName());
+	//SdkUiConsoleWrite("2: %f", dmg);
+	//SdkUiConsoleWrite("3: %f", calc);
+	return calc >= 100.0f;
+}
+
+

@@ -4,7 +4,7 @@
 AttackableUnit  Kalista::CurrentTarget;
 AttackableUnit* Kalista::OrbTarget;
 
-float lastaa = 0.0f;
+static float lastaa = 0.0f;
 
 auto spellQ = Spell::Skillshot(SpellSlot::Q, 1150.0f, SkillshotType::Line, 0.25f, 2100.0f, 40.0f, DamageType::Physical, true, CollisionFlags::YasuoWall | CollisionFlags::Minions | CollisionFlags::BraumWall );
 auto spellW = Spell::Active(SpellSlot::W, 5000.0f, DamageType::Physical);
@@ -37,16 +37,37 @@ void Kalista::Init()
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update,	Kalista::Draw);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, Kalista::SpellCastStart);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastEnd, Kalista::SpellCastEnd);
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::PostAttack, Kalista::PostAttack);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Attack, Kalista::Attack);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::UnkillableMinion, Kalista::UnkillableMinion);
 
 #pragma endregion
 }
 
 
-void Kalista::PostAttack(AttackableUnit* Target)
+void Kalista::Attack(void* AI, void* TargetObject, bool StartAttack, bool StopAttack, void* UserData)
 {
-	//lastaa = Game::Time()*1000.0f;
+	if (AI == NULL || AI == nullptr || TargetObject == NULL || TargetObject == nullptr)
+	{
+		return;
+	}
+
+
+
+	if (pSDK->EntityManager->GetObjectFromPTR(AI)->GetNetworkID() == Player.GetNetworkID())
+	{
+
+		//SdkUiConsoleWrite("Delay - %f", Player.GetAttackDelay()*1000);
+		//SdkUiConsoleWrite("GameTime - %f", float(Game::Time() * 1000));
+		//SdkUiConsoleWrite("GetLastAA - %d", pCore->Orbwalker->GetLastAutoAttack());
+		//Player.GetAttackDelay()pCore->Orbwalker->GetLastAutoAttack()
+
+		float calc = lastaa - float(Game::Time() * 1000);
+
+		SdkUiConsoleWrite("Difference - %f", Player.GetAttackSpeed());
+		//SdkUiConsoleWrite("Difference2 - %f", P);
+		lastaa = float(Game::Time()*1000);
+	}
+
 }
 
 void Kalista::UnkillableMinion(AIMinionClient* Target)
@@ -100,8 +121,15 @@ void Kalista::Update(void * UserData)
 
 	SoulBoundSaver();
 
+	KillSteal();
+
+	AlwaysJungleE();
+
 	if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo)) // I will get you
 	{
+
+		Exploit();
+		/*
 		if (Menu::Get<bool>("Kalista.ComboChase"))
 		{
 			Chase();
@@ -110,7 +138,7 @@ void Kalista::Update(void * UserData)
 		//int hi = Menu::Get<int>("Kalista.ComboQHit");
 
 		//SdkUiConsoleWrite("ayy I'm 1.7 - %d", hi); 
-		Combo();
+		Combo();*/
 	}
 
 	if(pCore->Orbwalker->IsModeActive(OrbwalkingMode::Mixed))
@@ -127,6 +155,7 @@ void Kalista::Update(void * UserData)
 	if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::JungleClear))
 	{
 		JungleClear();
+		Exploit();
 	}
 
 }
@@ -148,7 +177,7 @@ void Kalista::Combo()
 
 	
 
-	if (CurrentTarget.IsValid() && spellQ.IsLearned() && spellQ.IsReady() && Menu::Get<bool>("Kalista.ComboQ")) // Q usage
+	if (CurrentTarget.IsValid() && spellQ.IsLearned() && spellQ.IsReady() && CurrentTarget.IsAlive() && Menu::Get<bool>("Kalista.ComboQ")) // Q usage
 	{
 		if ( ((&Player)->GetResource().Current - rawPierceMana[Player.GetSpell((char)SpellSlot::Q).Level - 1] >= 30.0f && Menu::Get<bool>("Kalista.miscSaveManaE")) || !Menu::Get<bool>("Kalista.miscSaveManaE"))
 		{
@@ -393,7 +422,7 @@ void Kalista::JungleClear()
 			{
 				if ((float)Menu::Get<int>("Kalista.JungleClearQMana") <= Player.GetManaPercent())
 				{
-					if (Menu::Get<bool>("Kalista.JungleClearQ") && spellQ.IsInRange(jungle) && jungle->IsVisible())
+					if (Menu::Get<bool>("Kalista.JungleClearQ") && spellQ.IsInRange(jungle) && jungle->IsVisible() && Player.IsFacing(jungle))
 					{
 						Vector3 junglePos{ jungle->GetServerPosition() };
 						if (spellQ.IsLearned() && spellQ.IsReady() && junglePos.IsValid() && spellQ.IsReady()) // Q usage
@@ -475,7 +504,68 @@ void Kalista::Chase()
 	}
 }
 
+void Kalista::Exploit()
+{
+	/*
+	 * var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange+ObjectManager.Player.BoundingRadius+65,DamageType.Physical);
+                    if (target.IsValidTarget())
+                    {
+                        if (Game.Time*1000 >= lastaa + 1)
+                        {
+                            Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                        }
+                        if (Game.Time*1000 > lastaa + ObjectManager.Player.AttackDelay*1000-180)
+                        {
+                            Player.IssueOrder(GameObjectOrder.AttackUnit, target);
+                        }
+                    }
+                    else
+                    {
+                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                    }
+	 *
+	 */
 
+
+	auto target = pCore->TS->GetTarget(Player.GetTrueAttackRange()+100.0f, DamageType::Magical);
+
+	if(target != NULL && target != nullptr)
+	{
+		
+		float time = float(Game::Time() * 1000);
+
+		if(time >= lastaa +1.0f)
+		{
+			auto mousepos{ Renderer::MousePos() };
+			SdkMoveLocalPlayer(&mousepos, false);
+			//pSDK->Control->Attack(&CurrentTarget);
+			//SdkUiConsoleWrite("Move");
+		}
+		
+		
+		if(time > lastaa + Player.GetAttackDelay()*1000.0f - (float)(Menu::Get<int>("Kalista.ExploitAdjustment")))
+		//if (time > lastaa + 350.0f )
+		{
+			//SdkAttackTargetLocalPlayer(OrbTarget, false);
+
+
+			auto mousepos{ Renderer::MousePos() };
+			//SdkMoveLocalPlayer(&mousepos, false);
+			pSDK->Control->Attack(target);
+			//SdkUiConsoleWrite("Attack");
+			
+		}
+
+	}
+	else
+	{
+		auto mousepos{ Renderer::MousePos() };
+		SdkMoveLocalPlayer(&mousepos, false);
+	}
+
+
+	
+}
 
 void Kalista::SoulBoundSaver()
 {
@@ -535,6 +625,101 @@ void Kalista::SoulBoundSaver()
 
 }
 
+
+void Kalista::KillSteal()
+{
+	auto heroes_ptr
+	{
+		pSDK->EntityManager->GetEnemyHeroes(1500.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+
+
+	// collision I gotta add it later
+
+	for (auto &[netID, heroes] : heroes_ptr)
+	{
+		if (heroes->IsValid() && spellQ.IsLearned() && spellQ.IsReady() && heroes->IsAlive() && Menu::Get<bool>("Kalista.KillStealQ"))
+		{
+			if(spellQ.GetSpellDamage(heroes) >= (heroes->GetHealth().Current + heroes->GetHealth().AllShield))
+			{
+				Vector3 playerPos{ (&Player)->GetServerPosition() };
+
+				Vector3 targetPos{ (heroes)->GetPosition() };
+
+				if (!pSDK->Collision->CheckCollisions(playerPos, targetPos, spellQ.Width, spellQ.Delay, spellQ.Speed, false, CollisionFlags::Minions | CollisionFlags::YasuoWall | CollisionFlags::BraumWall, false))
+				{
+					spellQ.Cast(&targetPos);
+				}
+			}
+		}
+		
+		if(heroes->IsValid() && heroes->IsAlive() && heroes->HasBuff("kalistaexpungemarker", false) && Menu::Get<bool>("Kalista.KillStealE"))
+		{
+			if (IsRendKillable(heroes->AsAIBaseClient()) && !heroes->HasUndyingBuff())
+			{
+				if (spellE.IsInRange(heroes) && spellE.IsReady())
+				{
+					spellE.Cast();
+				}
+			}
+		}
+	
+	}
+}
+
+void Kalista::AlwaysJungleE()
+{
+	auto jungle_ptr
+	{
+		pSDK->EntityManager->GetJungleMonsters(spellQ.Range, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+
+
+	/*
+	 *
+	 * 		Menu::Checkbox("Always Use E on Dragon", "Kalista.JungleEDragon", true);
+			Menu::Checkbox("Always Use E on Baron", "Kalista.JungleEBaron", true);
+			Menu::Checkbox("Always Use E on Rift Herald", "Kalista.JungleERift", true);
+			Menu::Checkbox("Always Use E on Blue", "Kalista.JungleEBlue", true);
+			Menu::Checkbox("Always Use E on Red", "Kalista.JungleERed", true);
+			Menu::Checkbox("Always Use E on Scuttler Crab", "Kalista.JungleECrab", true);
+	 */
+
+	for (auto &[netID, jungle] : jungle_ptr)
+	{
+
+
+		if (jungle->IsValid() && jungle->IsAlive() && jungle->GetCampNumber() != 0 && jungle != NULL && jungle != nullptr) // campnumber 0 is plant include all kind of plants
+		{
+			
+			if (jungle->HasBuff("kalistaexpungemarker", false))
+			{
+				if (IsRendKillable(jungle->AsAIBaseClient()) && spellE.IsInRange(jungle) && spellE.IsReady())
+				{
+
+
+					std::string s1(jungle->GetName());
+
+						if (strstr(s1.c_str(), "SRU_Dragon") && Menu::Get<bool>("Kalista.JungleEDragon") ||
+							strstr(s1.c_str(), "SRU_Baron") && Menu::Get<bool>("Kalista.JungleEBaron") ||
+							strstr(s1.c_str(), "SRU_RiftHerald") && Menu::Get<bool>("Kalista.JungleERift") ||
+							strstr(s1.c_str(), "SRU_Blue") && Menu::Get<bool>("Kalista.JungleEBlue") ||
+							strstr(s1.c_str(), "SRU_Red") && Menu::Get<bool>("Kalista.JungleERed") ||
+							strstr(s1.c_str(), "Sru_Crab") && Menu::Get<bool>("Kalista.JungleECrab"))
+						{
+							spellE.Cast();
+						}
+
+
+				}
+			}
+
+		}
+	}
+}
+
 void temp()
 {
 	Vector3 mousePos
@@ -563,13 +748,26 @@ void Kalista::SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData
 
 	*/
 	//Player.GetAttackDelay()
+
+
+	if(AI == NULL || AI == nullptr || SpellCast == NULL || SpellCast == nullptr)
+	{
+		return;
+	}
+
+
 	if(strcmp(SpellCast->Spell.Name, "KalistaMysticShot") == 0)
 	{
-		if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::Mixed) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::LaneClear) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::JungleClear))
+		
+		if (pSDK->EntityManager->GetObjectFromPTR(AI)->GetNetworkID() == Player.GetNetworkID()) 
 		{
-			auto mousepos{ Renderer::MousePos() };
-			SdkMoveLocalPlayer(&mousepos, false);
-			pCore->Orbwalker->ResetAttackTimer();
+
+			if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::Mixed) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::LaneClear) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::JungleClear))
+			{
+				auto mousepos{ Renderer::MousePos() };
+				SdkMoveLocalPlayer(&mousepos, false);
+				pCore->Orbwalker->ResetAttackTimer();
+			}
 		}
 		
 
@@ -579,6 +777,7 @@ void Kalista::SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData
 
 void Kalista::SpellCastEnd(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData)
 {
+	return;
 	//SdkUiConsoleWrite("2: %s", SpellCast->Spell.Name);
 
 	/*
@@ -613,6 +812,25 @@ void Kalista::SpellCastEnd(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData)
 ///Put any drawings you need here
 void Kalista::Draw(void * UserData)
 {
+
+
+	/*
+	auto jungle_ptr2
+	{
+		pSDK->EntityManager->GetJungleMonsters(spellQ.Range, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+	};
+
+	for (auto &[netID, jungle] : jungle_ptr2)
+	{
+
+
+		if (jungle->IsValid() && jungle->IsAlive() && jungle != NULL && jungle != nullptr) // campnumber 0 is plant include all kind of plants
+		{
+			Vector3 pos{ jungle->GetPosition() };
+			Draw::Text(&pos, NULL, jungle->GetName(), "Arial Narrow", &Color::Red, 20, 6);
+		}
+	}*/
+
 	/*
 	//CurrentTarget is a copy of an object, so we check if its still valid.
 	if (pCore->TS->IsValidTarget(&CurrentTarget)) {
@@ -841,6 +1059,10 @@ float GetRendDamage(AIBaseClient* target, int StackCount)
 	{
 		return 0;
 	}
+	else if (!target->IsValid() || target == nullptr || target == NULL)
+	{
+		return 0;
+	}
 
 
 	float rawRendDamage [] = { 20, 30, 40, 50, 60 };
@@ -891,7 +1113,7 @@ void Kalista::DrawMenu(void * UserData)
 	Menu::Tree("Kalista", "Kalista.Main", &bKalistaExpanded, []()
 	{
 		//SdkUiText("MataView 1.1 [Beta] - E2Slayer");
-		SdkUiColoredText(&Color::Green, "Kalista 1.0 (Beta)");
+		SdkUiColoredText(&Color::Green, "Kalista 1.1 (Beta)");
 
 		bool bComboExpanded = false;
 		Menu::Tree("Combo", "Kalista.Combo", &bComboExpanded, []()
@@ -932,9 +1154,7 @@ void Kalista::DrawMenu(void * UserData)
 			Menu::Checkbox("Use E", "Kalista.HarassE", true);
 
 			Menu::Checkbox("Reset E when minion is Killable and Enemy has spear(s)", "Kalista.HarassEMinion", true);
-
-
-
+	
 			/*
 			Menu::Checkbox("Use E when Enemy is leaving E Range", "Kalista.HarassEleaving", true);
 
@@ -958,7 +1178,7 @@ void Kalista::DrawMenu(void * UserData)
 
 
 		bool bJungleClearExpanded = false;
-		Menu::Tree("JungleClear", "Kalista.LaneClear", &bJungleClearExpanded, []()
+		Menu::Tree("JungleClear", "Kalista.JungleClear", &bJungleClearExpanded, []()
 		{
 
 			Menu::Checkbox("Use Q", "Kalista.JungleClearQ", true);
@@ -968,6 +1188,20 @@ void Kalista::DrawMenu(void * UserData)
 
 
 
+		});
+
+
+		bool bJungleEExpanded = false;
+		Menu::Tree("Always E on Jungle Mobs", "Kalista.JungleE", &bJungleEExpanded, []()
+		{
+			Menu::Checkbox("Always Use E on Dragon", "Kalista.JungleEDragon", true);
+			Menu::Checkbox("Always Use E on Baron", "Kalista.JungleEBaron", true);
+			Menu::Checkbox("Always Use E on Rift Herald", "Kalista.JungleERift", true);
+			Menu::Checkbox("Always Use E on Blue", "Kalista.JungleEBlue", true);
+			Menu::Checkbox("Always Use E on Red", "Kalista.JungleERed", true);
+			Menu::Checkbox("Always Use E on Scuttler Crab", "Kalista.JungleECrab", true);
+
+		
 		});
 
 
@@ -987,6 +1221,14 @@ void Kalista::DrawMenu(void * UserData)
 			Menu::Checkbox("Always Save Mana For E", "Kalista.miscSaveManaE", true);
 
 
+			Menu::Checkbox("Use Fly Exploit", "Kalista.Exploit", true);
+
+			Menu::SliderInt("^-> Fly Adjustment", "Kalista.ExploitAdjustment", 150, 100, 250);
+			SdkUiColoredText(&Color::Purple, "^-> Higher number = Faster jumps but More Buggy jumps");
+			SdkUiColoredText(&Color::Purple, "^-> Ideal Range is around 150-180");
+
+
+
 
 			//Menu::Checkbox("Use E", "Kalista.JungleClearE", true);
 
@@ -1003,6 +1245,15 @@ void Kalista::DrawMenu(void * UserData)
 
 
 		});
+
+		bool bKillStealExpanded = false;
+		Menu::Tree("Misc", "Kalista.KillSteal", &bKillStealExpanded, []()
+		{
+			Menu::Checkbox("Use Q to Killsteal", "Kalista.KillStealQ", true);
+			Menu::Checkbox("Use E to Killsteal", "Kalista.KillStealE", true);
+		});
+
+
 
 
 		bool bDrawExpanded = false;
