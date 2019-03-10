@@ -774,7 +774,7 @@ __declspec(selectany) void* g_LocalPlayer;
 
 inline Vector3 Vector2::Closest(std::vector<Vector3>& arr) {
 	Vector3 result = Vector3{};
-	float distance = HUGE_VAL;
+	float distance = HUGE_VALF;
 
 	for (auto vector : arr) {
 		float tempDist = this->Distance(vector);
@@ -1032,7 +1032,7 @@ inline float Vector2::AngleBetween(Vector3 & b) {
 
 inline Vector2 Vector2::Closest(std::vector<Vector2>& arr) {
 	Vector2 result = Vector2{};
-	float distance = HUGE_VAL;
+	float distance = HUGE_VALF;
 
 	for (auto vector : arr) {
 		float tempDist = this->Distance(vector);

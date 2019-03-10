@@ -156,8 +156,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\Include\clipper.hpp" />
     <ClInclude Include="..\..\Include\Common.hpp" />
+    <ClInclude Include="..\..\Include\DashDatabase.h" />
     <ClInclude Include="..\..\Include\Game.hpp" />
     <ClInclude Include="..\..\Include\GameObjects.hpp" />
+    <ClInclude Include="..\..\Include\Geometry.hpp" />
+    <ClInclude Include="..\..\Include\IBuffManager.h" />
+    <ClInclude Include="..\..\Include\ICollision.h" />
     <ClInclude Include="..\..\Include\IControl.h" />
     <ClInclude Include="..\..\Include\IDamageLib.h" />
     <ClInclude Include="..\..\Include\IEntityManager.h" />
@@ -177,6 +181,8 @@
     <ClInclude Include="..\..\Include\sdkapi.h" />
     <ClInclude Include="..\..\Include\Spell.hpp" />
     <ClInclude Include="..\..\Include\Vectors.hpp" />
+    <ClInclude Include="KalistaDamage.h" />
+    <ClInclude Include="KalistaSpells.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Kalista.h" />
@@ -186,6 +192,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="KalistaDamage.cpp" />
+    <ClCompile Include="KalistaSpells.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

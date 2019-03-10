@@ -22,6 +22,12 @@
     <Filter Include="My Script Files\SDK Extensions">
       <UniqueIdentifier>{2d2ff738-eb7a-4d66-b234-ea2400e6f038}</UniqueIdentifier>
     </Filter>
+    <Filter Include="My Script Files\Kalista">
+      <UniqueIdentifier>{d43a26fb-18b7-4cb0-a2a1-59d6a1d23a10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Kalista\Headers">
+      <UniqueIdentifier>{38bc854c-75cc-44dd-95a4-21b06d11eb4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -99,8 +105,26 @@
     <ClInclude Include="..\..\Include\Vectors.hpp">
       <Filter>My Script Files\SDK Extensions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\DashDatabase.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Geometry.hpp">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IBuffManager.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ICollision.h">
+      <Filter>My Script Files\SDK Extensions</Filter>
+    </ClInclude>
     <ClInclude Include="Kalista.h">
-      <Filter>My Script Files\Headers</Filter>
+      <Filter>My Script Files\Kalista\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="KalistaSpells.h">
+      <Filter>My Script Files\Kalista\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="KalistaDamage.h">
+      <Filter>My Script Files\Kalista\Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -114,7 +138,13 @@
       <Filter>My Script Files\SDK Extensions</Filter>
     </ClCompile>
     <ClCompile Include="Kalista.cpp">
-      <Filter>My Script Files</Filter>
+      <Filter>My Script Files\Kalista</Filter>
+    </ClCompile>
+    <ClCompile Include="KalistaSpells.cpp">
+      <Filter>My Script Files\Kalista</Filter>
+    </ClCompile>
+    <ClCompile Include="KalistaDamage.cpp">
+      <Filter>My Script Files\Kalista</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -644,7 +644,7 @@ public:
 	}
 
 	bool IsRunningFrom(GameObject* Unit) {
-		if (IsMoving()) { return false; }
+		if (!IsMoving()) { return false; }
 
 		auto nav{ NavInfo() };
 		auto pos{ Unit->GetPosition() };
