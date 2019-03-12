@@ -16,11 +16,13 @@ public:
 	static void SpellWUse(const OrbwalkingMode mode);
 	static void SpellEUse(const OrbwalkingMode mode);
 	static void SpellEUseSub(const OrbwalkingMode mode);
+	static void SpellEUseSimple();
+
 	static void SpellRUse(const OrbwalkingMode mode);
 
 	static bool SpellHumanizer(int TargetSpell);
 
-	static bool SpellEManaSaver();
+	static bool SpellEManaSaver(SpellSlot slot);
 	static HitChance GetHitChanceFromDropList(const OrbwalkingMode mode);
 	static const char* GetOrbWalkerNameToText(const char* champName, const OrbwalkingMode mode);
 };

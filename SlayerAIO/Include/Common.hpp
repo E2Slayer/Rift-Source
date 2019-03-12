@@ -7,6 +7,7 @@
 #include <chrono>
 #include <random>
 #include <functional>
+#include <set>
 
 #include <assert.h>
 #include <string.h>

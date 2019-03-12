@@ -182,7 +182,9 @@
     <ClInclude Include="..\..\Include\Spell.hpp" />
     <ClInclude Include="..\..\Include\Vectors.hpp" />
     <ClInclude Include="KalistaDamage.h" />
+    <ClInclude Include="KalistaMenu.h" />
     <ClInclude Include="KalistaSpells.h" />
+    <ClInclude Include="KalistaWallJump.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Kalista.h" />
@@ -193,7 +195,9 @@
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="KalistaDamage.cpp" />
+    <ClCompile Include="KalistaMenu.cpp" />
     <ClCompile Include="KalistaSpells.cpp" />
+    <ClCompile Include="KalistaWallJump.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -152,6 +152,7 @@ public:
 
 	Vector3 To3D(float h = 0.0f);
 	bool IsOnScreen(float radius = 0.0f);
+	int  GetCollisionFlags(float height = 0.0f);
 	bool IsWall(float height = 0.0f);
 	bool IsGrass(float height = 0.0f);
 	float GetTerrainHeight(float height = 0.0f);
@@ -323,6 +324,8 @@ public:
 	Vector3 RotatedAroundPoint(Vector3& b, float angle);
 
 	Vector2 To2D();
+
+	int GetCollisionFlags();
 	
 	bool IsWall();
 	bool IsGrass();
@@ -966,6 +969,13 @@ inline bool Vector2::IsOnScreen(float radius) {
 	return this->To3D().IsOnScreen(radius);
 }
 
+inline int Vector2::GetCollisionFlags(float height) {
+	int Flags{ 0 };
+	auto position{ this->To3D(height) };
+	SdkGetCollisionFlags(&position, &Flags);
+	return Flags;
+}
+
 inline bool Vector2::IsWall(float height) {
 	bool bIsWall = false;
 	auto position { this->To3D(height) };
@@ -974,13 +984,8 @@ inline bool Vector2::IsWall(float height) {
 	return bIsWall;
 }
 
-inline bool Vector2::IsGrass(float height)
-{
-	int flags = 0;
-	auto position { this->To3D(height) };
-	SdkGetCollisionFlags(&position, &flags);
-
-	return (flags & COLLISION_FLAG_GRASS);
+inline bool Vector2::IsGrass(float height) {
+	return (GetCollisionFlags(height) & COLLISION_FLAG_GRASS);
 }
 
 inline float Vector2::GetTerrainHeight(float height) {
@@ -1145,15 +1150,17 @@ inline Vector3 Vector3::RotatedAroundPoint(Vector3 & b, float angle) {
 inline Vector2 Vector3::To2D() {
 	return Vector2(x, z);
 }
-
+inline int Vector3::GetCollisionFlags() {
+	int Flags{ 0 };
+	SdkGetCollisionFlags(this, &Flags);
+	return Flags;
+}
 inline bool Vector3::IsWall() {
 	bool tmp;  SdkIsLocationWall(this, &tmp);
 	return tmp;
 }
-inline bool Vector3::IsGrass() {
-	int Flags{ 0 };
-	SdkGetCollisionFlags(this, &Flags);
-	return (Flags & COLLISION_FLAG_GRASS);
+inline bool Vector3::IsGrass() {	
+	return (GetCollisionFlags() & COLLISION_FLAG_GRASS);
 }
 inline bool Vector3::IsOnScreen(float radius) {
 	RECT lpRect{};

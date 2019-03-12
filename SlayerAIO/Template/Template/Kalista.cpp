@@ -2,6 +2,16 @@
 #include "Kalista.h"
 #include "KalistaSpells.h"
 #include "KalistaDamage.h"
+#include "KalistaMenu.h"
+
+#include <numeric>
+#include <iostream>
+#include <map>
+#include <string>
+#include <utility>
+
+
+//#include "KalistaWallJump.h"
 
 //AttackableUnit  Kalista::CurrentTarget;
 //AttackableUnit* Kalista::OrbTarget;
@@ -14,7 +24,14 @@ static float lastaa = 0.0f;
 //auto spellR = Spell::Active(SpellSlot::R, 1200.0f, DamageType::Physical);
 
 
-std::vector<std::string> hitchanceList { "Low", "Medium", "High", "Very High" };
+//std::vector<std::string> ColorMenuList{ "Black", "Blue", "Cyan", "DarkBlue" };
+
+
+//std::map<float, float> IncDamage;
+std::map<float, float> InstDamage;
+
+
+
 
 ///This gets called once, at load
 void Kalista::Init()
@@ -26,22 +43,45 @@ void Kalista::Init()
 		return; //since player is not playing Kalista
 	}
 	lastaa = 0.0f;
+	//IncDamage.clear();
+	InstDamage.clear();
 	//CurrentTarget = AttackableUnit();
 	//OrbTarget = NULL;
+
+
+	KalistaMenu::Init();
+	//WallJump::WallJumpSpotsInitializer();
 
 #pragma region RegisterCallbacks
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick,	Kalista::Tick);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update,	Kalista::Update);
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Kalista::DrawMenu);
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update,	Kalista::Draw);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Kalista::DrawMenu);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Kalista::Draw);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, Kalista::SpellCastStart);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastEnd, Kalista::SpellCastEnd);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Attack, Kalista::Attack);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::UnkillableMinion, Kalista::UnkillableMinion);
-	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Dash, Kalista::Dash);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Dash, Kalista::Dash);
 
 #pragma endregion
 }
+
+
+void Kalista::Dash(AIHeroClient* Source, PSDKVECTOR StartPos, PSDKVECTOR EndPos, unsigned int StartTick, unsigned int Duration, float Speed)
+{
+	//SdkUiConsoleWrite("Dash");
+	//SdkUiConsoleWrite("Start x %f y %f z %f", StartPos->x, StartPos->y, StartPos->z);
+	//SdkUiConsoleWrite("End x %f y %f z %f", EndPos->x, EndPos->y, EndPos->z);
+
+
+}
+
+
+/*
+void Kalista::SpellCastEnd(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData)
+{
+
+}*/
 
 
 void Kalista::Attack(void* AI, void* TargetObject, bool StartAttack, bool StopAttack, void* UserData)
@@ -56,34 +96,77 @@ void Kalista::Attack(void* AI, void* TargetObject, bool StartAttack, bool StopAt
 		return;
 	}
 
-	if (pSDK->EntityManager->GetObjectFromPTR(AI)->GetNetworkID()== NULL || pSDK->EntityManager->GetObjectFromPTR(AI)->GetNetworkID() == 0)
+	auto sender{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
+
+
+	if (sender->GetNetworkID()== NULL || sender->GetNetworkID() == 0)
 	{
 		return;
 	}
+
+	auto AIObjectNetworkID = sender->GetNetworkID();
 
 	if (Player.GetNetworkID() == NULL || Player.GetNetworkID() == 0)
 	{
 		return;
 	}
 	
-	//SdkUiConsoleWrite("Delay - %f", Player.GetAttackDelay() * 1000);
-	//SdkUiConsoleWrite("Speed - %f", Player.GetAttackSpeed());
+	auto PlayerNetworkID = Player.GetNetworkID();
+	
 
-
-
-	if (pSDK->EntityManager->GetObjectFromPTR(AI)->GetNetworkID() == Player.GetNetworkID())
+	if (AIObjectNetworkID == PlayerNetworkID)
 	{
-
-		//SdkUiConsoleWrite("Delay - %f", Player.GetAttackDelay()*1000);
-		//SdkUiConsoleWrite("GameTime - %f", float(Game::Time() * 1000));
-		//SdkUiConsoleWrite("GetLastAA - %d", pCore->Orbwalker->GetLastAutoAttack());
-		//Player.GetAttackDelay()pCore->Orbwalker->GetLastAutoAttack()
-
-		//float calc = lastaa - float(Game::Time() * 1000);
-
-		//SdkUiConsoleWrite("Difference - %f", Player.GetAttackSpeed());
-		//SdkUiConsoleWrite("Difference2 - %f", P);
 		lastaa = float(Game::Time()*1000);
+	}
+	
+
+	/*
+
+	if (pSDK->EntityManager->GetObjectFromPTR(TargetObject) == NULL || pSDK->EntityManager->GetObjectFromPTR(TargetObject) == nullptr)
+	{
+		return;
+	}
+	AIBaseClient targetObject = pSDK->EntityManager->GetObjectFromPTR(TargetObject);
+
+	if (pSDK->EntityManager->GetObjectFromPTR(TargetObject)->GetNetworkID() == NULL || pSDK->EntityManager->GetObjectFromPTR(TargetObject)->GetNetworkID() == 0)
+	{
+		return;
+	}
+	//auto targetObjectNetworkID = pSDK->EntityManager->GetObjectFromPTR(TargetObject)->GetNetworkID();
+	*/
+	
+
+
+	//auto d2 = pSDK->DamageLib->GetAutoAttackDamage(hi2, hi, false);
+	//SdkUiConsoleWrite("Helaht: %f Dmg: %f", Player.GetHealth().Current, d2);
+
+
+
+	if (Menu::Get<bool>("Kalista.EBeforeDie"))
+	{
+		auto target{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(TargetObject) };
+
+		if (target != nullptr && target != NULL)
+		{
+
+			if (target->GetNetworkID() == PlayerNetworkID)
+			{
+				//auto sender{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
+
+				if (sender != nullptr && sender != NULL && sender->IsHero())
+				{
+
+					float time = Game::Time();
+					auto aaDmg = pSDK->DamageLib->GetAutoAttackDamage(sender, target, false);
+					if (time > 0.0f && aaDmg > 0.0f)
+					{
+
+						//SdkUiConsoleWrite("are you here2 %f %f", aaDmg, time);
+						InstDamage.emplace(time, aaDmg);
+					}
+				}
+			}
+		}
 	}
 	
 }
@@ -129,10 +212,10 @@ void Kalista::Tick(void * UserData)
 
 	AlwaysJungleE();
 
+	Spells::SpellWUse(OrbwalkingMode::None);
 	
+	UseEBeforeDeath();
 	//Geometry::BestCoveringRectangle
-
-
 
 }
 
@@ -178,8 +261,56 @@ void Kalista::Update(void * UserData)
 		ExploitExecute(OrbwalkingMode::JungleClear);
 	}
 
+	/* walljump
+	if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Flee))
+	{
+		Spells::SpellQUse(OrbwalkingMode::Flee);
+	}*/
 
 
+}
+
+void Kalista::UseEBeforeDeath()
+{
+	if (InstDamage.empty() || !Menu::Get<bool>("Kalista.EBeforeDie"))
+	{
+		return;
+	}
+
+	float time = Game::Time();
+	if (time <= 0)
+	{
+		return;
+	}
+
+	for (auto it = InstDamage.begin(); it != InstDamage.end(); )
+	{
+		if (it->first + Menu::Get<float>("Kalista.EBeforeDieIncDuration") < time)
+		{
+			it = InstDamage.erase(it);
+		}
+		else
+		{
+			++it;
+
+		}
+	}
+
+	/*
+					Menu::SliderInt("^-> Minimum Health to Cast E", "Kalista.EBeforeDieMinimumHealth", 10, 1, 100);
+
+				Menu::SliderFloat("^-> Incoming Damage Calculation Duration (Second)", "Kalista.EBeforeDieIncDuration", 1.0f, 0.1f, 2.0f);
+	*/
+	float sum = std::accumulate(InstDamage.begin(), InstDamage.end(), 0,
+		[](float acc, std::pair<float, float> p) { return (acc + p.second); });
+
+	if (Player.IsAlive() && sum != 0 && Player.CountEnemiesInRange(1500.0f) > 0)
+	{
+		if ( (((Player.GetHealth().Current + Player.GetHealth().AllShield) - sum) <= 0.0f) || (Player.GetHealthPercent() <= (float)Menu::Get<int>("Kalista.EBeforeDieMinimumHealth")))
+		{
+			Spells::SpellEUseSimple();
+		}
+	}
 }
 
 void Kalista::Combo()
@@ -742,6 +873,11 @@ void Kalista::AlwaysJungleE()
 
 void Kalista::SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData)
 {
+
+	//Vector3(8222.000000f, 51.648384f, 3158.000000f);
+	//SdkUiConsoleWrite("Vector3(%ff, %ff, %ff)", SpellCast->StartPosition.x , SpellCast->StartPosition.y, SpellCast->StartPosition.z);
+	//SdkUiConsoleWrite("End x %f y %f z %f", SpellCast->x, SpellCast->y, SpellCast->z);
+
 	/*
 	SdkUiConsoleWrite("Game: %f", Game::Time());
 
@@ -758,6 +894,8 @@ void Kalista::SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData
 		return;
 	}
 
+
+
 	if (SpellCast->IsAutoAttack || SpellCast->Spell.Name == NULL || SpellCast->Spell.Name == nullptr)
 	{
 		return;
@@ -768,39 +906,123 @@ void Kalista::SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData
 		return;
 	}
 
-	if (pSDK->EntityManager->GetObjectFromPTR(AI)->GetNetworkID() == NULL || pSDK->EntityManager->GetObjectFromPTR(AI)->GetNetworkID() == 0)
+	auto sender{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
+
+	if (sender->GetNetworkID() == NULL || sender->GetNetworkID() == 0)
 	{
 		return;
 	}
+
+	auto AINetworkID = sender->GetNetworkID();
 
 	if (Player.GetNetworkID() == NULL || Player.GetNetworkID() == 0)
 	{
 		return;
 	}
 
-	if(strcmp(SpellCast->Spell.Name, "KalistaMysticShot") == 0)
+
+	if(strcmp(SpellCast->Spell.Name, "KalistaMysticShot") == 0 && (AINetworkID == Player.GetNetworkID()))
 	{
-		
-		if (pSDK->EntityManager->GetObjectFromPTR(AI)->GetNetworkID() == Player.GetNetworkID()) 
+		//SdkUiConsoleWrite("pos0 = Vector3(%ff, %ff, %ff);", SpellCast->StartPosition.x, SpellCast->StartPosition.y, SpellCast->StartPosition.z);
+		if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::Mixed) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::LaneClear) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::JungleClear))
+		{
+			auto mousepos{ Renderer::MousePos() };
+			if (mousepos != nullptr && mousepos != NULL)
+			{
+				SdkMoveLocalPlayer(&mousepos, false);
+			}
+			pCore->Orbwalker->ResetAttackTimer();
+		}
+	}
+	
+
+	if (Menu::Get<bool>("Kalista.EBeforeDie"))
+	{
+		auto target{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(SpellCast->TargetObject) };
+
+		if (target != nullptr && target != NULL)
 		{
 
-			if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::Mixed) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::LaneClear) || pCore->Orbwalker->IsModeActive(OrbwalkingMode::JungleClear))
+			if (target->GetNetworkID() == Player.GetNetworkID())
 			{
-				auto mousepos{ Renderer::MousePos() };
-				if (mousepos != nullptr && mousepos != NULL)
+				if (sender != nullptr && sender != NULL)
 				{
-					SdkMoveLocalPlayer(&mousepos, false);
+					auto slot = SpellCast->Spell.Slot;
+
+					if (slot >= 0 && slot < 4)
+					{
+						auto spellDmg = pSDK->DamageLib->GetSpellDamage(sender, target, SpellCast->Spell.Slot, SkillStage::Default);
+
+						//float hp = Player.GetHealth().Current - d2;
+
+						//SdkUiConsoleWrite("inc dmg : !! %f", d2);
+
+						//SdkUiConsoleWrite("hp after : !! %f", hp);
+						if (spellDmg != NULL && spellDmg != 0)
+						{
+							//SdkUiConsoleWrite("ScriptName: %s Slot: %d Inc Dmg %f", SpellCast->Spell.ScriptName, SpellCast->Spell.Slot, d2);
+							InstDamage.emplace(Game::Time(), spellDmg);
+						}
+					}
 				}
-				pCore->Orbwalker->ResetAttackTimer();
 			}
 		}
-		
-		
-
 	}
+	
 		
 }
 
+
+SDKCOLOR Kalista::GetColor(int selectedCombo)
+{
+	/*
+	{Color::Black, "Black"}, { Color::Blue, "Blue" }, { Color::Cyan, "Cyan" }, { Color::DarkBlue, "DarkBlue" },
+	{ Color::DarkGreen, "DarkGreen" }, { Color::Green, "Green" }, { Color::Grey, "Grey" }, { Color::Magenta, "Magenta" },
+	{ Color::Orange, "Orange" }, { Color::Purple, "Purple" }, { Color::Red, "Red" }, { Color::White, "White" }, { Color::Yellow, "Yellow" }
+	*/
+
+
+	//int list = Menu::Get<int>(getHitChance);
+
+	if (selectedCombo == NULL)
+	{
+		return Color::White; //just in case, the fucntion fails.
+	}
+
+	switch (selectedCombo)
+	{
+		case 0:
+			return Color::Black;
+		case 1:
+			return Color::Blue;
+		case 2:
+			return Color::Cyan;
+		case 3:
+			return Color::DarkBlue;
+		case 4:
+			return Color::DarkGreen;
+		case 5:
+			return Color::Green;
+		case 6:
+			return Color::Grey;
+		case 7:
+			return Color::Magenta;
+		case 8:
+			return Color::Orange;
+		case 9:
+			return Color::Purple;
+		case 10:
+			return Color::Red;
+		case 11:
+			return Color::White;
+		case 12:
+			return Color::Yellow;
+		default:
+			return Color::White;
+	}
+
+	return Color::White;
+}
 
 
 ///This gets called X times per second, where X is your league fps.
@@ -840,6 +1062,59 @@ void Kalista::Draw(void * UserData)
 
 		}
 	}*/
+
+
+	/*
+
+	
+		Vector3 pos{ Player.GetPosition() };
+		
+		//for (auto buffname : buffs)
+		{
+
+
+
+
+			if (pos.IsValid() && pos.IsOnScreen())
+			{
+				//We get the screen position and offset it a little so it doesnt draw over the above text
+				//Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+				Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+				screenPos.y -= 20.0f;
+
+
+				Draw::Text(NULL, &screenPos, std::to_string(InstDamage.size()), "Arial Narrow", &Color::White, 20, 6);
+
+				//screenPos.y -= 20.0f;
+
+
+				//Draw::Text(NULL, &screenPos, std::to_string(IncDamage.size()), "Arial Narrow", &Color::Green, 20, 6);
+
+
+
+
+				//if (Player.GetHealthPercent() <= 10)
+				{
+					screenPos.y -= 20.0f;
+					Draw::Text(NULL, &screenPos, std::to_string(Player.GetHealthPercent()), "Arial Narrow", &Color::Red, 20, 6);
+				}
+
+
+				
+				Draw::Text(NULL, &screenPos, std::to_string(pos.x), "Arial Narrow", &Color::White, 20, 6);
+				screenPos.y -= 20.0f;
+
+				Draw::Text(NULL, &screenPos, std::to_string(pos.y), "Arial Narrow", &Color::Green, 20, 6);
+				screenPos.y -= 20.0f;
+
+				Draw::Text(NULL, &screenPos, std::to_string(pos.z), "Arial Narrow", &Color::Red, 20, 6);
+
+				
+			}
+
+		}
+	*/
+
 
 	/*
 	//CurrentTarget is a copy of an object, so we check if its still valid.
@@ -883,6 +1158,66 @@ void Kalista::Draw(void * UserData)
 		}
 	}*/
 
+		/*
+	auto jumping = WallJump::GetWallJumpSpots();
+
+	for (auto &[start, end] : jumping)
+	{
+		
+		//float t1 = (float)(Menu::Get<int>("Kalista.t1"));
+		//float t2 = (float)(Menu::Get<int>("Kalista.t2"));
+
+
+		float t1 = 306.625f;
+		float t2 = 120.977f;
+
+
+
+	//Vector3 startPos{ start.x + t1, start.z, start.y + t2 };
+	//	Vector3 endPos{ end.x+t1, end.z, end.y + t2 };
+
+
+		Vector3 startPos{ start.x , start.y, start.z };
+		Vector3 endPos{ end.x , end.y, end.z  };
+		//Vector3 endPos{ end };
+		SDKVECTOR direction{ 100.f, 100.f, 100.f };
+
+		//if (Player.Distance(&startPos) < 10000.0f)
+		{
+			//Vector3 pos{ Enemy->GetPosition() };
+
+			if (startPos.IsValid() && startPos.IsOnScreen())
+			{
+				//We get the screen position and offset it a little so it doesnt draw over the above text
+				//Vector2 screenPos{ Renderer::WorldToScreen(startPos) };
+				//screenPos.y -= 20.0f;
+
+				//Draw::Text(NULL, &screenPos, "In AA Range", "Arial Narrow", &Color::White, 20, 6);
+
+				Draw::Circle(&startPos, 100.0f, &Color::White, 2, &direction);
+			}
+			
+
+			if (endPos.IsValid() && endPos.IsOnScreen())
+			{
+				//We get the screen position and offset it a little so it doesnt draw over the above text
+				//Vector2 screenPos{ Renderer::WorldToScreen(startPos) };
+				//screenPos.y -= 20.0f;
+
+				//Draw::Text(NULL, &screenPos, "In AA Range", "Arial Narrow", &Color::White, 20, 6);
+
+				Draw::Circle(&endPos, 100.0f, &Color::Red, 2, &direction);
+			}
+
+		}
+	}
+
+
+
+	*/
+
+
+
 
 
 	SDKVECTOR PlayerLocation = Player.GetPosition();
@@ -892,7 +1227,7 @@ void Kalista::Draw(void * UserData)
 	{
 		
 	
-
+		//Menu::Get<int>("drawRColor");
 		if (PlayerLocation.IsValid())
 		{
 			if (Menu::Get<bool>("Kalista.drawQ"))
@@ -901,38 +1236,42 @@ void Kalista::Draw(void * UserData)
 
 				if (spellQ.IsLearned() && spellQ.IsReady() && PlayerLocation.IsOnScreen())
 				{
-					Draw::Circle(&PlayerLocation, spellQ.Range, &Color::White, 2, &direction);
+					Draw::Circle(&PlayerLocation, spellQ.Range, &GetColor(Menu::Get<int>("Kalista.drawQColor")), 2, &direction);
 				}
 
 			}
+
+			//
 
 			if (Menu::Get<bool>("Kalista.drawW"))
 			{
 				auto spellW = Spells::GetSpell(SpellSlot::W);
 
-				if (spellW.IsLearned() && spellW.IsReady() && PlayerLocation.IsOnScreen())
+				if (spellW.IsLearned() && spellW.IsReady())
 				{
-					Draw::Circle(&PlayerLocation, spellW.Range, &Color::Purple, 2, &direction);
+					Draw::Circle(&PlayerLocation, spellW.Range, &GetColor(Menu::Get<int>("Kalista.drawWColor")), 2, &direction);
 				}
 
 			}
-			if (Menu::Get<bool>("Kalista.drawQ"))
+
+			if (Menu::Get<bool>("Kalista.drawE"))
 			{
 				auto spellE = Spells::GetSpell(SpellSlot::E);
 
 				if (spellE.IsLearned() && spellE.IsReady() && PlayerLocation.IsOnScreen())
 				{
-					Draw::Circle(&PlayerLocation, spellE.Range, &Color::Green, 2, &direction);
+					Draw::Circle(&PlayerLocation, spellE.Range, &GetColor(Menu::Get<int>("Kalista.drawEColor")), 2, &direction);
 				}
 
 			}
-			if (Menu::Get<bool>("Kalista.drawQ"))
+
+			if (Menu::Get<bool>("Kalista.drawR"))
 			{
 				auto spellR = Spells::GetSpell(SpellSlot::R);
 
 				if (spellR.IsLearned() && spellR.IsReady() && PlayerLocation.IsOnScreen())
 				{
-					Draw::Circle(&PlayerLocation, spellR.Range, &Color::DarkBlue, 2, &direction);
+					Draw::Circle(&PlayerLocation, spellR.Range, &GetColor(Menu::Get<int>("Kalista.drawRColor")), 2, &direction);
 				}
 
 			}
@@ -1130,219 +1469,7 @@ void Kalista::Draw(void * UserData)
 
 
 
-///Your menu settings go here
-void Kalista::DrawMenu(void * UserData) 
-{
-	
 
-	UNREFERENCED_PARAMETER(UserData);
-
-	bool bKalistaExpanded = true;
-	Menu::Tree("Kalista", "Kalista.Main", &bKalistaExpanded, []()
-	{
-		//SdkUiText("MataView 1.1 [Beta] - E2Slayer");
-		SdkUiColoredText(&Color::Green, "Kalista 1.3 (Beta)");
-
-		bool bComboExpanded = false;
-		Menu::Tree("Combo", "Kalista.Combo", &bComboExpanded, []()
-		{
-			//SdkUiColoredText(&Color::Green, "============Q Settings=============");
-			
-			//Menu::BulletText("hi");
-			
-			Menu::Checkbox("Use Q", "Kalista.ComboQ", true);
-
-			Menu::DropList("Q HitChance", "Kalista.ComboQHit", hitchanceList, 2);
-
-			
-
-			Menu::Checkbox("Use E", "Kalista.ComboE", true);
-
-			Menu::Checkbox("Reset E when minion is Killable and Enemy has spear(s)", "Kalista.ComboEMinion", true);
-
-
-			Menu::Checkbox("Chasing Enemy by Using Minions", "Kalista.ComboChase", true);
-			//Menu::SliderInt("Chase Range", "Kalista.ComboChaseRange", 1500, 1000, 2000);
-			//Menu::Checkbox("Use E on Minions While Chasing", "Kalista.ComboE", true);
-
-
-		});
-
-
-		bool bHarassExpanded = false;
-		Menu::Tree("Harass", "Kalista.Harass", &bHarassExpanded, []()
-		{
-
-			Menu::Checkbox("Use Q", "Kalista.HarassQ", true);
-
-			Menu::DropList("Q HitChance", "Kalista.HarassQHit", hitchanceList, 2);
-
-			Menu::SliderInt("Q Minimum Mana", "Kalista.HarassQMana", 40, 0, 100);
-
-			
-
-
-			Menu::Checkbox("Use E", "Kalista.HarassE", true);
-
-			Menu::Checkbox("Reset E when minion is Killable and Enemy has spear(s)", "Kalista.HarassEMinion", true);
-	
-			/*
-			Menu::Checkbox("Use E when Enemy is leaving E Range", "Kalista.HarassEleaving", true);
-
-			Menu::SliderInt("^-> Minimum Spear to use", "Kalista.ComboChase", 3, 1, 10);
-			*/
-
-		});
-
-		bool bLaneClearExpanded = false;
-		Menu::Tree("LaneClear", "Kalista.LaneClear", &bLaneClearExpanded, []()
-		{
-
-			//Menu::Checkbox("Use Q", "Kalista.LaneClearQ", true);
-			//SdkUiText("LaneClear Q will be added when Collision is implemented in SDK");
-			Menu::Checkbox("Use E", "Kalista.LaneClearE", true);
-			Menu::SliderInt("^-> Minimum Killable Minions ", "Kalista.LaneClearEMinimum", 2, 1, 10);
-
-
-		});
-
-
-
-		bool bJungleClearExpanded = false;
-		Menu::Tree("JungleClear", "Kalista.JungleClear", &bJungleClearExpanded, []()
-		{
-
-			Menu::Checkbox("Use Q", "Kalista.JungleClearQ", true);
-			Menu::SliderInt("^-> Minimum Mana", "Kalista.JungleClearQMana", 40, 0, 100);
-
-			Menu::Checkbox("Use E", "Kalista.JungleClearE", true);
-
-
-
-		});
-
-
-	
-
-
-		bool bSettingsExpanded = false;
-		Menu::Tree("Misc", "Kalista.misc", &bSettingsExpanded, []()
-		{
-			//Menu::Checkbox("Use ", "Kalista.MiscE", true);
-
-
-			Menu::Checkbox("Use R to Save Ally", "Kalista.miscR", true);
-
-			Menu::SliderInt("^-> if Ally HP below # %", "Kalista.miscRHP", 20, 1, 100);
-
-			Menu::Checkbox("Auto E when you can't kill a minion with AA", "Kalista.miscEMinion", true);
-
-			Menu::Checkbox("Always Save Mana For E", "Kalista.miscSaveManaE", true);
-
-			//Menu::Checkbox("Block Casting Q while Jumping", "Kalista.miscBlockJumpingQ", false);
-
-			bool bJungleEExpanded = false;
-			Menu::Tree("Always E on Jungle Mobs", "Kalista.JungleE", &bJungleEExpanded, []()
-			{
-				Menu::Checkbox("Always Use E on Dragon", "Kalista.JungleEDragon", true);
-				Menu::Checkbox("Always Use E on Baron", "Kalista.JungleEBaron", true);
-				Menu::Checkbox("Always Use E on Rift Herald", "Kalista.JungleERift", true);
-				Menu::Checkbox("Always Use E on Blue", "Kalista.JungleEBlue", true);
-				Menu::Checkbox("Always Use E on Red", "Kalista.JungleERed", true);
-				Menu::Checkbox("Always Use E on Scuttler Crab", "Kalista.JungleECrab", true);
-
-
-			});
-
-
-
-			bool bExploitExpanded = false;
-			Menu::Tree("Fly Exploit", "Kalista.ExploitE", &bExploitExpanded, []()
-			{
-				Menu::Checkbox("Use Fly Exploit", "Kalista.Exploit", true);
-				Menu::SliderInt("^-> Fly Adjustment", "Kalista.ExploitAdjustment", 150, 100, 250);
-				//SdkUiColoredText(&Color::White, "^-> Higher number = Faster jumps but More Buggy jumps ");
-				Menu::BulletText("Higher number = Faster jumps but More Buggy jumps");
-				Menu::BulletText("Exploit only works if your Attack Speed is higher than 2.0 ");
-				Menu::BulletText("Ideal Range of the exploit adjustment is around 150-180");
-				//SdkUiColoredText(&Color::Purple, "^-> Ideal Range is around 150-180");
-
-
-			});
-
-
-			bool bKillStealExpanded = false;
-			Menu::Tree("KillSteal", "Kalista.KillSteal", &bKillStealExpanded, []()
-			{
-				Menu::Checkbox("Use Q to Killsteal", "Kalista.KillStealQ", true);
-				Menu::Checkbox("Use E to Killsteal", "Kalista.KillStealE", true);
-			});
-
-
-
-
-
-			//Menu::Checkbox("Use E", "Kalista.JungleClearE", true);
-
-
-
-		//	Menu::SliderInt("Font Size", "Ability.FontSize", 28, 21, 50); //&_g_CheckTeamAbilities.iFontSize, 21.0f, 50.0f, "%.0f", NULL);
-		//	SDKVECTOR defaultColor = { 255, 255, 255 };
-		//	Menu::ColorPicker("Color Picker", "Ability.Color", defaultColor);
-
-			//MakeMenu::ColorPicker()
-			//SdkUiColorPicker("Color Pick", &_g_CheckTeamAbilities.m_CurrentColor, NULL);
-			//SdkUiText("Note: The settings work after pressed the Save Settings");
-			//SdkUiColoredText(&_g_ColorGreen, "Note: The settings will apply \nAfter pressed the Save Settings");
-
-
-		});
-
-
-
-
-
-		bool bDrawExpanded = false;
-		Menu::Tree("Drawings", "Kalista.draw", &bDrawExpanded, []()
-		{
-			//Menu::Checkbox("Use ", "Kalista.MiscE", true);
-
-
-			Menu::Checkbox("Draw Q Range", "Kalista.drawQ", true);
-			Menu::Checkbox("Draw W Range", "Kalista.drawW", true);
-			Menu::Checkbox("Draw E Range", "Kalista.drawE", true);
-			Menu::Checkbox("Draw R Range", "Kalista.drawR", true);
-
-			Menu::Checkbox("Show E Damage on Champion - Percentage", "Kalista.drawEDmgPctHero", true);
-			Menu::Checkbox("Show E Damage on Jungle Mobs- Percentage", "Kalista.drawEDmgPctJungle", true);
-
-
-
-			Menu::Checkbox("Show E Damage - Draw on HPbar (Only Works Champions)", "Kalista.drawEDmgHPBar", true);
-
-			//Menu::Checkbox("Draw R Range", "Kalista.drawR", true);
-
-
-
-			//Menu::DropList("Draw E Damage", "Kalista.drawEDMG", )
-
-			//MakeMenu::ColorPicker()
-			//SdkUiColorPicker("Color Pick", &_g_CheckTeamAbilities.m_CurrentColor, NULL);
-			//SdkUiText("Note: The settings work after pressed the Save Settings");
-			//SdkUiColoredText(&_g_ColorGreen, "Note: The settings will apply \nAfter pressed the Save Settings");
-
-
-		});
-
-
-
-
-	});
-
-
-
-
-}
 
 
 

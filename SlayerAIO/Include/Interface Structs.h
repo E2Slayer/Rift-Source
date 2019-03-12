@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IEntityManager.h"
+#include "IGapcloser.h"
 #include "IEventHandler.h"
 #include "IControl.h"
 #include "IDamageLib.h"
@@ -8,7 +9,7 @@
 #include "ICollision.h"
 #include "IPrediction.h"
 #include "IBuffManager.h"
-
+#include "IInterruptible.h"
 
 struct SDK {
 	std::shared_ptr<IControl>			Control;
@@ -19,6 +20,8 @@ struct SDK {
 	std::shared_ptr<ICollision>			Collision;
 	std::shared_ptr<IPrediction>		Prediction;
 	std::shared_ptr<IBuffManager>		BuffManager;
+	std::shared_ptr<IInterruptible>		InterruptibleManager;
+	std::shared_ptr<IGapclose>			GapcloserManager;
 };
 
 #include "ITargetSelector.h"

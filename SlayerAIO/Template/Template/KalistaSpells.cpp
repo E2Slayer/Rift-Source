@@ -1,20 +1,33 @@
 #include "stdafx.h"
 #include "KalistaSpells.h"
 #include "KalistaDamage.h"
+//#include "KalistaWallJump.h"
 
 //using namespace Kalista;
 
 
 Spell::Skillshot spellQ = Spell::Skillshot(SpellSlot::Q, 1150.0f, SkillshotType::Line, 0.25f, 2100.0f, 40.0f, DamageType::Physical, true, CollisionFlags::YasuoWall | CollisionFlags::Minions | CollisionFlags::BraumWall);
-Spell::Active spellW = Spell::Active(SpellSlot::W, 5000.0f, DamageType::Physical);
+Spell::Targeted spellW = Spell::Targeted(SpellSlot::W, 5000.0f, DamageType::Physical);
 Spell::Active spellE = Spell::Active(SpellSlot::E, 1000.0f, DamageType::Physical);
 Spell::Active spellR = Spell::Active(SpellSlot::R, 1200.0f, DamageType::Physical);
 
 const float rawPierceMana[] = { 50.0f , 55.0f , 60.0f , 65.0f , 70.0f }; //Spell Q Mana
+const float rawSentinelMana = 25.0f; //Spell w Mana
+const float rawRendMana = 30.0f; //Spell e Mana
 const float rawFatesCallMana = 100.0f; //Spell R Mana
 
 
 static float lastTimeCasted[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+
+//const Vector3 drakePosition = Vector3(9836.401367f, -71.240601f, 4404.578125f);
+
+//const Vector3 baronPosition = Vector3(4974.679199f, -71.240601f, 10430.420898f);
+
+
+
+std::map<int, Vector3> sentinelSpots = { {0, Vector3(9836.401367f, -71.240601f, 4404.578125f)}, {1, Vector3(4974.679199f, -71.240601f, 10430.420898f)} }; //0 is drake, 1 is baron
+
 
 Spell::SpellBase Spells::GetSpell(SpellSlot slot)
 {
@@ -46,7 +59,7 @@ void Spells::SpellQUse(const OrbwalkingMode mode)
 			//if (Menu::Get<bool>("Kalista.miscBlockJumpingQ") && Player.IsDashing() || !Menu::Get<bool>("Kalista.miscBlockJumpingQ"))
 
 
-				if (spellQ.IsLearned() && spellQ.IsReady() && SpellEManaSaver())
+				if (spellQ.IsLearned() && spellQ.IsReady() && SpellEManaSaver(SpellSlot::Q))
 				{
 					if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
 					{
@@ -85,7 +98,7 @@ void Spells::SpellQUse(const OrbwalkingMode mode)
 		{
 		
 
-			if (spellQ.IsLearned() && spellQ.IsReady() && SpellEManaSaver())
+			if (spellQ.IsLearned() && spellQ.IsReady() && SpellEManaSaver(SpellSlot::Q))
 			{
 				if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
 				{
@@ -131,7 +144,7 @@ void Spells::SpellQUse(const OrbwalkingMode mode)
 		else if (mode == OrbwalkingMode::None && Menu::Get<bool>("Kalista.KillStealQ"))
 		{
 
-			if (spellQ.IsLearned() && spellQ.IsReady() && SpellEManaSaver())
+			if (spellQ.IsLearned() && spellQ.IsReady() && SpellEManaSaver(SpellSlot::Q))
 			{
 				if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
 				{
@@ -184,21 +197,157 @@ void Spells::SpellQUse(const OrbwalkingMode mode)
 
 			
 		}
+
+		/*
+		else if (mode == OrbwalkingMode::Flee && Menu::Get<bool>("Kalista.WallJump"))
+		{
+			pCore->Orbwalker->DisableMovement(false);
+			auto jumping = WallJump::GetWallJumpSpots();
+
+			if (jumping.empty())
+			{
+				return;
+			}
+
+			for (auto &[start, end] : jumping)
+			{
+				//pCore->Orbwalker->DisableMovement(true);
+				float t1 = (float)(Menu::Get<int>("Kalista.t1"));
+				float t2 = (float)(Menu::Get<int>("Kalista.t2"));
+				//Vector3 startPos{ start.x + t1, start.z, start.y + t2 };
+				//Vector3 endPos{ end.x + t1, end.z, end.y + t2 };
+
+				Vector3 startPos{ start.x , start.y, start.z };
+				Vector3 endPos{ end.x , end.y, end.z };
+				SDKVECTOR direction{ 100.f, 100.f, 100.f };
+
+
+
+				auto mousepos{ Renderer::MousePos() };
+				if (mousepos != nullptr && mousepos != NULL)
+				{
+					//SdkMoveLocalPlayer(&endPos, false);
+				}
+
+				if (Player.Distance(&startPos) <= 100.0f)
+				{
+					pCore->Orbwalker->DisableMovement(true);
+					SdkMoveLocalPlayer(&startPos, false);
+					if (startPos.IsValid() && startPos.IsOnScreen() && Player.Distance(&startPos) <= 25.0f)
+					{
+						//SdkMoveLocalPlayer(&startPos, false);
+						//Vector3 pos{ Enemy->GetPosition() };
+
+							//We get the screen position and offset it a little so it doesnt draw over the above text
+							//Vector2 screenPos{ Renderer::WorldToScreen(startPos) };
+							//screenPos.y -= 20.0f;
+
+							//Draw::Text(NULL, &screenPos, "In AA Range", "Arial Narrow", &Color::White, 20, 6);
+
+							//Draw::Circle(&startPos, 100.0f, &Color::White, 2, &direction);
+
+						//SdkMoveMouse(&endPos);
+						spellQ.Cast(&endPos);
+
+						//auto mousepos{ Renderer::MousePos() };
+						//if (mousepos != nullptr && mousepos != NULL)
+						//{
+						SdkMoveLocalPlayer(&endPos, false);
+						//}
+						pCore->Orbwalker->ResetAttackTimer();
+						
+					}
+
+
+				}
+				else if (Player.Distance(&endPos) <= 100.0f )
+				{
+					pCore->Orbwalker->DisableMovement(true);
+					SdkMoveLocalPlayer(&endPos, false);
+					if ((Player.Distance(&endPos) <= 25.0f && endPos.IsValid() && endPos.IsOnScreen()))
+					{
+
+						//SdkMoveMouse(&startPos);
+						spellQ.Cast(&startPos);
+
+						//auto mousepos{ Renderer::MousePos() };
+						//if (mousepos != nullptr && mousepos != NULL)
+						//{
+						SdkMoveLocalPlayer(&startPos, false);
+						//}
+						pCore->Orbwalker->ResetAttackTimer();
+						
+					}
+				}
+			}
+
+		}*/
 	
 }
 
 void Spells::SpellWUse(const OrbwalkingMode mode)
 {
-	if (!SpellHumanizer(0)) // Delay to stop spamming
+	if (!SpellHumanizer(1) || !spellW.IsLearned() || !SpellEManaSaver(SpellSlot::W)) // Delay to stop spamming
 	{
 		return;
 	}
+
+	if (Player.CountEnemiesInRange(3000.0f) >= 1 || sentinelSpots.empty())
+	{
+		return;
+	}
+
+
+
+	/*
+	
+		Menu::Checkbox("Auto W to Dragon", "Kalista.autoWDrake", true);
+			Menu::Checkbox("Auto W to Baron", "Kalista.autoWBaron", true);	*/
+
+
+	// lastTimeCasted[0] = float(Game::Time() * 1000);
+
+	if (mode == OrbwalkingMode::None && spellW.IsReady())
+	{
+		int randomazier = rand() % 1 + 100;
+
+		if (randomazier == 0)
+		{
+			return;
+		}
+
+		for (auto &[id, location] : sentinelSpots)
+		{
+			if (id == 0 && Menu::Get<bool>("Kalista.autoWDrake") || id == 1 && Menu::Get<bool>("Kalista.autoWBaron"))
+			{
+				if (location != NULL && location != nullptr)
+				{
+					if (spellW.IsInRange(&location) && location.IsValid())
+					{
+						Vector3 randomaziedDrakePos{ location.x + (float)randomazier, location.y, location.z + (float)randomazier };
+						if (randomaziedDrakePos != NULL && randomaziedDrakePos != nullptr)
+						{
+							if (randomaziedDrakePos.IsValid())
+							{
+								spellW.Cast(&location);
+								lastTimeCasted[1] = float(Game::Time() * 1000);
+								pCore->Orbwalker->ResetAttackTimer();
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+	}
+
 
 }
 
 void Spells::SpellEUse(const OrbwalkingMode mode)
 {
-	if (!SpellHumanizer(0)) // Delay to stop spamming
+	if (!SpellHumanizer(2)) // Delay to stop spamming
 	{
 		return;
 	}
@@ -437,7 +586,7 @@ void Spells::SpellEUse(const OrbwalkingMode mode)
 
 void Spells::SpellEUseSub(const OrbwalkingMode mode)
 {
-	if (!SpellHumanizer(0)) // Delay to stop spamming
+	if (!SpellHumanizer(2)) // Delay to stop spamming
 	{
 		return;
 	}
@@ -506,17 +655,31 @@ void Spells::SpellEUseSub(const OrbwalkingMode mode)
 }
 
 
+void Spells::SpellEUseSimple()
+{
+	if (!SpellHumanizer(2)) // Delay to stop spamming
+	{
+		return;
+	}
+
+	if (spellE.IsLearned() && spellE.IsReady())
+	{
+		spellE.Cast();
+		lastTimeCasted[2] = float(Game::Time() * 1000);
+	}
+}
+
 void Spells::SpellRUse(const OrbwalkingMode mode)
 {
 
-	if (!SpellHumanizer(0)) // Delay to stop spamming
+	if (!SpellHumanizer(3)) // Delay to stop spamming
 	{
 		return;
 	}
 
 	if (Menu::Get<bool>("Kalista.miscR"))
 	{
-		if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid() || !SpellEManaSaver())
+		if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid() || !SpellEManaSaver(SpellSlot::R))
 		{
 			return;
 		}
@@ -575,10 +738,27 @@ bool Spells::SpellHumanizer(int TargetSpell)
 
 }
 
-bool Spells::SpellEManaSaver()
+bool Spells::SpellEManaSaver(SpellSlot slot)
 {
+	float manaCalc = 0.0f;
 
-	if ((&Player)->GetResource().Current - rawPierceMana[Player.GetSpell((char)SpellSlot::Q).Level - 1] >= 30.0f && Menu::Get<bool>("Kalista.miscSaveManaE")) // 30.0f mana of Skill E 
+	if (slot == SpellSlot::Q)
+	{
+		manaCalc = rawPierceMana[Player.GetSpell((char)SpellSlot::Q).Level - 1];
+	}
+	else if (slot == SpellSlot::W)
+	{
+		manaCalc = rawSentinelMana;
+	}
+	else if (slot == SpellSlot::R)
+	{
+		manaCalc = rawFatesCallMana;
+	}
+
+
+
+
+	if ((&Player)->GetResource().Current - manaCalc >= rawRendMana && Menu::Get<bool>("Kalista.miscSaveManaE")) // 30.0f mana of Skill E 
 	{
 		return true;
 	}

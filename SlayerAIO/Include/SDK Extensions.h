@@ -10,7 +10,6 @@
 #include "Renderer.hpp"
 #include "Game.hpp"
 #include "GameObjects.hpp"
-#include "Interruptible.hpp"
 #include "Menu.hpp"
 
 #include "Interface Structs.h"

@@ -126,6 +126,12 @@
     <ClInclude Include="KalistaDamage.h">
       <Filter>My Script Files\Kalista\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="KalistaWallJump.h">
+      <Filter>My Script Files\Kalista\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="KalistaMenu.h">
+      <Filter>My Script Files\Kalista\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -144,6 +150,12 @@
       <Filter>My Script Files\Kalista</Filter>
     </ClCompile>
     <ClCompile Include="KalistaDamage.cpp">
+      <Filter>My Script Files\Kalista</Filter>
+    </ClCompile>
+    <ClCompile Include="KalistaWallJump.cpp">
+      <Filter>My Script Files\Kalista</Filter>
+    </ClCompile>
+    <ClCompile Include="KalistaMenu.cpp">
       <Filter>My Script Files\Kalista</Filter>
     </ClCompile>
   </ItemGroup>

@@ -26,8 +26,13 @@ public:
 	static SDKCOLOR Green;
 	static SDKCOLOR Red;
 	static SDKCOLOR Purple;
+	static SDKCOLOR Blue;
+	static SDKCOLOR Cyan;
 	static SDKCOLOR DarkBlue;
 	static SDKCOLOR Magenta;
+	static SDKCOLOR Orange;
+	static SDKCOLOR DarkGreen;
+	static SDKCOLOR Grey;
 };
 
 __declspec(selectany) SDKCOLOR Color::Black		= { 0, 0, 0, 255 };
@@ -36,8 +41,13 @@ __declspec(selectany) SDKCOLOR Color::Yellow	= { 0, 255, 255, 255 };
 __declspec(selectany) SDKCOLOR Color::Green		= { 0, 255, 0, 255 };
 __declspec(selectany) SDKCOLOR Color::Red		= { 0, 0, 255, 255 };
 __declspec(selectany) SDKCOLOR Color::Purple	= { 128, 0, 128, 255 };
+__declspec(selectany) SDKCOLOR Color::Blue		= { 255, 0, 0, 255 };
+__declspec(selectany) SDKCOLOR Color::Cyan		= { 255, 255, 0, 255 };
 __declspec(selectany) SDKCOLOR Color::DarkBlue	= { 92, 0, 40, 255 };
 __declspec(selectany) SDKCOLOR Color::Magenta	= { 63, 12, 144, 255 };
+__declspec(selectany) SDKCOLOR Color::Orange    = { 35, 142, 215, 255 };
+__declspec(selectany) SDKCOLOR Color::DarkGreen = { 53, 166, 18, 255 };
+__declspec(selectany) SDKCOLOR Color::Grey      = { 147, 145, 145, 255 };
 #pragma endregion
 
 class Renderer {

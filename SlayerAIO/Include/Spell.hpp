@@ -40,7 +40,11 @@ namespace Spell {
 			return IsValid() ? Handle().Level : 0;
 		}
 		std::string Name() {
-			return IsValid() ? std::string(Handle().ScriptName) : _invalidName;
+			if (!IsValid()) {
+				return _invalidName;
+			}
+			auto scriptName{ Handle().ScriptName };
+			return scriptName ? std::string(scriptName) : _invalidName;
 		}
 		SpellState State() {
 			if (!IsValid()) { return SpellState::Unknown; }
@@ -76,13 +80,13 @@ namespace Spell {
 		SpellSlot GetSummonerSpellSlot(const char* Name) {
 			Slot = SpellSlot::Unknown;
 			auto slotName1{ Player.GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName };	
-			if (strstr(slotName1, Name)) {
+			if (slotName1 && strstr(slotName1, Name)) {
 				Slot = SpellSlot::Summoner1;
 				return Slot;
 			}
 
 			auto slotName2{ Player.GetSpell((unsigned char)SpellSlot::Summoner2).ScriptName };
-			if (strstr(slotName2, Name)) {
+			if (slotName2 && strstr(slotName2, Name)) {
 				Slot = SpellSlot::Summoner2;
 				return Slot;
 			}
@@ -90,16 +94,18 @@ namespace Spell {
 		}
 
 		bool IsReady(unsigned int extraTime = 0) {
-			if (!IsValid()) { return false; }
+			if (!IsValid() || (Game::Time() - LastCast) < (0.15f + (Game::Ping()/2000.0f))) { return false; }
 
 			return extraTime == 0 ? (State() == SpellState::Ready)
 				: Handle().CooldownExpires + extraTime / 1000.f - Game::Time() < 0;
 		}
 		bool IsInRange(AIBaseClient* targetEntity) {
-			return (RangeCheckFrom && RangeCheckFrom->IsValid() ? Player.Distance(targetEntity) < Range : false);
+			auto from{ RangeCheckFrom && RangeCheckFrom->IsValid() ? RangeCheckFrom->GetPosition() : Player.GetPosition() };
+			return (targetEntity->Distance(from) <= Range);
 		}
 		bool IsInRange(Vector3* targetPosition) {
-			return (RangeCheckFrom && RangeCheckFrom->IsValid() ? Player.Distance(targetPosition) < Range : false);
+			auto from{ RangeCheckFrom && RangeCheckFrom->IsValid() ? RangeCheckFrom->GetPosition() : Player.GetPosition() };
+			return (targetPosition->Distance(from) <= Range);			
 		}
 
 		virtual void DrawRange(PSDKCOLOR color, float lineWidth = 3.f) {

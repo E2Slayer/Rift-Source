@@ -57,8 +57,7 @@ __declspec(selectany) std::map<unsigned char, bool> cantProcessAttackBuffs {
 
 __declspec(selectany) std::map<unsigned char, bool> cantProcessMovementBuffs{
 	{ (unsigned char)BUFF_TYPE_STUN, true},
-	{ (unsigned char)BUFF_TYPE_TAUNT, true},
-	{ (unsigned char)BUFF_TYPE_POLYMORPH, true},
+	{ (unsigned char)BUFF_TYPE_TAUNT, true},	
 	{ (unsigned char)BUFF_TYPE_SNARE, true},
 	{ (unsigned char)BUFF_TYPE_FEAR, true},
 	{ (unsigned char)BUFF_TYPE_CHARM, true},
@@ -77,132 +76,12 @@ __declspec(selectany) std::map<unsigned char, bool> immobileBuffs{
 	{ (unsigned char)BUFF_TYPE_ASLEEP, true}
 };
 
-enum class SpellDangerLevel {
-	Low,
-	Medium,
-	High,
-	VeryHigh
-};
-struct InterruptibleSpellData {
-	unsigned char Slot;
-	std::string Name;
-	SpellDangerLevel DangerLevel;
-	bool MovementInterrupts;	
-};
-
-__declspec(selectany) std::map<std::string, std::vector<InterruptibleSpellData>> InterruptibleSpells{
-	{"Caitlyn", {
-			{3, "CaitlynAceintheHole", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"FiddleSticks", {
-			{1, "Drain", SpellDangerLevel::Medium, true},
-			{3, "Crowstorm", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Janna", {
-			{3, "ReapTheWhirlwind", SpellDangerLevel::Medium, true},
-		}
-	},
-	{"Jhin", {
-			{3, "JhinR", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Karthus", {
-			{3, "KarthusFallenOne", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Katarina", {
-			{3, "KatarinaR", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Lucian", {
-			{3, "LucianR", SpellDangerLevel::High, false},
-		}
-	},
-	{"Lux", {
-			{3, "LuxMaliceCannon", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Malzahar", {
-			{3, "MalzaharR", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"MasterYi", {
-			{1, "Meditate", SpellDangerLevel::Low, true},
-		}
-	},
-	{"MissFortune", {
-			{3, "MissFortuneBulletTime", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Neeko", {
-			{3, "NeekoR", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Nunu", {
-			{3, "NunuR", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Pantheon", {
-			{2, "PantheonE", SpellDangerLevel::Low, true},
-			{3, "PantheonRJump", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Quinn", {
-			{3, "QuinnR", SpellDangerLevel::High, true},
-		}
-	},
-	{"Shen", {
-			{3, "ShenR", SpellDangerLevel::Low, true},
-		}
-	},
-	{"Sion", {
-			{0, "SionQ", SpellDangerLevel::High, true},
-		}
-	},	
-	{"TahmKench", {
-			{3, "TahmKenchNewR", SpellDangerLevel::High, true},
-		}
-	},
-	{"TwistedFate", {
-			{3, "Destiny", SpellDangerLevel::Medium, true},
-		}
-	},
-	{"Velkoz", {
-			{3, "VelkozR", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Vi", {
-			{0, "ViQ", SpellDangerLevel::Medium, false},
-		}
-	},
-	{"Vladimir", {
-			{2, "VladimirE", SpellDangerLevel::Low, false},
-		}
-	},
-	{"Warwick", {
-			{3, "WarwickR", SpellDangerLevel::VeryHigh, true},
-		}
-	},
-	{"Xerath", {
-			{0, "XerathArcanopulseChargeUp", SpellDangerLevel::Medium, false},
-			{3, "XerathLocusOfPower2", SpellDangerLevel::High, true},
-		}
-	},	
-	{"Zac", {
-			{2, "ZacE", SpellDangerLevel::Medium, true}, 
-		}
-	},
-	{"Zilean", {
-			{52, "Zilean_Passive", SpellDangerLevel::Low, true}, //Not Sure About the name
-		}
-	},
-	{"All", {
-			{66, "SummonerTeleport", SpellDangerLevel::Low, true},
-			//{13, "", SpellDangerLevel::Low, true},
-		}
-	},
+__declspec(selectany) std::map<std::string, bool> InvalidTargets{
+	{("JarvanIVStandard")			, true},
+	{("ZyraSeed")					, true},
+	{("TestCubeRender10Vision")		, true},
+	{("PreSeason_Turret_Shield")	, true},
+	{("SyndraSphere")				, true},
 };
 
 class GameObject {
@@ -221,7 +100,7 @@ public:
 		void* Obj = NULL;
 		SdkGetObjectFromID(ID, &Obj);
 		return Obj;
-	};
+	};	
 
 	MAKE_GET(Position, SDKVECTOR, SdkGetObjectPosition);
 	MAKE_GET(Orientation, SDKVECTOR, SdkGetObjectOrientation);
@@ -234,6 +113,10 @@ public:
 	MAKE_RAW(IsVisible, bool, SdkIsUnitVisible);
 	MAKE_RAW(IsVisibleOnScreen, bool, SdkIsObjectVisibleOnScreen);
 	MAKE_GET(NetworkID, unsigned int, SdkGetObjectNetworkID);
+
+	bool operator < (GameObject& b) {
+		return GetNetworkID() < b.GetNetworkID();
+	}
 
 	GameObject* GetEntity() {
 		return pSDK->EntityManager->GetObjectFromID(GetNetworkID());
@@ -374,10 +257,16 @@ public:
 	float Distance(Vector2* b) {
 		if (b == NULL || !b->IsValid()) { return HUGE_VALF; };
 		return GetPosition().To2D().Distance(*b);
-	}
+	}	
 
 	void* PTR() {
 		return Object;
+	}
+
+	bool CanSpellHit();
+
+	bool IsValidTarget() {
+		return IsValid() && IsAlive() && !IsZombie() && IsVisible() && CanSpellHit();
 	}
 };
 
@@ -903,17 +792,11 @@ public:
 	bool IsChannelingImportantSpell(float delay = 0.0f, bool bCheckInterruptedByMove = false) {
 		float CurrentTime;	CHECKFAIL(SdkGetGameTime(&CurrentTime));
 
-		std::string charName{ GetCharName() };
-		if (InterruptibleSpells.count(charName) > 0) {
-			auto activeSpell{ GetActiveSpell() };
-			if (activeSpell.Valid && (activeSpell.ChannelEndTime - CurrentTime) > delay && activeSpell.SpellCast.Spell.Name) {
-				std::string spellName{ activeSpell.SpellCast.Spell.Name };
-				for (auto &spellData : InterruptibleSpells[charName]) {
-					if (spellName == spellData.Name && (!bCheckInterruptedByMove || spellData.MovementInterrupts)) {						
-						return true;
-					}
-				}
-			}			
+		auto data{ pSDK->InterruptibleManager->GetInterruptibleSpellDataInst(GetNetworkID()) };
+		if (data.Sender && data.Data.IsValid()) {
+			if (data.EndTime > (CurrentTime + delay) && (!bCheckInterruptedByMove || data.Data.MovementInterrupts)) {
+				return true;
+			}
 		}		
 		return false;
 	}
@@ -991,6 +874,7 @@ public:
 	MAKE_GET(Type, int, SdkGetMinionType);
 	MAKE_GET(Level, int, SdkGetMinionLevel);
 	MAKE_RAW(IsWard, bool, SdkIsMinionWard);
+	MAKE_GET(VisionRadius, float, SdkGetMinionVisionRadius);
 
 	bool IsJungleMob() {
 		return GetType() == MINION_TYPE_JUNGLE_MONSTER;
@@ -1069,6 +953,24 @@ public:
 		return Object != NULL && SDKSTATUS_SUCCESS(SdkIsObjectSpellMissile(Object));
 	}
 };
+
+inline bool GameObject::CanSpellHit() {
+	auto AI{ AsAIBaseClient() };
+	if (!AI || AI->GetHealth().Max <= 10.0f) { return false; }
+
+	bool UntargetableValidTarget{ AI->HasBuff("illaoiespirit") };
+	if (!AI->IsTargetableToTeam() && !UntargetableValidTarget) {
+		return false;
+	}
+
+	if (IsMinion()) {
+		std::string m_charName(AI->GetCharName());
+		if (InvalidTargets.count(m_charName) > 0) {
+			return false;
+		}
+	}
+	return true;
+}
 
 inline bool GameObject::IsHeroInGame(std::string Name, bool EnemiesOnly) {
 	if (LoadedHeroes.empty()) {
