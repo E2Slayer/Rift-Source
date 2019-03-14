@@ -96,83 +96,178 @@ void Kalista::Attack(void* AI, void* TargetObject, bool StartAttack, bool StopAt
 		return;
 	}
 
-	auto sender{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
 
 
-	if (sender->GetNetworkID()== NULL || sender->GetNetworkID() == 0)
+	auto senderUnknown{ (AIBaseClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
+
+	auto targetUnknown{ (AIBaseClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
+
+
+	if (!senderUnknown->IsValid() || !targetUnknown->IsValidTarget())
 	{
 		return;
 	}
 
-	auto AIObjectNetworkID = sender->GetNetworkID();
-
-	if (Player.GetNetworkID() == NULL || Player.GetNetworkID() == 0)
+	if (Menu::Get<bool>("Kalista.miscEMinion"))
 	{
-		return;
-	}
-	
-	auto PlayerNetworkID = Player.GetNetworkID();
-	
-
-	if (AIObjectNetworkID == PlayerNetworkID)
-	{
-		lastaa = float(Game::Time()*1000);
-	}
-	
-
-	/*
-
-	if (pSDK->EntityManager->GetObjectFromPTR(TargetObject) == NULL || pSDK->EntityManager->GetObjectFromPTR(TargetObject) == nullptr)
-	{
-		return;
-	}
-	AIBaseClient targetObject = pSDK->EntityManager->GetObjectFromPTR(TargetObject);
-
-	if (pSDK->EntityManager->GetObjectFromPTR(TargetObject)->GetNetworkID() == NULL || pSDK->EntityManager->GetObjectFromPTR(TargetObject)->GetNetworkID() == 0)
-	{
-		return;
-	}
-	//auto targetObjectNetworkID = pSDK->EntityManager->GetObjectFromPTR(TargetObject)->GetNetworkID();
-	*/
-	
-
-
-	//auto d2 = pSDK->DamageLib->GetAutoAttackDamage(hi2, hi, false);
-	//SdkUiConsoleWrite("Helaht: %f Dmg: %f", Player.GetHealth().Current, d2);
-
-
-
-	if (Menu::Get<bool>("Kalista.EBeforeDie"))
-	{
-		auto target{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(TargetObject) };
-
-		if (target != nullptr && target != NULL)
+		if (senderUnknown->IsMinion() && targetUnknown->IsMinion() && Player.Distance(senderUnknown) < 1500.0f)
 		{
-
-			if (target->GetNetworkID() == PlayerNetworkID)
+			if (senderUnknown->IsAlly() || targetUnknown->IsAlly())
 			{
-				//auto sender{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
+				return;
+			}
+			auto minionsSender{ (AIMinionClient*)senderUnknown };
+			auto minionsTarget{ (AIMinionClient*)pSDK->EntityManager->GetObjectFromPTR(TargetObject) };
 
-				if (sender != nullptr && sender != NULL && sender->IsHero())
+			if (minionsSender == NULL || minionsSender == nullptr || minionsTarget == NULL || minionsTarget == nullptr)
+			{
+				return;
+			}
+
+			if (minionsSender->IsValid() && minionsTarget->IsValidTarget())
+			{
+				auto aaDmg = pSDK->DamageLib->GetAutoAttackDamage(minionsSender, minionsTarget, false);
+
+
+				if (aaDmg > 0.0f)
 				{
-
-					float time = Game::Time();
-					auto aaDmg = pSDK->DamageLib->GetAutoAttackDamage(sender, target, false);
-					if (time > 0.0f && aaDmg > 0.0f)
+					if ((minionsTarget->GetHealth().Current + minionsTarget->GetHealth().AllShield) - aaDmg*3 <= 0)
 					{
+						if (Damage::IsRendKillable(minionsTarget->AsAIBaseClient()))
+						{
+							Spells::SpellEUseSimple();
+						}
+					}
+				}
+			}
 
-						//SdkUiConsoleWrite("are you here2 %f %f", aaDmg, time);
-						InstDamage.emplace(time, aaDmg);
+
+		}
+		else if (senderUnknown->IsTurret() && Player.Distance(senderUnknown) < 1500.0f)
+		{
+			auto turret{ (AITurretClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
+			auto minionsTarget{ (AIMinionClient*)pSDK->EntityManager->GetObjectFromPTR(TargetObject) };
+
+			if (turret == NULL || turret == nullptr || minionsTarget == NULL || minionsTarget == nullptr)
+			{
+				return;
+			}
+
+			if (turret->IsValid() && minionsTarget->IsValidTarget())
+			{
+				auto aaDmg = pSDK->DamageLib->GetAutoAttackDamage(turret, minionsTarget, false);
+
+
+				if (aaDmg > 0.0f)
+				{
+					if ((minionsTarget->GetHealth().Current + minionsTarget->GetHealth().AllShield) - aaDmg <= 0)
+					{
+						if (Damage::IsRendKillable(minionsTarget->AsAIBaseClient()))
+						{
+							//SdkUiConsoleWrite("turret dying");
+							Spells::SpellEUseSimple();
+						}
 					}
 				}
 			}
 		}
 	}
 	
+	if (senderUnknown->IsHero())
+	{
+		auto sender{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
+
+
+		if (sender->GetNetworkID() == NULL || sender->GetNetworkID() == 0)
+		{
+			return;
+		}
+
+		auto AIObjectNetworkID = sender->GetNetworkID();
+
+		if (Player.GetNetworkID() == NULL || Player.GetNetworkID() == 0)
+		{
+			return;
+		}
+
+		auto PlayerNetworkID = Player.GetNetworkID();
+
+
+		if (AIObjectNetworkID == PlayerNetworkID)
+		{
+			lastaa = float(Game::Time() * 1000);
+		}
+
+
+		if (Menu::Get<bool>("Kalista.EBeforeDie"))
+		{
+			auto target{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(TargetObject) };
+
+			if (target != nullptr && target != NULL)
+			{
+
+				if (target->GetNetworkID() == PlayerNetworkID)
+				{
+					//auto sender{ (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(AI) };
+
+					if (sender != nullptr && sender != NULL && sender->IsHero())
+					{
+
+						float time = Game::Time();
+						auto aaDmg = pSDK->DamageLib->GetAutoAttackDamage(sender, target, false);
+						if (time > 0.0f && aaDmg > 0.0f)
+						{
+
+							//SdkUiConsoleWrite("are you here2 %f %f", aaDmg, time);
+							InstDamage.emplace(time, aaDmg);
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	
+	
 }
 
 void Kalista::UnkillableMinion(AIMinionClient* Target)
 {
+
+	
+	if (Target == nullptr || Target == NULL || !Menu::Get<bool>("Kalista.miscEMinion"))
+	{
+		return;
+	}
+
+	
+	if (Player.Distance(Target) < 1500.0f && Target->IsAlive() && Target->IsEnemy())
+	{
+		if (Damage::IsRendKillable(Target->AsAIBaseClient()))
+		{
+			Spells::SpellEUseSimple();
+		}
+	}
+	/*
+	Vector3 pos{ Target->GetPosition() };
+	Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+
+
+
+		if (pos.IsValid() && pos.IsOnScreen())
+		{
+			//We get the screen position and offset it a little so it doesnt draw over the above text
+			//Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+			screenPos.y -= 20.0f;
+
+			Draw::Text(NULL, &screenPos, "UnKillable", "Arial Narrow", &Color::White, 20, 6);
+
+
+		}
+
+	*/
+
 	/*
 	if (Menu::Get<bool>("Kalista.miscEMinion") && spellE.IsReady())
 	{
@@ -192,6 +287,10 @@ void Kalista::UnkillableMinion(AIMinionClient* Target)
 ///on OnUpdate so it doesnt drop too many fps
 void Kalista::Tick(void * UserData)
 {
+	if (Player.IsRecalling())
+	{
+		return;
+	}
 
 	/*
 	auto target_ptr
@@ -211,6 +310,9 @@ void Kalista::Tick(void * UserData)
 	KillSteal();
 
 	AlwaysJungleE();
+
+
+	Spells::SpellEUseSub(OrbwalkingMode::Custom);
 
 	Spells::SpellWUse(OrbwalkingMode::None);
 	
@@ -285,7 +387,14 @@ void Kalista::UseEBeforeDeath()
 
 	for (auto it = InstDamage.begin(); it != InstDamage.end(); )
 	{
-		if (it->first + Menu::Get<float>("Kalista.EBeforeDieIncDuration") < time)
+		float temp = Menu::Get<float>("Kalista.EBeforeDieIncDuration");
+
+		if (temp == NULL || temp == 0)
+		{
+			continue;
+		}
+
+		if (it->first + temp < time)
 		{
 			it = InstDamage.erase(it);
 		}
@@ -634,7 +743,7 @@ void Kalista::Chase()
 		{
 			if (Enemy != nullptr && Enemy != NULL)
 			{
-				if (Enemy->IsRunningFrom(&Player) || Player.GetLevel() >= 6)
+				if (Player.GetLevel() >= 6) //Enemy->IsRunningFrom(&Player) deleted it cuz it causes error
 				{
 					if (pCore->Orbwalker->GetTrueAutoAttackRange(&Player, Enemy) < Player.Distance(Enemy) && Enemy->IsValid() && Enemy->IsAlive() && pCore->TS->IsValidTarget(Enemy)) // if enemy location is further than player's aa range
 					{

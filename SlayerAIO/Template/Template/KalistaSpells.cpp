@@ -480,9 +480,24 @@ void Spells::SpellEUse(const OrbwalkingMode mode)
 									{
 										spellE.Cast();
 										lastTimeCasted[2] = float(Game::Time() * 1000);
+									
 									}
+									else if (minions->GetHealth().Current <= Player.GetAttackDamage() && !Player.CanAttack() && Menu::Get<bool>("Kalista.miscEMinion"))
+									{
+										spellE.Cast();
+										lastTimeCasted[2] = float(Game::Time() * 1000);
+									}
+									else if (minions->IsSiegeMinion() && Menu::Get<bool>("Kalista.LaneClearTank"))
+									{
+										spellE.Cast();
+										lastTimeCasted[2] = float(Game::Time() * 1000);
+									}
+								
 								}
+								
+								
 							}
+						
 						}
 					}
 					
@@ -550,7 +565,7 @@ void Spells::SpellEUse(const OrbwalkingMode mode)
 			}
 			auto heroes_ptr
 			{
-				pSDK->EntityManager->GetEnemyHeroes(spellE.Range, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+				pSDK->EntityManager->GetEnemyHeroes(1500.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
 			};
 
 			if (heroes_ptr.empty())
@@ -652,6 +667,9 @@ void Spells::SpellEUseSub(const OrbwalkingMode mode)
 			}
 		}
 	}
+	else if (mode == OrbwalkingMode::Custom)
+	{
+	}
 }
 
 
@@ -729,7 +747,7 @@ bool Spells::SpellHumanizer(int TargetSpell)
 		return false;
 	}
 
-	if (lastTimeCasted[TargetSpell] + 1000.0f >= float(Game::Time() * 1000)) // Delay to stop spamming
+	if (lastTimeCasted[TargetSpell] + 100.0f >= float(Game::Time() * 1000)) // Delay to stop spamming
 	{
 		return false;
 	}

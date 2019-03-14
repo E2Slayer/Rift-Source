@@ -97,10 +97,17 @@ void KalistaMenu::DrawMenu(void * UserData)
 		Menu::Tree("LaneClear", "Kalista.LaneClear", &bLaneClearExpanded, []()
 		{
 
+			
+
 			//Menu::Checkbox("Use Q", "Kalista.LaneClearQ", true);
 			//SdkUiText("LaneClear Q will be added when Collision is implemented in SDK");
 			Menu::Checkbox("Use E", "Kalista.LaneClearE", true);
 			Menu::SliderInt("^-> Minimum Killable Minions ", "Kalista.LaneClearEMinimum", 2, 1, 10);
+
+			Menu::Checkbox("Auto E when you can't kill a minion with AA", "Kalista.miscEMinion", true);
+
+			Menu::Checkbox("Use E on Tank Minions", "Kalista.LanclearTank", true);
+
 
 
 		});
@@ -146,20 +153,21 @@ void KalistaMenu::DrawMenu(void * UserData)
 
 			Menu::SliderInt("^-> if Ally HP below # %", "Kalista.miscRHP", 20, 1, 100);
 
-			Menu::Checkbox("Auto E when you can't kill a minion with AA", "Kalista.miscEMinion", true);
-
+			
 			Menu::Checkbox("Always Save Mana For E", "Kalista.miscSaveManaE", true);
 
+			/*
 			Menu::Checkbox("Auto W to Dragon", "Kalista.autoWDrake", true);
+			Menu::HotkeyToggle("Auto W to Dragon", "Kalista.autoWDrake", 89,true);
 			Menu::Checkbox("Auto W to Baron", "Kalista.autoWBaron", true);
-
+			*/
 
 			//bool bUseEBeforeDieExpanded = false;
 			Menu::Tree("Use E Before Kalista Dies", "Kalista.UseEBeforeDie", &bUseEBeforeDieExpanded, []()
 			{
 				Menu::Checkbox("Use E Before Kalista Dies", "Kalista.EBeforeDie", true);
 
-				Menu::SliderInt("^-> Minimum Health to Cast E", "Kalista.EBeforeDieMinimumHealth", 10, 1, 100);
+				Menu::SliderInt("^-> If Kalista Health below # %", "Kalista.EBeforeDieMinimumHealth", 10, 1, 100);
 
 				Menu::SliderFloat("^-> Incoming Damage Calculation Duration (Second)", "Kalista.EBeforeDieIncDuration", 1.0f, 0.1f, 2.0f);
 				Menu::BulletText("Higher Duration Number = Use Earlier E");
