@@ -12,6 +12,7 @@ const char* menuID;
 const char* menuSubCategory;
 MenuTypes enumState;
 SpellTypes spellType;
+float spellRange;
 
 
 ItemStruct::ItemStruct()
@@ -24,6 +25,7 @@ ItemStruct::ItemStruct()
 	this->menuSubCategory = "None";
 	this->enumState = MenuTypes::None;
 	this->spellType = SpellTypes::SkillBase;
+	this->spellRange = 0.0f;
 }
 
 
@@ -40,13 +42,13 @@ ItemStruct::ItemStruct(int _itemID, _SDK_ITEM _sdkItem, unsigned char _itemSlot)
 	}
 
 	this->sdkItem = _sdkItem;
-	this->itemSlot = _itemSlot;
+	this->itemSlot = ItemSlotAdjust(_itemSlot);
 
 }
 
 
 
-ItemStruct::ItemStruct(int _itemID, _SDK_ITEM _sdkItem, unsigned char _itemSlot, const char* _displayName, const char* _menuID, const char* _menuSubCategory, MenuTypes _enumState, SpellTypes _spellType)
+ItemStruct::ItemStruct(int _itemID, _SDK_ITEM _sdkItem, unsigned char _itemSlot, const char* _displayName, const char* _menuID, const char* _menuSubCategory, MenuTypes _enumState, SpellTypes _spellType, float _spellRange)
 {
 
 	//this->itemSlot = ItemSlotAdjust(_itemSlot);
@@ -63,11 +65,12 @@ ItemStruct::ItemStruct(int _itemID, _SDK_ITEM _sdkItem, unsigned char _itemSlot,
 	this->menuSubCategory = _menuSubCategory;
 	this->enumState = _enumState;
 	this->spellType = _spellType;
+	this->spellRange = _spellRange;
 	
 }
 
 
-ItemStruct::ItemStruct(int _itemID, const char* _displayName, const char* _menuID, const char* _menuSubCategory, MenuTypes _enumState, SpellTypes _spellType) //for menu generator
+ItemStruct::ItemStruct(int _itemID, const char* _displayName, const char* _menuID, const char* _menuSubCategory, MenuTypes _enumState, SpellTypes _spellType, float _spellRange) //for menu generator
 {
 	if (_itemID != 0)
 	{
@@ -79,10 +82,7 @@ ItemStruct::ItemStruct(int _itemID, const char* _displayName, const char* _menuI
 	this->menuSubCategory = _menuSubCategory;
 	this->enumState = _enumState;
 	this->spellType = _spellType;
-	//MenuGenerator();
-
-
-
+	this->spellRange = _spellRange;
 }
 
 void ItemStruct::MenuGenerator()
@@ -234,6 +234,13 @@ void ItemStruct::CastItem()
 	}
 
 
+	if (this->enumState & MenuTypes::Instant)
+	{
+		Spell::Active item2 = Spell::Active(this->itemSlot); //temporary
+		item2.Cast();
+		SdkUiConsoleWrite("Instant Cast");
+		// cast right away
+	}
 
 	//SpellSlot::Trinket;
 
@@ -251,8 +258,8 @@ void ItemStruct::CastItem()
 
 		if (Player.GetHealthPercent() <= myHealthPct)
 		{
-			SdkUiConsoleWrite("Cast1");
-			item.Cast();
+			//SdkUiConsoleWrite("Cast1");
+			SpellCaster(this->spellType, this->spellRange);
 		}
 
 	}
@@ -273,8 +280,8 @@ void ItemStruct::CastItem()
 
 		if (Player.GetManaPercent() <= myManaPct)
 		{
-			SdkUiConsoleWrite("Cast12");
-			item.Cast();
+			//SdkUiConsoleWrite("Cast12");
+			SpellCaster(this->spellType, this->spellRange);
 		}
 	}
 
@@ -284,6 +291,51 @@ void ItemStruct::CastItem()
 		menuIDInside0 += "AllyHealth";
 		float allyHealthPct = (float)Menu::Get<int>(menuIDInside0);
 		//Menu::SliderInt(name.c_str(), oss.str(), 35, 1, 100);
+		if (Player.CountEnemiesInRange(1500.0f) >= 1 || this->itemID == (int)ItemID::Redemption)
+		{
+			if ((Player.CountAlliesInRange(this->spellRange) - 1) >= 1) // -1 because it counts player itself too
+			{
+
+				auto allies{ pSDK->EntityManager->GetAllyHeroes(this->spellRange, &pSDK->EntityManager->GetLocalPlayer().GetPosition()) }; // Get enemies
+
+				if (allies.empty())
+				{
+					return;
+				}
+
+				for (auto &[netID, Ally] : allies) // enemy loop
+				{
+					if (Ally != nullptr && Ally != NULL)
+					{
+						if (Ally->GetNetworkID() == NULL )
+						{
+							return;
+						}
+
+						if (Ally->IsAlive() && !Ally->IsZombie() && Ally->GetNetworkID() != Player.GetNetworkID())
+						{
+							if (Ally->GetHealthPercent() <= allyHealthPct)
+							{
+								if (this->itemID == (int)ItemID::Redemption)
+								{
+									if (Ally->CountEnemiesInRange(1500.0f) >= 1)
+									{
+										SpellAllyCaster(this->spellType, this->spellRange, Ally);
+									}
+								}
+								else
+								{
+									SpellCaster(this->spellType, this->spellRange);
+								}
+
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+
 	}
 
 	if (this->enumState & MenuTypes::AllyNumber)
@@ -292,6 +344,13 @@ void ItemStruct::CastItem()
 		menuIDInside0 += "AllyNumber";
 		int allyNumbers = Menu::Get<int>(menuIDInside0);
 		//Menu::SliderInt(name.c_str(), oss.str(), 2, 1, 5);
+		if (Player.CountEnemiesInRange(1500.0f) >= 1)
+		{
+			if ((Player.CountAlliesInRange(this->spellRange) - 1) >= allyNumbers) // -1 because it counts player itself too
+			{
+				SpellCaster(this->spellType, this->spellRange);
+			}
+		}
 	}
 
 	if (this->enumState & MenuTypes::EnemyHealth)
@@ -299,7 +358,23 @@ void ItemStruct::CastItem()
 		std::string menuIDInside0 = menuIDInside;
 		menuIDInside0 += "EnemyHealth";
 		float enemyHealthPct = (float)Menu::Get<int>(menuIDInside0);
-		//Menu::SliderInt(name.c_str(), oss.str(), 35, 1, 100);
+
+		if (Player.CountEnemiesInRange(1500.0f) >= 1)
+		{
+			//Menu::SliderInt(name.c_str(), oss.str(), 35, 1, 100);
+			auto target = pCore->TS->GetTarget(this->spellRange);
+			if (target != NULL && target != nullptr)
+			{
+				if (target->IsValidTarget() && target->GetServerPosition().IsValid())
+				{
+					if (target->GetHealthPercent() <= enemyHealthPct)
+					{
+						//SdkUiConsoleWrite("Cast1234");
+						SpellCaster(this->spellType, this->spellRange);
+					}
+				}
+			}
+		}
 	}
 
 	if (this->enumState & MenuTypes::EnemyNumber)
@@ -308,6 +383,11 @@ void ItemStruct::CastItem()
 		menuIDInside0 += "EnemyNumber";
 		int enemyNumbers = Menu::Get<int>(menuIDInside0);
 		//Menu::SliderInt(name.c_str(), oss.str(), 2, 1, 5);
+
+		if (Player.CountEnemiesInRange(this->spellRange) >= enemyNumbers)
+		{
+			SpellCaster(this->spellType, this->spellRange);
+		}
 	}
 
 
@@ -319,10 +399,9 @@ void ItemStruct::CastItem()
 		//Menu::Checkbox(name.c_str(), oss.str(), true);
 	}
 
-
-	if (this->enumState & MenuTypes::Instant)
+	if (this->enumState & MenuTypes::Custom)
 	{
-		// cast right away
+
 	}
 
 
@@ -416,6 +495,79 @@ const char* ItemStruct::GetItemBuffName(int itemID)
 }
 
 
+void ItemStruct::SpellCaster(SpellTypes type, float range)
+{
+	if (type == SpellTypes::Active)
+	{
+		Spell::Active item = Spell::Active(this->itemSlot); //temporary
+		item.Cast();
+
+	}
+	else if (type == SpellTypes::Targeted)
+	{
+		Spell::Targeted item = Spell::Targeted(this->itemSlot, range , DamageType::Magical); //temporary
+
+			auto target = pCore->TS->GetTarget(range);
+			if (target != NULL && target != nullptr)
+			{
+				if (target->IsValidTarget() && target->GetServerPosition().IsValid())
+				{
+					item.Cast(target);
+					item.Cast(&target->GetServerPosition());
+				}
+			}
+	
+	}
+	else if (type == SpellTypes::SkillShot)
+	{
+
+	}
+	else if (type == SpellTypes::Ranged)
+	{
+
+	}
+}
+
+void ItemStruct::SpellAllyCaster(SpellTypes type, float range, AIHeroClient* allyTarget)
+{
+	//SdkUiConsoleWrite("Did you come here %d", allyTarget->CountEnemiesInRange(1500.0f));
+	if (allyTarget->GetNetworkID() == Player.GetNetworkID() || !allyTarget->IsHero() || allyTarget->IsEnemy())
+	{
+		return;
+	}
+	//SdkUiConsoleWrite("Did you come here2");
+	if (type == SpellTypes::Active)
+	{
+		Spell::Active item = Spell::Active(this->itemSlot); //temporary
+		item.Cast();
+
+	}
+	else if (type == SpellTypes::Targeted)
+	{
+		Spell::Targeted item = Spell::Targeted(this->itemSlot, range, DamageType::Magical); //temporary
+
+		if (allyTarget != NULL && allyTarget != nullptr)
+		{
+			//SdkUiConsoleWrite("Did you come here3");
+			if (allyTarget->IsValidTarget() && allyTarget->GetServerPosition().IsValid())
+			{
+				//SdkUiConsoleWrite("Did you come here4");
+				item.Cast(allyTarget);
+				item.Cast(&allyTarget->GetServerPosition());
+			}
+		}
+
+	}
+	else if (type == SpellTypes::SkillShot)
+	{
+
+	}
+	else if (type == SpellTypes::Ranged)
+	{
+
+	}
+}
+
 unsigned int ItemStruct::GetItemID() const
 {
 	return this->itemID;
@@ -449,4 +601,9 @@ MenuTypes ItemStruct::GetMenuTypes() const
 SpellTypes ItemStruct::GetSpellTypes() const
 {
 	return this->spellType;
+}
+
+float ItemStruct::GetSpellRange() const
+{
+	return this->spellRange;
 }

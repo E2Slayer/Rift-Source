@@ -147,15 +147,15 @@
     <ClInclude Include="ItemStruct.h">
       <Filter>My Script Files\Data\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Cleansers.h">
+      <Filter>My Script Files\Activator\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>My Script Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Template.cpp">
       <Filter>My Script Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Include\clipper.cpp">
@@ -184,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="ItemStruct.cpp">
       <Filter>My Script Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Cleansers.cpp">
+      <Filter>My Script Files\Activator</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

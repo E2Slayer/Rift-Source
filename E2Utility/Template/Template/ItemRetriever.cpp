@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ItemRetriever.h"
 
+
 //0~5 player 6 item slots, 6 is for tricket slot. 
 //std::vector<ItemStruct> currentPlayerItems;
 ItemStruct currentPlayerItems[7];
@@ -88,25 +89,23 @@ void ItemRetriever::Tick(void * UserData)
 
 			//currentPlayerItem[0] = PlayerItem(key, val, (unsigned char)val.Slot, "test");
 
-			if (key != 0)
-			{
 				//currentPlayerItems.emplace_back(ItemStruct(key, val, (unsigned char)val.Slot));
 				//currentPlayerItems.insert((unsigned char)val.Slot, ItemStruct(key, val, (unsigned char)val.Slot));
 				
-				if (val.Slot == NULL)
-				{
+			if (val.Slot == NULL)
+			{
 
-					//currentPlayerItems.emplace_back(ItemStruct(key, val, (unsigned char)val.Slot));
+				//currentPlayerItems.emplace_back(ItemStruct(key, val, (unsigned char)val.Slot));
 
-					currentPlayerItems[0] = ItemStruct(key, val, (unsigned char)val.Slot);
-				}
-				else
-				{
-					//currentPlayerItems.emplace_back(ItemStruct(key, val, (unsigned char)val.Slot));
-
-					currentPlayerItems[(unsigned char)val.Slot] = ItemStruct(key, val, (unsigned char)val.Slot);
-				}
+				currentPlayerItems[0] = ItemStruct(key, val, (unsigned char)val.Slot);
 			}
+			else
+			{
+				//currentPlayerItems.emplace_back(ItemStruct(key, val, (unsigned char)val.Slot));
+
+				currentPlayerItems[(unsigned char)val.Slot] = ItemStruct(key, val, (unsigned char)val.Slot);
+			}
+			
 			
 			/*
 			if (Menu::Get<bool>("Activator.Consumables.Level1") && Player.GetLevel() == 1)

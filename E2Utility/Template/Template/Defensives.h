@@ -1,11 +1,13 @@
 #pragma once
 #include "Activator.h"
+#include "ItemRetriever.h"
+#include "ItemStruct.h"
 
 
 class Defensives
 {
 private:
-	const enum ItemTypes { AffectEnemy, AffectAlly, AllyTarget, SpeedUp, LowMyHealth };
+	//const enum ItemTypes { AffectEnemy, AffectAlly, AllyTarget, SpeedUp, LowMyHealth };
 public:
 	static void Init();
 
@@ -13,12 +15,14 @@ public:
 	//static void	__cdecl	Update(_In_ void* UserData);
 	//static void	__cdecl	Draw(_In_ void* UserData);
 	static void __cdecl DrawMenu(_In_ void* UserData);
+
 	//static void __cdecl PostAttack(AttackableUnit* Target);
+	static void MenuLoader();
+	static void TickLoader(ItemStruct currentItem);
 
-
-	static void UseItems(std::map<int, std::string> inputMap, ItemTypes itemType, int targetID, unsigned char targetslot);
+	//static void UseItems(std::map<int, std::string> inputMap, ItemTypes itemType, int targetID, unsigned char targetslot);
 	//static void UseTimats(int targetID, int spellSlot, std::string menuNameOrigninal, bool fromPostAttack);
 
-	static void ItemMenuGenerator(std::map<int, std::string> inputMap, ItemTypes itemType);
+	//static void ItemMenuGenerator(std::map<int, std::string> inputMap, ItemTypes itemType);
 };
 

@@ -3,53 +3,11 @@
 
 
 //const enum ItemTypes { Health, Mana, HealthMana, Instant};
-bool Consumables::expandedArray[50];
+
 const char* subCategory = "Consumables";
 
 std::vector<ItemStruct> ItemList;
 
-
-std::map<int, std::string> HealthItems  
-{ 
-	{(int) ItemID::HealthPotion, "Health Potion"},
-	{(int)ItemID::RefillablePotion, "Refillable Potion"},
-	{2056, "Pilfered Health Potion"},
-	{2062, "Pilfered Potion of Rouge"}
-	
-
-	
-};
-
-std::map<int, std::string> HealthManaItems
-{
-	{(int)ItemID::HuntersPotion, "Hunter's Potion"},
-	{(int)ItemID::CorruptingPotion, "Corrupting Potion"},
-	{(int)ItemID::TotalBiscuitofRejuvenation, "Total Biscuit Of Rejuvenation"},
-};
-
-
-std::map<int, std::string> ManaItems
-{
-	{(int)ItemID::ManaPotion, "Mana Potion"}
-};
-
-
-std::map<int, std::string> InstantItems
-{
-	{(int)ItemID::SlySackOfGold, "Sly Sack of Gold"},
-	{2011, "Elixir Of Skill"},
-	{2013, "Looted Oracle's Extract"},
-	{3400, "Your Cut"}
-};
-
-
-
-std::map<int, std::string> RechargebaleItems
-{
-	{(int)ItemID::HuntersPotion, "Hunter's Potion"},
-	{(int)ItemID::RefillablePotion, "Refillable Potion"},
-	{(int)ItemID::CorruptingPotion, "Corrupting Potion"}
-};
 
 
 
@@ -87,35 +45,35 @@ void Consumables::Init()
 
 	ItemList.clear();
 
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Consumables::Tick);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Consumables::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Update);
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Consumables::DrawMenu);
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::InventoryUpdate, Consumables::InventoryUpdate);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Consumables::DrawMenu);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::InventoryUpdate, Consumables::InventoryUpdate);
 	
 
-	ItemList.emplace_back(ItemStruct((int)ItemID::HealthPotion, "Health Potion", "HealthPotion", subCategory, MenuTypes::MyHealth, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)ItemID::RefillablePotion, "Refillable Potion", "RefillablePotion", subCategory, MenuTypes::MyHealth, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)2056, "Pilfered Health Potion (Kleptomancy)", "PilferedHealthPotion", subCategory, MenuTypes::MyHealth, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)2062, "Pilfered Potion of Rouge (Kleptomancy)", "PilferedPotionofRouge", subCategory, MenuTypes::MyHealth, SpellTypes::Active));
+	ItemList.emplace_back(ItemStruct((int)ItemID::HealthPotion, "Health Potion", "HealthPotion", subCategory, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)ItemID::RefillablePotion, "Refillable Potion", "RefillablePotion", subCategory, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)2056, "Pilfered Health Potion (Kleptomancy)", "PilferedHealthPotion", subCategory, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)2062, "Pilfered Potion of Rouge (Kleptomancy)", "PilferedPotionofRouge", subCategory, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
 
-	ItemList.emplace_back(ItemStruct((int)ItemID::ManaPotion, "Mana Potion", "ManaPotion", subCategory, MenuTypes::MyMana, SpellTypes::Active));
+	ItemList.emplace_back(ItemStruct((int)ItemID::ManaPotion, "Mana Potion", "ManaPotion", subCategory, MenuTypes::MyMana, SpellTypes::Active, 700.0f));
 
-	ItemList.emplace_back(ItemStruct((int)ItemID::HuntersPotion, "Hunter's Potion", "HuntersPotion", subCategory, MenuTypes::MyHealth | MenuTypes::MyMana, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)ItemID::CorruptingPotion, "Corrupting Potion", "CorruptingPotion", subCategory, MenuTypes::MyHealth | MenuTypes::MyMana, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)ItemID::TotalBiscuitofRejuvenation, "Total Biscuit Of Rejuvenation", "TotalBiscuitofRejuvenation", subCategory, MenuTypes::MyHealth | MenuTypes::MyMana, SpellTypes::Active));
+	ItemList.emplace_back(ItemStruct((int)ItemID::HuntersPotion, "Hunter's Potion", "HuntersPotion", subCategory, MenuTypes::MyHealth | MenuTypes::MyMana, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)ItemID::CorruptingPotion, "Corrupting Potion", "CorruptingPotion", subCategory, MenuTypes::MyHealth | MenuTypes::MyMana, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)ItemID::TotalBiscuitofRejuvenation, "Total Biscuit Of Rejuvenation", "TotalBiscuitofRejuvenation", subCategory, MenuTypes::MyHealth | MenuTypes::MyMana, SpellTypes::Active, 700.0f));
 
-	ItemList.emplace_back(ItemStruct((int)ItemID::SlySackOfGold, "Sly Sack of Gold  (Kleptomancy)", "SlySackOfGold", subCategory, MenuTypes::Instant, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)2011, "Elixir Of Skill (Kleptomancy)", "PilferedHealthPotion", subCategory, MenuTypes::Instant, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)2013, "Looted Oracle's Extract (Kleptomancy)", "PilferedPotion ofRouge", subCategory, MenuTypes::Instant, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)3400, "Your Cut (Pyke's Ult)", "YourCut", subCategory, MenuTypes::Instant, SpellTypes::Active));
+	ItemList.emplace_back(ItemStruct((int)ItemID::SlySackOfGold, "Sly Sack of Gold  (Kleptomancy)", "SlySackOfGold", subCategory, MenuTypes::Instant, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)2011, "Elixir Of Skill (Kleptomancy)", "ElixirOfSkill", subCategory, MenuTypes::Instant, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)2013, "Looted Oracle's Extract (Kleptomancy)", "PilferedPotion ofRouge", subCategory, MenuTypes::Instant, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)3400, "Your Cut (Pyke's Ult)", "YourCut", subCategory, MenuTypes::Instant, SpellTypes::Active, 700.0f));
 
-	ItemList.emplace_back(ItemStruct((int)ItemID::ElixirofIron, "Elixir Of Iron", "ElixirofIron", subCategory, MenuTypes::MyHealth, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)ItemID::ElixirofSorcery, "Elixir Of Sorcery", "ElixirofSorcery", subCategory, MenuTypes::Instant, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)ItemID::ElixirofWrath, "Elixir Of Wrath", "ElixirofWrath", subCategory, MenuTypes::MyHealth, SpellTypes::Active));
+	ItemList.emplace_back(ItemStruct((int)ItemID::ElixirofIron, "Elixir Of Iron", "ElixirofIron", subCategory, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)ItemID::ElixirofSorcery, "Elixir Of Sorcery", "ElixirofSorcery", subCategory, MenuTypes::Instant, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)ItemID::ElixirofWrath, "Elixir Of Wrath", "ElixirofWrath", subCategory, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
 	
-	ItemList.emplace_back(ItemStruct((int)2058, "Travel Size Elixir of Iron (Kleptomancy)", "TravelSizeElixirofIron", subCategory, MenuTypes::MyHealth, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)2059, "Travel Size Elixir of Sorcery (Kleptomancy)", "TravelSizeElixirofSorcery", subCategory, MenuTypes::Instant, SpellTypes::Active));
-	ItemList.emplace_back(ItemStruct((int)2060, "Travel Size Elixir of Wrath (Kleptomancy)", "TravelSizeElixirofWrath", subCategory, MenuTypes::MyHealth, SpellTypes::Active));
+	ItemList.emplace_back(ItemStruct((int)2058, "Travel Size Elixir of Iron (Kleptomancy)", "TravelSizeElixirofIron", subCategory, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)2059, "Travel Size Elixir of Sorcery (Kleptomancy)", "TravelSizeElixirofSorcery", subCategory, MenuTypes::Instant, SpellTypes::Active, 700.0f));
+	ItemList.emplace_back(ItemStruct((int)2060, "Travel Size Elixir of Wrath (Kleptomancy)", "TravelSizeElixirofWrath", subCategory, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
 
 
 
@@ -175,7 +133,7 @@ void Consumables::Tick(void * UserData)
 			{
 				if (currentItems[i].GetItemID() == value.GetItemID())
 				{
-					ItemStruct caster = ItemStruct(currentItems[i].GetItemID(), value.GetSDKItem(), (unsigned char)currentItems[i].GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategory, value.GetMenuTypes(), value.GetSpellTypes());
+					ItemStruct caster = ItemStruct(currentItems[i].GetItemID(), value.GetSDKItem(), (unsigned char)currentItems[i].GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategory, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
 					caster.CastItem();
 					caster.~ItemStruct();
 				}
@@ -258,30 +216,45 @@ void Consumables::DrawMenu(void * UserData)
 {
 	Menu::Tree("Consumables", "Activator.Consumables", false, []()
 	{
-		//ItemStruct menuGenerators = ItemStruct((int)ItemID::HealthPotion, "Health Potion", "HealthPotion", subCategory, ItemStruct::MenuTypes::MyHealth);
 
-		//ItemList.emplace_back(ItemStruct((int)ItemID::HealthPotion, "Health Potion", "HealthPotion", subCategory, ItemStruct::MenuTypes::MyHealth));
 		for (auto& value : ItemList)
 		{
 			value.MenuGenerator();
 		}
-		/*
-		int arraySize = 0;
-		ItemMenuGenerator(HealthItems, ItemTypes::Health, arraySize);
-		arraySize += HealthItems.size();
 
-		ItemMenuGenerator(HealthManaItems, ItemTypes::HealthMana, arraySize);
-		arraySize += HealthManaItems.size();
-		ItemMenuGenerator(ManaItems, ItemTypes::Mana, arraySize);
-		arraySize += ManaItems.size();
-		ItemMenuGenerator(InstantItems, ItemTypes::Instant, arraySize);
-		arraySize += InstantItems.size();
-
-		Menu::Checkbox("Disable At Level1", "Activator.Consumables.Level1", true);
-		Menu::BulletText("^-> Rechargable Potion Still Will Be Used");
-		Menu::BulletText("^-> Refillable Potion, Hunter's Potion, And Corruptiong Potion");	
-		*/
 	});
+
+}
+
+void Consumables::MenuLoader()
+{
+	Menu::Tree("Consumables", "Activator.Consumables", false, []()
+	{
+
+		for (auto& value : ItemList)
+		{
+			value.MenuGenerator();
+		}
+
+	});
+}
+
+void Consumables::TickLoader(ItemStruct currentItem)
+{
+	if (currentItem.GetItemID() == 0)
+	{
+		return;
+	}
+
+	for (auto const &value : ItemList)
+	{
+		if (currentItem.GetItemID() == value.GetItemID())
+		{
+			ItemStruct caster = ItemStruct(currentItem.GetItemID(), value.GetSDKItem(), (unsigned char)currentItem.GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategory, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
+			caster.CastItem();
+			caster.~ItemStruct();
+		}
+	}
 
 }
 

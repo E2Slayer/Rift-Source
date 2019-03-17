@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Activator.h"
+#include "../../Include/SDK Extensions.h"
 #include "ItemStruct.h"
 
 class ItemRetriever : public ItemStruct
@@ -14,5 +14,7 @@ public:
 	static void Init();
 	static void	__cdecl	Tick(_In_ void* UserData);
 	static ItemStruct* GetAllPlayerItems();
+
+
 };
 

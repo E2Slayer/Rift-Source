@@ -1,13 +1,10 @@
 #include "stdafx.h"
 
 #include "../../Include/SDK Extensions.h"
-#include "Template.h"
-#include "Summoners.h"
-#include "Consumables.h"
-#include "Offensives.h"
-#include "Defensives.h"
+#include "Activator.h"
 #include "CustomRanges.h"
-#include "ItemRetriever.h"
+
+
 
 PLUGIN_SETUP("E2Utility", OnLoad);
 
@@ -18,12 +15,8 @@ void __cdecl OnLoad(void* UserData)
 	if (Player.PTR() && pSDK && pCore) 
 	{
 		//MyTemplateClass::Init();
-
-		Summoners::Init();
-		Consumables::Init();
-	//	Offensives::Init();
-	//	Defensives::Init();
-		ItemRetriever::Init();
+		Activator::Init();
+		
 		CustomRanges::Init();
 		//Game::PrintChat(R"(<font color="#832232">test.</font>)");
 	}

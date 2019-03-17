@@ -1,9 +1,9 @@
 #pragma once
-#include "Activator.h"
+#include "../../Include/SDK Extensions.h"
 
 const enum MenuTypes
 {
-	Instant = (0 << 0),
+	
 	AfterAA = (1 << 0),
 	MyHealth = (1 << 1),
 	MyMana = (1 << 2),
@@ -11,7 +11,9 @@ const enum MenuTypes
 	EnemyNumber = (1 << 4),
 	AllyHealth = (1 << 5),
 	AllyNumber = (1 << 6),
-	None = (1 << 7)
+	Instant = (1 << 7),
+	Custom = (1 << 8),
+	None = (1 << 9)
 };
 
 
@@ -36,19 +38,23 @@ private:
 	const char* menuSubCategory;
 	MenuTypes enumState;
 	SpellTypes spellType;
+	float spellRange;
 	SpellSlot ItemSlotAdjust(unsigned char slot);
 public:
 	ItemStruct();
 	~ItemStruct();
 	ItemStruct(int _itemID, _SDK_ITEM _sdkItem, unsigned char _itemSlot);
-	ItemStruct(int _itemID, _SDK_ITEM _sdkItem, unsigned char _itemSlot, const char* _displayName, const char* _menuID, const char* _menuSubCategory, MenuTypes _enumState, SpellTypes _spellType);
-	ItemStruct(int _itemID, const char* _displayName, const char* _menuID, const char* _menuSubCategory, MenuTypes _enumState, SpellTypes _spellType);
+	ItemStruct(int _itemID, _SDK_ITEM _sdkItem, unsigned char _itemSlot, const char* _displayName, const char* _menuID, const char* _menuSubCategory, MenuTypes _enumState, SpellTypes _spellType, float _spellRange);
+	ItemStruct(int _itemID, const char* _displayName, const char* _menuID, const char* _menuSubCategory, MenuTypes _enumState, SpellTypes _spellType, float _spellRange);
 	void MenuGenerator();
 	//const char* MenuString(const char* targetName);
 	//const char* DisplayString(const char* displayName, const char* targetName);
 
 	void CastItem();
 	const char* GetItemBuffName(int itemID);
+
+	void SpellCaster(SpellTypes type, float range);
+	void SpellAllyCaster(SpellTypes type, float range, AIHeroClient* allyTarget);
 	unsigned int GetItemID() const;
 	_SDK_ITEM GetSDKItem() const;
 	SpellSlot GetItemSlot() const;
@@ -56,6 +62,7 @@ public:
 	const char* GetMenuID() const;
 	MenuTypes GetMenuTypes() const;
 	SpellTypes GetSpellTypes() const;
+	float GetSpellRange() const;
 
 };
 

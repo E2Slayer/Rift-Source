@@ -16,10 +16,10 @@ void Summoners::Init()
 {
 
 
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Summoners::Tick);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Summoners::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Update);
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Summoners::DrawMenu);
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Draw);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Summoners::DrawMenu);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Draw);
 
 	AllyChampions.clear();
 	EnemyChampions.clear();
@@ -63,7 +63,7 @@ SummonerBarrier - Barrier
 SummonerFlash - Flash
 */
 
-
+/*
 bool Summoners::bSummonersExpanded = false;
 bool Summoners::bSmiteExpanded = false;
 bool Summoners::bIgniteExpanded = false;
@@ -73,18 +73,26 @@ bool Summoners::bExhaustExpanded2 = false;
 bool Summoners::bHealExpanded = false;
 bool Summoners::bHealAllyExpanded = false;
 bool Summoners::bBarrierExpanded = false;
-
+*/
 ///Your menu settings go here
 void Summoners::DrawMenu(void * UserData)
 {
-	UNREFERENCED_PARAMETER(UserData);
+	
+
+
+
+
+}
+
+void Summoners::MenuLoader()
+{
 
 	Menu::Tree("Summoners", "Activator.Summoners", false, []()
 	{
 
 		//SdkUiText("For Smite, Use the Rift Essential one :^)");
-		
-		
+
+
 		Menu::Tree("Smite", "Activator.Summoners.Smite", false, []()
 		{
 			SdkUiText("For Smite, Use the Rift Essential one :^)");
@@ -101,7 +109,7 @@ void Summoners::DrawMenu(void * UserData)
 			bool bSmiteExpanded2 = true;
 			Menu::Tree("Use Smite on Enemy", "Activator.Summoners.SmiteUseTo", &bSmiteExpanded2, []()
 			{
-				
+
 				if (!EnemyChampions.empty())
 				{
 					for (auto const &ent : EnemyChampions)
@@ -140,7 +148,7 @@ void Summoners::DrawMenu(void * UserData)
 			});*/
 
 		});
-		
+
 
 
 		Menu::Tree("Ignite", "Activator.Summoners.Ignite", false, []()
@@ -151,8 +159,8 @@ void Summoners::DrawMenu(void * UserData)
 			Menu::Checkbox("Use Ignite", "Activator.Summoners.IgniteUse", true);
 			Menu::DropList("Ignite Style", "Activator.Summoners.IgniteStyle", std::vector<std::string>{ "KillSteal", "Combo" }, 0);
 
-			
-			Menu::Tree("Use Ignite For", "Activator.Summoners.IgniteUseTo", &bIgniteExpanded2, []()
+
+			Menu::Tree("Use Ignite For", "Activator.Summoners.IgniteUseTo", false, []()
 			{
 				if (!EnemyChampions.empty())
 				{
@@ -182,7 +190,7 @@ void Summoners::DrawMenu(void * UserData)
 
 			Menu::DropList("Exhaust Style", "Activator.Summoners.ExhaustStyle", std::vector<std::string>{ "Always", "Combo" }, 0);
 
-			Menu::Tree("Use Exhaust For", "Activator.Summoners.ExhaustUseTo", &bExhaustExpanded2, []()
+			Menu::Tree("Use Exhaust For", "Activator.Summoners.ExhaustUseTo", false, []()
 			{
 				if (!EnemyChampions.empty())
 				{
@@ -215,7 +223,7 @@ void Summoners::DrawMenu(void * UserData)
 
 
 
-			Menu::Tree("Use Heal For", "Activator.Summoners.HealUseTo", &bHealAllyExpanded, []()
+			Menu::Tree("Use Heal For", "Activator.Summoners.HealUseTo", false, []()
 			{
 				if (!AllyChampions.empty())
 				{
@@ -249,10 +257,14 @@ void Summoners::DrawMenu(void * UserData)
 		});
 
 	});
+}
 
-
-
-
+void Summoners::TickLoader()
+{
+	IgniteCheck();
+	ExhaustCheck();
+	HealCheck();
+	BarrierCheck();
 }
 
 void Summoners::IgniteCheck()

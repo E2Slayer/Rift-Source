@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "Defensives.h"
 
+std::vector<ItemStruct> DefensivesItemList;
+const char* subCategoryDef = "Defensives";
 
 
-const enum ItemTypes { AffectEnemy, AffectAlly, AllyTarget, SpeedUp, LowMyHealth};
+//const enum ItemTypes { AffectEnemy, AffectAlly, AllyTarget, SpeedUp, LowMyHealth};
 
 
 
@@ -45,62 +47,57 @@ std::map<int, std::string> LowMyHealthItems
 void Defensives::Init()
 {
 
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Defensives::Tick);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Defensives::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Update);
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Defensives::DrawMenu);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Defensives::DrawMenu);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::PostAttack, Offensives::PostAttack);
 
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::RanduinsOmen, "Randuins Omen", "RanduinsOmen", subCategoryDef, MenuTypes::EnemyNumber, SpellTypes::Active, 500.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::LocketoftheIronSolari, "Locket of the Iron Solari", "LocketoftheIronSolari", subCategoryDef, MenuTypes::MyHealth | MenuTypes::AllyHealth, SpellTypes::Active, 600.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Redemption, "Redemption", "Redemption", subCategoryDef, MenuTypes::AllyHealth, SpellTypes::Targeted, 5500.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::ShurelyasReverie, "Shurelyas Reverie", "ShurelyasReverie", subCategoryDef, MenuTypes::AllyNumber | MenuTypes::EnemyHealth, SpellTypes::Active, 700.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::RighteousGlory, "Righteous Glory", "RighteousGlory", subCategoryDef, MenuTypes::EnemyHealth, SpellTypes::Active, 1000.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::GargoyleStoneplate, "Gargoyle Stoneplate", "GargoyleStoneplate", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::SeraphsEmbrace, "Seraphs Embrace", "SeraphsEmbrace", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Stopwatch, "Stopwatch", "Stopwatch", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::ZhonyasHourglass, "Zhonyas Hourglass", "ZhonyasHourglass", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Ohmwrecker, "Ohmwrecker", "Ohmwrecker", subCategoryDef, MenuTypes::AllyHealth | MenuTypes::AllyNumber, SpellTypes::Active, 1100.0f));
 }
 
 
 void Defensives::Tick(void * UserData)
 {
-	if (Player.IsAlive())
+
+	if (Player.IsAlive() && !Player.IsRecalling())
 	{
 
-		auto playerItems{ Player.GetItems() };
-		if (playerItems.empty())
+		ItemStruct* currentItems = ItemRetriever::GetAllPlayerItems();
+
+
+		for (int i = 0; i < 7; i++)
 		{
-			return;
-		}
-
-		for (auto const&[key, val] : playerItems)
-		{
-			unsigned char temp = 0;
-
-			if (val.Slot == NULL)
+			if (currentItems[i].GetItemID() == 0)
 			{
-				temp = 0;
+				continue;
 			}
-			else
+
+			for (auto const &value : DefensivesItemList)
 			{
-				temp = val.Slot;
+				if (currentItems[i].GetItemID() == value.GetItemID())
+				{
+					ItemStruct caster = ItemStruct(currentItems[i].GetItemID(), value.GetSDKItem(), (unsigned char)currentItems[i].GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategoryDef, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
+					caster.CastItem();
+					caster.~ItemStruct();
+				}
 			}
- 
-			if (temp >= 0 && temp < 66)
-			{
-				//UseItems(AffectEnemyItems, ItemTypes::AffectEnemy, key, val);
-				//Activator.Consumables.Level1
-				//if (!Menu::Get<bool>("Activator.Summoners.HealUse"))
 
-				//const enum ItemTypes { AffectEnemy, AffectAlly, AllyTarget, SpeedUp, LowMyHealth };
-				//SdkUiConsoleWrite("slot : %d Name: %s", val.Slot, val.DisplayName);
-
-
-				UseItems(AffectEnemyItems, ItemTypes::AffectEnemy, key, temp);
-				UseItems(AffectAllyItems, ItemTypes::AffectAlly, key, temp);
-				UseItems(AllyTargetItems, ItemTypes::AllyTarget, key, temp);
-				UseItems(SpeedUpItems, ItemTypes::SpeedUp, key, temp);
-				UseItems(LowMyHealthItems, ItemTypes::LowMyHealth, key, temp);
-			}
-			
 		}
 
 	}
 
 }
 
-
+/*
 void Defensives::UseItems(std::map<int, std::string> inputMap, ItemTypes itemType, int targetID, unsigned char targetslot)
 {
 	if (inputMap.empty())
@@ -122,11 +119,7 @@ void Defensives::UseItems(std::map<int, std::string> inputMap, ItemTypes itemTyp
 		//SdkUiConsoleWrite("USE125");
 
 
-		/*
-		if (strcmp(buffNameOfItem, "None") == 0)
-		{
-			continue;
-		}*/
+
 
 		//SdkUiConsoleWrite("USE12");
 		if (!Player.HasItem(key) || (Player.IsRecalling() && key != (int) ItemID::Redemption)) //since redemption can be used while dead
@@ -218,13 +211,7 @@ void Defensives::UseItems(std::map<int, std::string> inputMap, ItemTypes itemTyp
 				continue;
 			}
 
-			/*
-			if (item.LastCast != NULL && item.LastCastTick + 10000000.0f > GetTickCount()) //0.1f second
-			{
-				//SdkUiConsoleWrite("Here??");
-				continue;
-			}*/
-			//SdkUiConsoleWrite("before Pointer");
+
 
 			//SdkUiConsoleWrite("2Slot %d", spellSlot);
 			if (targetID == (int)ItemID::RanduinsOmen)
@@ -250,35 +237,6 @@ void Defensives::UseItems(std::map<int, std::string> inputMap, ItemTypes itemTyp
 					item.Cast(&Player.GetServerPosition());
 				}
 
-				/*
-				for (auto &[netID, heroes] : heroes_ptr)
-				{
-					if (heroes != nullptr && heroes != NULL)
-					{
-
-						if (heroes->IsAlive())
-						{
-							//SdkUiConsoleWrite("USE123");
-							if (heroes->IsValidTarget() && heroes->GetPosition().IsValid() && item.IsInRange(heroes))
-							{
-								targetEnemyNumber++;
-								//SdkUiConsoleWrite("USE14");
-
-								//if (countTarget >= targetEnemyNumber)
-								{
-									SdkUiConsoleWrite("cast1 %s", menuID);
-									item.Cast(&heroes->GetServerPosition());
-									continue;
-
-								}
-
-							}
-
-
-						}
-
-					}
-				}*/
 			}
 			else if (targetID == (int)ItemID::ShurelyasReverie)
 			{
@@ -355,10 +313,7 @@ void Defensives::UseItems(std::map<int, std::string> inputMap, ItemTypes itemTyp
 					continue;
 				}
 
-				/*
-				menuIDThird += "AllyTarget";
-				Menu::DropList(displayName.c_str(), menuIDThird, std::vector<std::string>{ "Most AD", "Most AP", "Anyone" }, 0);
-				*/
+	
 
 				
 			}
@@ -411,7 +366,7 @@ void Defensives::UseItems(std::map<int, std::string> inputMap, ItemTypes itemTyp
 	}
 }
 
-
+*/
 
 
 ///Your menu settings go here
@@ -420,121 +375,45 @@ void Defensives::DrawMenu(void * UserData)
 
 	Menu::Tree("Defensives", "Activator.Defensives", false, []()
 	{
-		ItemMenuGenerator(AffectEnemyItems, ItemTypes::AffectEnemy);
-		ItemMenuGenerator(AffectAllyItems, ItemTypes::AffectAlly);
-		ItemMenuGenerator(AllyTargetItems, ItemTypes::AllyTarget);
-		ItemMenuGenerator(SpeedUpItems, ItemTypes::SpeedUp);
-		ItemMenuGenerator(LowMyHealthItems, ItemTypes::LowMyHealth);
+		
+		for (auto& value : DefensivesItemList)
+		{
+			value.MenuGenerator();
+		}
 
-
-		//const enum ItemTypes { ActiveItems, Timats, TargetItems, HextTechs};
-
-		/*
-		Menu::Checkbox("Disable At Level1", "Activator.Consumables.Level1", true);
-		Menu::BulletText("^-> Rechargable Potion Still Will Be Used");
-		Menu::BulletText("^-> Refillable Potion, Hunter's Potion, And Corruptiong Potion");
-		*/
 	});
 }
 
-
-void Defensives::ItemMenuGenerator(std::map<int, std::string> inputMap, ItemTypes itemType)
+void Defensives::MenuLoader()
 {
-	if (inputMap.empty())
+	Menu::Tree("Defensives", "Activator.Defensives", false, []()
+	{
+
+		for (auto& value : DefensivesItemList)
+		{
+			value.MenuGenerator();
+		}
+
+	});
+}
+
+void Defensives::TickLoader(ItemStruct currentItem)
+{
+	if (currentItem.GetItemID() == 0)
 	{
 		return;
 	}
 
-	for (auto const&[key, val] : inputMap)
+	for (auto const &value : DefensivesItemList)
 	{
-
-		std::string menuID = "Activator.Defensives.";
-		std::string tempName = val;
-		tempName.erase(remove_if(tempName.begin(), tempName.end(), std::isspace), tempName.end());
-
-
-		menuID += tempName;
-
-		//const char* menuDispaly = std::to_wstring(val);
-
-		Menu::Tree(val.c_str(), menuID, false, [key, val, itemType, menuID]() mutable
+		if (currentItem.GetItemID() == value.GetItemID())
 		{
-			std::string menuIDSecond = menuID;
-
-			std::string menuIDThird = menuID;
-
-
-			menuID += "Use";
-			std::string displayName = "Use ";
-			displayName += val;
-
-			Menu::Checkbox(displayName.c_str(), menuID, true);
-
-
-			if (itemType == ItemTypes::LowMyHealth || itemType == ItemTypes::AffectAlly)
-			{
-				if (key != (int)ItemID::Ohmwrecker)
-				{
-					displayName = val;
-					displayName += " My Minimum Health %";
-
-					menuIDSecond += "Me";
-
-					Menu::SliderInt(displayName.c_str(), menuIDSecond, 35, 1, 100);
-				}
-
-				displayName = val;
-				if (key == (int)ItemID::LocketoftheIronSolari)
-				{
-					displayName += " Ally Minimum Health %";
-
-					menuIDSecond += "MinHealth";
-
-					Menu::SliderInt(displayName.c_str(), menuIDSecond, 30, 1, 100);
-				}
-				else if (key == (int)ItemID::Ohmwrecker)
-				{
-					displayName += " Minimum Ally Number # Under Tower";
-
-					menuIDThird += "MinAllyTower";
-
-					Menu::SliderInt(displayName.c_str(), menuIDThird, 2, 1, 5);
-				}
-
-			}
-			else if (itemType == ItemTypes::SpeedUp && key == (int)ItemID::ShurelyasReverie)
-			{
-				displayName = val;
-				displayName += " Minimum Ally Number # Nearyby Me";
-
-				menuIDThird += "MinAlly";
-
-				Menu::SliderInt(displayName.c_str(), menuIDThird, 2, 1, 5);
-			}
-			else if (itemType == ItemTypes::AffectEnemy)
-			{
-				displayName = val;
-				if (key == (int)ItemID::RanduinsOmen)
-				{
-					displayName += " Minimum Enemy Number #";
-
-					menuIDThird += "MinEnemy";
-
-					Menu::SliderInt(displayName.c_str(), menuIDThird, 2, 1, 5);
-				}
-
-			}
-			else if (itemType == ItemTypes::AllyTarget)
-			{
-				displayName = val;
-				displayName += " on Ally Who";
-
-				menuIDThird += "AllyTarget";
-				Menu::DropList(displayName.c_str(), menuIDThird, std::vector<std::string>{ "Most AD", "Most AP", "Anyone" }, 0);
-			}
-		
-
-		});
-
+			ItemStruct caster = ItemStruct(currentItem.GetItemID(), value.GetSDKItem(), (unsigned char)currentItem.GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategoryDef, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
+			caster.CastItem();
+			caster.~ItemStruct();
+		}
 	}
+
 }
+
+
