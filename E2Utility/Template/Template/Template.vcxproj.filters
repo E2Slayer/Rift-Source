@@ -31,6 +31,18 @@
     <Filter Include="My Script Files\Data">
       <UniqueIdentifier>{c7499fe4-2006-46ea-9ca9-bc203b17616e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="My Script Files\DataRetriever">
+      <UniqueIdentifier>{0d89c15a-fb19-4dc9-abc4-db9aeb1be15a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\DataRetriever\Header">
+      <UniqueIdentifier>{395e5643-1b29-4fe0-958c-723f389efa2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Drawers">
+      <UniqueIdentifier>{17096d4c-3377-4a7f-b813-c03860a54e4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Data\Headers">
+      <UniqueIdentifier>{9ec17a25-97fd-484f-a977-eca6ddde241a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -120,6 +132,21 @@
     <ClInclude Include="Consumables.h">
       <Filter>My Script Files\Activator\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Offensives.h">
+      <Filter>My Script Files\Activator\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Defensives.h">
+      <Filter>My Script Files\Activator\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemRetriever.h">
+      <Filter>My Script Files\DataRetriever\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomRanges.h">
+      <Filter>My Script Files\Drawers</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemStruct.h">
+      <Filter>My Script Files\Data\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -142,6 +169,21 @@
     </ClCompile>
     <ClCompile Include="Consumables.cpp">
       <Filter>My Script Files\Activator</Filter>
+    </ClCompile>
+    <ClCompile Include="Offensives.cpp">
+      <Filter>My Script Files\Activator</Filter>
+    </ClCompile>
+    <ClCompile Include="Defensives.cpp">
+      <Filter>My Script Files\Activator</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemRetriever.cpp">
+      <Filter>My Script Files\DataRetriever</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomRanges.cpp">
+      <Filter>My Script Files\Drawers</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemStruct.cpp">
+      <Filter>My Script Files\Data</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

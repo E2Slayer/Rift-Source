@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Activator.h"
-
+#include "ItemRetriever.h"
+#include "ItemStruct.h"
 
 class Consumables
 {
 private:
-	const enum ItemTypes { Health, Mana, HealthMana, Instant };
+	
 	static bool expandedArray[50];
 public:
 	static void Init();
@@ -19,8 +20,8 @@ public:
 	static void __cdecl InventoryUpdate(int Event, int Slot, int Extra, void* UserData);
 
 
-	static void UseItems(std::map<int, std::string> inputMap, ItemTypes itemType, int targetID, SDK_ITEM targetItem);
-	static void ItemMenuGenerator(std::map<int, std::string> inputMap, ItemTypes itemType, int arrayStart);
+	//static void UseItems(std::map<int, std::string> inputMap, ItemTypes itemType, int targetID, SDK_ITEM targetItem);
+	//static void ItemMenuGenerator(std::map<int, std::string> inputMap, ItemTypes itemType, int arrayStart);
 
 	static const char* GetItemBuffName(int itemID);
 	//static void __cdecl HealCheck();

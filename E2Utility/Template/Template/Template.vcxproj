@@ -179,6 +179,11 @@
     <ClInclude Include="..\..\Include\Vectors.hpp" />
     <ClInclude Include="Activator.h" />
     <ClInclude Include="Consumables.h" />
+    <ClInclude Include="CustomRanges.h" />
+    <ClInclude Include="Defensives.h" />
+    <ClInclude Include="ItemRetriever.h" />
+    <ClInclude Include="ItemStruct.h" />
+    <ClInclude Include="Offensives.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Summoners.h" />
     <ClInclude Include="targetver.h" />
@@ -190,7 +195,12 @@
     </ClCompile>
     <ClCompile Include="Activator.cpp" />
     <ClCompile Include="Consumables.cpp" />
+    <ClCompile Include="CustomRanges.cpp" />
+    <ClCompile Include="Defensives.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="ItemRetriever.cpp" />
+    <ClCompile Include="ItemStruct.cpp" />
+    <ClCompile Include="Offensives.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
