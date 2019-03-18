@@ -3,6 +3,8 @@
 
 
 
+DWORD LastTimeTickCount = 0;
+
 void Activator::Init()
 {
 
@@ -59,8 +61,8 @@ void Activator::DrawMenu(void * UserData)
 			Menu::Hotkey("Activator Combo Key", "Activator.Config.ComboKey", 32); //32 is space bar
 
 			Menu::Checkbox("Enable Humanizer", "Activator.Config.HumanizerEnable", true);
-			Menu::SliderInt("Humanizer Delay (ms)", "Activator.Config.HumanizerDelay", 150, 10, 1000);
-
+			Menu::SliderInt("Humanizer Delay (ms)", "Activator.Config.HumanizerDelay", 200, 10, 500);
+			SdkUiText("^-> This is a Spamming Preventer. I recommend you to keep it around 200 - 300 ms");
 
 		});
 	});

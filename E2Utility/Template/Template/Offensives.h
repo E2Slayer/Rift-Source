@@ -4,6 +4,8 @@
 #include "ItemStruct.h"
 
 
+extern DWORD LastTimeTickCountOff;
+
 class Offensives
 {
 private:
@@ -11,10 +13,10 @@ private:
 public:
 	static void Init();
 
-	static void	__cdecl	Tick(_In_ void* UserData);
+	//static void	__cdecl	Tick(_In_ void* UserData);
 	//static void	__cdecl	Update(_In_ void* UserData);
 	//static void	__cdecl	Draw(_In_ void* UserData);
-	static void __cdecl DrawMenu(_In_ void* UserData);
+	//static void __cdecl DrawMenu(_In_ void* UserData);
 	static void __cdecl PostAttack(AttackableUnit* Target);
 	static void MenuLoader();
 	static void TickLoader(ItemStruct currentItem);

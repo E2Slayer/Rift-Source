@@ -8,7 +8,7 @@ const char* subCategory = "Consumables";
 
 std::vector<ItemStruct> ItemList;
 
-
+DWORD LastTimeTickCountCon = 0;
 
 
 /*
@@ -44,7 +44,7 @@ void Consumables::Init()
 	//std::fill_n(expandedArray, 50, false);
 
 	ItemList.clear();
-
+	LastTimeTickCountCon = 0;
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Consumables::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Update);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Consumables::DrawMenu);
@@ -97,96 +97,6 @@ void Consumables::Init()
 }
 
 
-void Consumables::Tick(void * UserData)
-{
-	if (Player.IsAlive() && !Player.IsRecalling())
-	{
-
-		//SdkUiConsoleWrite("ID : %d ", ItemList.size());
-
-		/*
-		auto items = Player.GetItems();
-
-		//Player.GetItem((SpellSlot::Item1);
-
-
-		for (auto &[netID, itemsz] : items)
-		{
-
-			//itemsz.Slot 
-			SdkUiConsoleWrite("ID : %d Name : %s Slot : %d", netID, itemsz.DisplayName, itemsz.Slot );
-
-		}
-		*/
-
-		ItemStruct* currentItems = ItemRetriever::GetAllPlayerItems();
-
-		
-		for (int i = 0; i < 7; i++)
-		{
-			if (currentItems[i].GetItemID() == 0)
-			{
-				continue;
-			}
-
-			for (auto const &value : ItemList)
-			{
-				if (currentItems[i].GetItemID() == value.GetItemID())
-				{
-					ItemStruct caster = ItemStruct(currentItems[i].GetItemID(), value.GetSDKItem(), (unsigned char)currentItems[i].GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategory, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
-					caster.CastItem();
-					caster.~ItemStruct();
-				}
-			}
-			
-		}
-
-
-
-
-
-		/*
-		for (int i = 0; i < 7; i++)
-		{
-			//(hi[i]).GetItemID()
-			//if ((int)ItemID::HealthPotion == (currentItems[i]).GetItemID())
-			{
-				//menuGenerators = ItemStruct((int)ItemID::HealthPotion, (currentItems[i]).GetSDKItem(), (currentItems[i]).GetItemSlot(), "Health Potion", "HealthPotion", subCategory, ItemStruct::MenuTypes::MyHealth);
-			}
-		}*/
-
-		/*
-		auto playerItems{ Player.GetItems() };
-		if (playerItems.empty())
-		{
-			return;
-		}
-
-		for (auto const&[key, val] : playerItems)
-		{
-
-
-			
-
-			if (Menu::Get<bool>("Activator.Consumables.Level1") && Player.GetLevel() == 1)
-			{
-				if (((key != (int)ItemID::RefillablePotion) && (key != (int)ItemID::HuntersPotion) && (key != (int)ItemID::CorruptingPotion)))
-				{
-					continue;
-				}
-			}
-			
-			UseItems(HealthItems, ItemTypes::Health, key, val);
-			UseItems(HealthManaItems, ItemTypes::HealthMana, key, val);
-			UseItems(ManaItems, ItemTypes::Mana, key, val);
-			UseItems(InstantItems, ItemTypes::Instant, key, val);
-			
-		
-		}*/
-
-		
-	}
-}
 
 
 void Consumables::InventoryUpdate(int Event, int Slot, int Extra, void* UserData)
@@ -211,20 +121,7 @@ bool bHealthItemsExpanded;
 bool bHarassExpanded;
 bool bLaneClearExpanded;
 
-///Your menu settings go here
-void Consumables::DrawMenu(void * UserData)
-{
-	Menu::Tree("Consumables", "Activator.Consumables", false, []()
-	{
 
-		for (auto& value : ItemList)
-		{
-			value.MenuGenerator();
-		}
-
-	});
-
-}
 
 void Consumables::MenuLoader()
 {
@@ -235,27 +132,40 @@ void Consumables::MenuLoader()
 		{
 			value.MenuGenerator();
 		}
-
+		Menu::DropList("Consumables Style", "Activator.Consumables.Style", std::vector<std::string>{ "Always", "Combo" }, 0);
+		Menu::Checkbox("Disable Consumables Usage at Level 1", "Activator.Consumables.Level1", false);
+		SdkUiText("^-> Rechargeable Potions Will Still Be Used With the function above is enabled");
 	});
 }
 
 void Consumables::TickLoader(ItemStruct currentItem)
 {
-	if (currentItem.GetItemID() == 0)
+	if (Player.GetLevel() == 1 && Menu::Get<bool>("Activator.Consumables.Level1"))
 	{
-		return;
-	}
-
-	for (auto const &value : ItemList)
-	{
-		if (currentItem.GetItemID() == value.GetItemID())
+		if (currentItem.GetItemID() != (int)ItemID::RefillablePotion && currentItem.GetItemID() != (int)ItemID::HuntersPotion && currentItem.GetItemID() != (int)ItemID::CorruptingPotion)
 		{
-			ItemStruct caster = ItemStruct(currentItem.GetItemID(), value.GetSDKItem(), (unsigned char)currentItem.GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategory, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
-			caster.CastItem();
-			caster.~ItemStruct();
+			return;
 		}
 	}
 
+	if (Menu::Get<int>("Activator.Consumables.Style") == 0 || (Menu::Get<int>("Activator.Consumables.Style") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
+	{
+		if (currentItem.GetItemID() == 0 || (LastTimeTickCountCon + (DWORD)Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
+		{
+			return;
+		}
+
+		for (auto const &value : ItemList)
+		{
+			if (currentItem.GetItemID() == value.GetItemID())
+			{
+				ItemStruct caster = ItemStruct(currentItem.GetItemID(), value.GetSDKItem(), (unsigned char)currentItem.GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategory, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
+				caster.CastItem();
+				LastTimeTickCountCon = GetTickCount();
+				caster.~ItemStruct();
+			}
+		}
+	}
 }
 
 

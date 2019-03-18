@@ -6,7 +6,7 @@ std::map<unsigned int, AIHeroClient*> AllyChampionsCleanse;
 
 std::vector<ItemStruct> CleanseItemList;
 
-
+DWORD LastTimeTickCountClean = 0;
 
 void Cleansers::Init()
 {
@@ -22,61 +22,15 @@ void Cleansers::Init()
 	CleanseItemList.emplace_back(ItemStruct((int)ItemID::MikaelsCrucible, "Mikaels Crucible", "MikaelsCrucible", "Cleansers", MenuTypes::None, SpellTypes::Active, 650.0f));
 	//Mercurial
 	AllyChampionsCleanse.clear();
-
+	LastTimeTickCountClean = 0;
 
 	AllyChampionsCleanse = pSDK->EntityManager->GetAllyHeroes();
 
 }
 
-void Cleansers::Tick(void * UserData)
-{
-	if (Player.IsAlive() && !Player.IsRecalling())
-	{
-		CleanseCheck();
-
-		ItemStruct* currentItems = ItemRetriever::GetAllPlayerItems();
 
 
 
-		if (Menu::Get<bool>("Activator.Cleansers.QSSUse") || Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUse"))
-		{
-
-
-
-			for (int i = 0; i < 7; i++)
-			{
-				if (currentItems[i].GetItemID() == 0)
-				{
-					continue;
-				}
-
-				for (auto const &value : CleanseItemList)
-				{
-					if (currentItems[i].GetItemID() == value.GetItemID())
-					{
-
-						if (currentItems[i].GetItemID() == (int)ItemID::QuicksilverSash || currentItems[i].GetItemID() == (int)ItemID::MercurialScimitar)
-						{
-							QSSCheck(currentItems[i].GetItemID(), currentItems[i].GetItemSlot());
-						}
-						else if (currentItems[i].GetItemID() == (int)ItemID::MikaelsCrucible)
-						{
-							MikaelCheck(currentItems[i].GetItemID(), currentItems[i].GetItemSlot(), value.GetSpellRange());
-						}
-						
-					}
-				}
-
-			}
-		}
-	}
-}
-
-void Cleansers::DrawMenu(void * UserData)
-{
-	
-
-}
 
 void Cleansers::MenuLoader()
 {
@@ -200,11 +154,11 @@ void Cleansers::TickLoader(ItemStruct currentItem)
 	{
 
 
-			if (currentItem.GetItemID() == 0)
+			if (currentItem.GetItemID() == 0 || (LastTimeTickCountClean + (DWORD)Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
 			{
 				return;
 			}
-
+			//LastTimeTickCountClean
 
 
 
@@ -249,93 +203,81 @@ void Cleansers::CleanseCheck()
 		return;
 	}
 
-	unsigned char cleanse = Player.GetSpellSlotFromName("SummonerBoost");
-
-	if (cleanse == (unsigned char)SpellSlot::Unknown || cleanse == NULL)
+	if (Menu::Get<int>("Activator.Cleansers.CleanseStyle") == 0 || (Menu::Get<int>("Activator.Cleansers.CleanseStyle") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
 	{
-		return;
-		//SdkUiConsoleWrite("You have Ignite");
+		
+	
+
+		unsigned char cleanse = Player.GetSpellSlotFromName("SummonerBoost");
+
+		if (cleanse == (unsigned char)SpellSlot::Unknown || cleanse == NULL)
+		{
+			return;
+			//SdkUiConsoleWrite("You have Ignite");
+		}
+
+		if (cleanse != (unsigned char)SpellSlot::Summoner1 && cleanse != (unsigned char)SpellSlot::Summoner2)
+		{
+			return;
+		}
+
+
+		Spell::Active cleanseSpell = Spell::Active(cleanse, 750.0f, DamageType::True);
+
+
+		if (!cleanseSpell.IsReady())
+		{
+			return;
+		}
+
+
+
+
+		if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
+		{
+			return;
+		}
+
+		int delay = Menu::Get<int>("Activator.Cleansers.CleanseDelay");
+
+
+		if (delay == 0)
+		{
+			return;
+		}
+
+
+		if (Menu::Get<bool>("Activator.Cleansers.CleanseUseSlow") && Player.HasBuffType((unsigned char)BUFF_TYPE_SLOW) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseStun") && Player.HasBuffType((unsigned char)BUFF_TYPE_STUN) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseCharm") && Player.HasBuffType((unsigned char)BUFF_TYPE_CHARM) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseAsleep") && Player.HasBuffType((unsigned char)BUFF_TYPE_ASLEEP) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseGrounded") && Player.HasBuffType((unsigned char)BUFF_TYPE_GROUNDED) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseKnockUp") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKUP) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseKnockBack") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKBACK) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseTaunt") && Player.HasBuffType((unsigned char)BUFF_TYPE_TAUNT) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseFear") && Player.HasBuffType((unsigned char)BUFF_TYPE_FEAR) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseSnare") && Player.HasBuffType((unsigned char)BUFF_TYPE_SNARE) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseSilence") && Player.HasBuffType((unsigned char)BUFF_TYPE_SILENCE) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseSuppression") && Player.HasBuffType((unsigned char)BUFF_TYPE_SUPPRESSION) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUsePolymorph") && Player.HasBuffType((unsigned char)BUFF_TYPE_POLYMORPH) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseBlind") && Player.HasBuffType((unsigned char)BUFF_TYPE_BLIND) ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUsePoison") && Player.HasBuffType((unsigned char)BUFF_TYPE_POISON) 
+			)
+		{
+
+
+			//SdkUiConsoleWrite("Cast Cleanse Actual : %f" , Game::Time());
+			pSDK->EventHandler->DelayedAction([cleanse]()
+			{ 
+				Spell::Active cleanseSpell = Spell::Active(cleanse, 750.0f, DamageType::True);
+				cleanseSpell.Cast();
+				LastTimeTickCountClean = GetTickCount();
+				//SdkUiConsoleWrite("Cast Cleanse Delayed : %f", Game::Time());
+			}, delay);
+		}
+
+
 	}
-
-	if (cleanse != (unsigned char)SpellSlot::Summoner1 && cleanse != (unsigned char)SpellSlot::Summoner2)
-	{
-		return;
-	}
-
-
-	Spell::Active cleanseSpell = Spell::Active(cleanse, 750.0f, DamageType::True);
-
-
-	if (!cleanseSpell.IsReady())
-	{
-		return;
-	}
-
-
-
-
-	if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
-	{
-		return;
-	}
-
-	int delay = Menu::Get<int>("Activator.Cleansers.CleanseDelay");
-
-
-	if (delay == 0)
-	{
-		return;
-	}
-
-	/*
-		Menu::Checkbox("Use Cleanse On Slow", "Activator.Cleansers.CleanseUseSlow", true);
-				Menu::Checkbox("Use Cleanse On Stun", "Activator.Cleansers.CleanseUseStun", true);fe
-				Menu::Checkbox("Use Cleanse On Charm", "Activator.Cleansers.CleanseUseCharm", true);
-				Menu::Checkbox("Use Cleanse On Asleep", "Activator.Cleansers.CleanseUseAsleep", true);
-				Menu::Checkbox("Use Cleanse On Grounded", "Activator.Cleansers.CleanseUseGrounded", true);
-				Menu::Checkbox("Use Cleanse On KnockUp", "Activator.Cleansers.CleanseUseKnockUp", true);
-				Menu::Checkbox("Use Cleanse On KnockBack", "Activator.Cleansers.CleanseUseKnockBack", true);
-				Menu::Checkbox("Use Cleanse On Taunt", "Activator.Cleansers.CleanseUseTaunt", true);
-				Menu::Checkbox("Use Cleanse On Fear", "Activator.Cleansers.CleanseUseFear", true);
-				Menu::Checkbox("Use Cleanse On Snare", "Activator.Cleansers.CleanseUseSnare", true);
-				Menu::Checkbox("Use Cleanse On Silence", "Activator.Cleansers.CleanseUseSilence", true);
-				Menu::Checkbox("Use Cleanse On Suppression", "Activator.Cleansers.CleanseUseSuppression", true);
-				Menu::Checkbox("Use Cleanse On Polymorph", "Activator.Cleansers.CleanseUsePolymorph", true);
-				Menu::Checkbox("Use Cleanse On Blind", "Activator.Cleansers.CleanseUseBlind", true);
-				Menu::Checkbox("Use Cleanse On Poison", "Activator.Cleansers.CleanseUsePoison", true);
-
-	*/
-
-	if (Menu::Get<bool>("Activator.Cleansers.CleanseUseSlow") && Player.HasBuffType((unsigned char)BUFF_TYPE_SLOW) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseStun") && Player.HasBuffType((unsigned char)BUFF_TYPE_STUN) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseCharm") && Player.HasBuffType((unsigned char)BUFF_TYPE_CHARM) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseAsleep") && Player.HasBuffType((unsigned char)BUFF_TYPE_ASLEEP) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseGrounded") && Player.HasBuffType((unsigned char)BUFF_TYPE_GROUNDED) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseKnockUp") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKUP) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseKnockBack") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKBACK) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseTaunt") && Player.HasBuffType((unsigned char)BUFF_TYPE_TAUNT) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseFear") && Player.HasBuffType((unsigned char)BUFF_TYPE_FEAR) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseSnare") && Player.HasBuffType((unsigned char)BUFF_TYPE_SNARE) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseSilence") && Player.HasBuffType((unsigned char)BUFF_TYPE_SILENCE) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseSuppression") && Player.HasBuffType((unsigned char)BUFF_TYPE_SUPPRESSION) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUsePolymorph") && Player.HasBuffType((unsigned char)BUFF_TYPE_POLYMORPH) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUseBlind") && Player.HasBuffType((unsigned char)BUFF_TYPE_BLIND) ||
-		Menu::Get<bool>("Activator.Cleansers.CleanseUsePoison") && Player.HasBuffType((unsigned char)BUFF_TYPE_POISON) 
-		)
-	{
-
-
-		//SdkUiConsoleWrite("Cast Cleanse Actual : %f" , Game::Time());
-		pSDK->EventHandler->DelayedAction([cleanse]()
-		{ 
-			Spell::Active cleanseSpell = Spell::Active(cleanse, 750.0f, DamageType::True);
-			cleanseSpell.Cast();
-			//SdkUiConsoleWrite("Cast Cleanse Delayed : %f", Game::Time());
-		}, delay);
-	}
-
-
-
 
 
 }
@@ -347,168 +289,173 @@ void Cleansers::QSSCheck(int targetID, SpellSlot itemSlot)
 		return;
 	}
 
-
-
-	if (targetID == 0 || itemSlot == SpellSlot::Unknown)
-	{
-		return;
-	}
-
-	if (!Player.HasItem(targetID) || Player.IsRecalling())
-	{
-		return;
-	}
-
-
-	Spell::Active item = Spell::Active(itemSlot); //temporary
-
-	if (!item.IsValid() || !item.IsReady())
-	{
-		return;
-	}
-
-
-	if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
-	{
-		return;
-	}
-
-	int delay = Menu::Get<int>("Activator.Cleansers.QSSDelay");
-
-
-	if (delay == 0)
-	{
-		return;
-	}
-
-
-
-	if (Menu::Get<bool>("Activator.Cleansers.QSSUseSlow") && Player.HasBuffType((unsigned char)BUFF_TYPE_SLOW) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseStun") && Player.HasBuffType((unsigned char)BUFF_TYPE_STUN) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseCharm") && Player.HasBuffType((unsigned char)BUFF_TYPE_CHARM) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseAsleep") && Player.HasBuffType((unsigned char)BUFF_TYPE_ASLEEP) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseGrounded") && Player.HasBuffType((unsigned char)BUFF_TYPE_GROUNDED) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseKnockUp") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKUP) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseKnockBack") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKBACK) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseTaunt") && Player.HasBuffType((unsigned char)BUFF_TYPE_TAUNT) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseFear") && Player.HasBuffType((unsigned char)BUFF_TYPE_FEAR) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseSnare") && Player.HasBuffType((unsigned char)BUFF_TYPE_SNARE) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseSilence") && Player.HasBuffType((unsigned char)BUFF_TYPE_SILENCE) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseSuppression") && Player.HasBuffType((unsigned char)BUFF_TYPE_SUPPRESSION) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUsePolymorph") && Player.HasBuffType((unsigned char)BUFF_TYPE_POLYMORPH) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUseBlind") && Player.HasBuffType((unsigned char)BUFF_TYPE_BLIND) ||
-		Menu::Get<bool>("Activator.Cleansers.QSSUsePoison") && Player.HasBuffType((unsigned char)BUFF_TYPE_POISON)
-		)
+	if (Menu::Get<int>("Activator.Cleansers.QSSStyle") == 0 || (Menu::Get<int>("Activator.Cleansers.QSSStyle") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
 	{
 
-
-		//SdkUiConsoleWrite("Cast Cleanse Actual : %f" , Game::Time());
-		pSDK->EventHandler->DelayedAction([itemSlot]()
-		{
-			Spell::Active cleanseSpell = Spell::Active(itemSlot);
-			cleanseSpell.Cast();
-			//SdkUiConsoleWrite("Cast Cleanse Delayed : %f", Game::Time());
-		}, delay);
-	}
-
-}
-
-void Cleansers::MikaelCheck(int targetID, SpellSlot itemSlot, float spellRange)
-{
-	if (!Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUse"))
-	{
-		return;
-	}
-
-
-
-	if (targetID == 0 || itemSlot == SpellSlot::Unknown)
-	{
-		return;
-	}
-
-	if (!Player.HasItem(targetID) || Player.IsRecalling())
-	{
-		return;
-	}
-
-
-	Spell::Targeted item = Spell::Targeted(itemSlot, spellRange, DamageType::Magical); //temporary
-
-	if (!item.IsValid() || !item.IsReady())
-	{
-		return;
-	}
-
-
-	if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
-	{
-		return;
-	
-	}
-
-	int delayAlly = Menu::Get<int>("Activator.Cleansers.MikaelsCrucibleAllyDelay");
-
-
-	if (delayAlly == 0)
-	{
-		return;
-	}
-
-	if (Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUse") && (Player.CountAlliesInRange(spellRange) -1 >= 1))
-	{
-
-		auto heroes_ptr
-		{
-			pSDK->EntityManager->GetAllyHeroes(spellRange, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
-		};
-
-		if (heroes_ptr.empty())
+		if (targetID == 0 || itemSlot == SpellSlot::Unknown)
 		{
 			return;
 		}
 
-		for (auto &[netID, heroes] : heroes_ptr)
+		if (!Player.HasItem(targetID) || Player.IsRecalling())
 		{
-			if (heroes != nullptr && heroes != NULL)
-			{
-				if (heroes->IsAlive() && !heroes->IsZombie())
-				{
-					std::string menuID = "Activator.Cleansers.MikaelsCrucibleUseFor";
-					menuID += heroes->GetCharName();
-					if (Menu::Get<bool>(menuID))
-					{
-						if (Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseSlow") && heroes->HasBuffType((unsigned char)BUFF_TYPE_SLOW) ||
-							Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseStun") && heroes->HasBuffType((unsigned char)BUFF_TYPE_STUN) ||
-							Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseCharm") && heroes->HasBuffType((unsigned char)BUFF_TYPE_CHARM) ||
-							Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseTaunt") && heroes->HasBuffType((unsigned char)BUFF_TYPE_TAUNT) ||
-							Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseFear") && heroes->HasBuffType((unsigned char)BUFF_TYPE_FEAR) ||
-							Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseSnare") && heroes->HasBuffType((unsigned char)BUFF_TYPE_SNARE) ||
-							Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseSilence") && heroes->HasBuffType((unsigned char)BUFF_TYPE_SILENCE)
-							)
-						{
-							//SdkUiConsoleWrite("Mika Ally Cast Cleanse Actual : %f", Game::Time());
-							pSDK->EventHandler->DelayedAction([itemSlot, spellRange, heroes]()
-							{
-								Spell::Targeted cleanseSpell = Spell::Targeted(itemSlot, spellRange, DamageType::Magical);
-								cleanseSpell.Cast(heroes);
-
-								//SdkUiConsoleWrite("Mika Ally Cast Cleanse Delayed : %f", Game::Time());
-							}, delayAlly);
-						}
+			return;
+		}
 
 
-							
-						
-						
-					}
-				}
-				
-			}
+		Spell::Active item = Spell::Active(itemSlot); //temporary
+
+		if (!item.IsValid() || !item.IsReady())
+		{
+			return;
+		}
+
+
+		if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
+		{
+			return;
+		}
+
+		int delay = Menu::Get<int>("Activator.Cleansers.QSSDelay");
+
+
+		if (delay == 0)
+		{
+			return;
 		}
 
 
 
+		if (Menu::Get<bool>("Activator.Cleansers.QSSUseSlow") && Player.HasBuffType((unsigned char)BUFF_TYPE_SLOW) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseStun") && Player.HasBuffType((unsigned char)BUFF_TYPE_STUN) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseCharm") && Player.HasBuffType((unsigned char)BUFF_TYPE_CHARM) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseAsleep") && Player.HasBuffType((unsigned char)BUFF_TYPE_ASLEEP) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseGrounded") && Player.HasBuffType((unsigned char)BUFF_TYPE_GROUNDED) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseKnockUp") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKUP) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseKnockBack") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKBACK) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseTaunt") && Player.HasBuffType((unsigned char)BUFF_TYPE_TAUNT) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseFear") && Player.HasBuffType((unsigned char)BUFF_TYPE_FEAR) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseSnare") && Player.HasBuffType((unsigned char)BUFF_TYPE_SNARE) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseSilence") && Player.HasBuffType((unsigned char)BUFF_TYPE_SILENCE) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseSuppression") && Player.HasBuffType((unsigned char)BUFF_TYPE_SUPPRESSION) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUsePolymorph") && Player.HasBuffType((unsigned char)BUFF_TYPE_POLYMORPH) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseBlind") && Player.HasBuffType((unsigned char)BUFF_TYPE_BLIND) ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUsePoison") && Player.HasBuffType((unsigned char)BUFF_TYPE_POISON)
+			)
+		{
+
+
+			//SdkUiConsoleWrite("Cast Cleanse Actual : %f" , Game::Time());
+			pSDK->EventHandler->DelayedAction([itemSlot]()
+			{
+				Spell::Active cleanseSpell = Spell::Active(itemSlot);
+				cleanseSpell.Cast();
+				LastTimeTickCountClean = GetTickCount();
+				//SdkUiConsoleWrite("Cast Cleanse Delayed : %f", Game::Time());
+			}, delay);
+		}
+	}
+}
+
+void Cleansers::MikaelCheck(int targetID, SpellSlot itemSlot, float spellRange)
+{
+	if (Menu::Get<int>("Activator.Cleansers.MikaelsCrucibleAllyStyle") == 0 || (Menu::Get<int>("Activator.Cleansers.MikaelsCrucibleAllyStyle") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
+	{
+		if (!Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUse"))
+		{
+			return;
+		}
+
+
+
+		if (targetID == 0 || itemSlot == SpellSlot::Unknown)
+		{
+			return;
+		}
+
+		if (!Player.HasItem(targetID) || Player.IsRecalling())
+		{
+			return;
+		}
+
+
+		Spell::Targeted item = Spell::Targeted(itemSlot, spellRange, DamageType::Magical); //temporary
+
+		if (!item.IsValid() || !item.IsReady())
+		{
+			return;
+		}
+
+
+		if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
+		{
+			return;
+
+		}
+
+		int delayAlly = Menu::Get<int>("Activator.Cleansers.MikaelsCrucibleAllyDelay");
+
+
+		if (delayAlly == 0)
+		{
+			return;
+		}
+
+		if (Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUse") && (Player.CountAlliesInRange(spellRange) - 1 >= 1))
+		{
+
+			auto heroes_ptr
+			{
+				pSDK->EntityManager->GetAllyHeroes(spellRange, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+			};
+
+			if (heroes_ptr.empty())
+			{
+				return;
+			}
+
+			for (auto &[netID, heroes] : heroes_ptr)
+			{
+				if (heroes != nullptr && heroes != NULL)
+				{
+					if (heroes->IsAlive() && !heroes->IsZombie())
+					{
+						std::string menuID = "Activator.Cleansers.MikaelsCrucibleUseFor";
+						menuID += heroes->GetCharName();
+						if (Menu::Get<bool>(menuID))
+						{
+							if (Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseSlow") && heroes->HasBuffType((unsigned char)BUFF_TYPE_SLOW) ||
+								Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseStun") && heroes->HasBuffType((unsigned char)BUFF_TYPE_STUN) ||
+								Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseCharm") && heroes->HasBuffType((unsigned char)BUFF_TYPE_CHARM) ||
+								Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseTaunt") && heroes->HasBuffType((unsigned char)BUFF_TYPE_TAUNT) ||
+								Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseFear") && heroes->HasBuffType((unsigned char)BUFF_TYPE_FEAR) ||
+								Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseSnare") && heroes->HasBuffType((unsigned char)BUFF_TYPE_SNARE) ||
+								Menu::Get<bool>("Activator.Cleansers.MikaelsCrucibleAllyUseSilence") && heroes->HasBuffType((unsigned char)BUFF_TYPE_SILENCE)
+								)
+							{
+								//SdkUiConsoleWrite("Mika Ally Cast Cleanse Actual : %f", Game::Time());
+								pSDK->EventHandler->DelayedAction([itemSlot, spellRange, heroes]()
+								{
+									Spell::Targeted cleanseSpell = Spell::Targeted(itemSlot, spellRange, DamageType::Magical);
+									cleanseSpell.Cast(heroes);
+									LastTimeTickCountClean = GetTickCount();
+									//SdkUiConsoleWrite("Mika Ally Cast Cleanse Delayed : %f", Game::Time());
+								}, delayAlly);
+							}
+
+
+
+
+
+						}
+					}
+
+				}
+			}
+
+
+
+		}
 	}
 
 

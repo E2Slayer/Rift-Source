@@ -4,6 +4,8 @@
 #include "ItemRetriever.h"
 #include "ItemStruct.h"
 
+extern DWORD LastTimeTickCountCon;
+
 class Consumables
 {
 private:
@@ -11,10 +13,10 @@ private:
 public:
 	static void Init();
 
-	static void	__cdecl	Tick(_In_ void* UserData);
+	//static void	__cdecl	Tick(_In_ void* UserData);
 	//static void	__cdecl	Update(_In_ void* UserData);
 	//static void	__cdecl	Draw(_In_ void* UserData);
-	static void __cdecl DrawMenu(_In_ void* UserData);
+	//static void __cdecl DrawMenu(_In_ void* UserData);
 	static void MenuLoader();
 	static void TickLoader(ItemStruct currentItem);
 	static void __cdecl InventoryUpdate(int Event, int Slot, int Extra, void* UserData);

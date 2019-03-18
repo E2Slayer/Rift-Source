@@ -34,14 +34,17 @@ void CustomRanges::Draw(void * UserData)
 
 		screenPos.y -= 20.0f;
 
-		auto hi = Menu::Get<Hotkey>("Activator.Config.ComboKey");
+		//auto hi = Menu::Get<Hotkey>("Activator.Config.ComboKey");
 
 
 	
 		//hi.Active;
 
 		//Menu::Hotkey
-		Draw::Text(NULL, &screenPos, std::to_string(hi.Active), "Arial", &Color::White, 24, 6);
+		Draw::Text(NULL, &screenPos, std::to_string(GetTickCount()), "Arial", &Color::White, 24, 6);
+
+		screenPos.y -= 20.0f;
+		Draw::Text(NULL, &screenPos, std::to_string(Game::Time()), "Arial", &Color::Green, 24, 6);
 		/*
 		if (hi)
 		{
@@ -132,10 +135,10 @@ void CustomRanges::SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* Use
 		return;
 	}
 
-	SdkUiConsoleWrite("Name %s ", SpellCast->Spell.Name);
-	SdkUiConsoleWrite("1Name %s ", SpellCast->Spell.ScriptName);
-	SdkUiConsoleWrite("2Name %s ", SpellCast->Spell.AnimationName);
-	SdkUiConsoleWrite("3Name %s ", SpellCast->Spell.MissileEffectName);
+	//SdkUiConsoleWrite("Name %s ", SpellCast->Spell.Name);
+	//SdkUiConsoleWrite("1Name %s ", SpellCast->Spell.ScriptName);
+	//SdkUiConsoleWrite("2Name %s ", SpellCast->Spell.AnimationName);
+	//SdkUiConsoleWrite("3Name %s ", SpellCast->Spell.MissileEffectName);
 
-	SdkUiConsoleWrite("4Name %s ", SpellCast->Spell.MissileSpeed);
+	//SdkUiConsoleWrite("4Name %s ", SpellCast->Spell.MissileSpeed);
 }

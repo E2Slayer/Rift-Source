@@ -3,7 +3,7 @@
 
 std::vector<ItemStruct> OffensiveItemList;
 const char* subCategoryOff = "Offensives";
-
+DWORD LastTimeTickCountOff = 0;
 
 //const enum ItemTypes { Active, Timats, Target, HextTechs };
 
@@ -38,7 +38,7 @@ std::map<int, std::string> HextTechsItems
 
 void Offensives::Init()
 {
-
+	LastTimeTickCountOff = 0;
 	OffensiveItemList.clear();
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Offensives::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Update);
@@ -59,43 +59,13 @@ void Offensives::Init()
 	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::HextechGLP800, "Hextech GLP-800", "HextechGLP800", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Targeted, 1100.0f));
 	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::HextechProtobelt01, "Hextech Protobelt-01", "HextechProtobelt01", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Targeted, 1100.0f));
 
-	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::Tiamat, "Tiamat", "Tiamat", subCategoryOff, MenuTypes::EnemyHealth | MenuTypes::AfterAA, SpellTypes::Active, 350.0f));
-	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::RavenousHydra, "Ravenous Hydra", "RavenousHydra", subCategoryOff, MenuTypes::EnemyHealth | MenuTypes::AfterAA, SpellTypes::Active, 350.0f));
-	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::TitanicHydra, "Titanic Hydra", "TitanicHydra", subCategoryOff, MenuTypes::EnemyHealth | MenuTypes::AfterAA, SpellTypes::Active, 350.0f));
+	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::Tiamat, "Tiamat", "Tiamat", subCategoryOff, MenuTypes::EnemyHealth , SpellTypes::Active, 350.0f));
+	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::RavenousHydra, "Ravenous Hydra", "RavenousHydra", subCategoryOff, MenuTypes::EnemyHealth , SpellTypes::Active, 350.0f));
+	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::TitanicHydra, "Titanic Hydra", "TitanicHydra", subCategoryOff, MenuTypes::EnemyHealth , SpellTypes::Active, 350.0f));
 
 }
 
 
-void Offensives::Tick(void * UserData)
-{
-	if (Player.IsAlive() && !Player.IsRecalling())
-	{
-
-		ItemStruct* currentItems = ItemRetriever::GetAllPlayerItems();
-
-
-		for (int i = 0; i < 7; i++)
-		{
-			if (currentItems[i].GetItemID() == 0)
-			{
-				continue;
-			}
-
-			for (auto const &value : OffensiveItemList)
-			{
-				if (currentItems[i].GetItemID() == value.GetItemID())
-				{
-					ItemStruct caster = ItemStruct(currentItems[i].GetItemID(), value.GetSDKItem(), (unsigned char)currentItems[i].GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategoryOff, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
-					caster.CastItem();
-					caster.~ItemStruct();
-				}
-			}
-
-		}
-
-	}
-
-}
 
 
 void Offensives::PostAttack(AttackableUnit* Target)
@@ -145,41 +115,33 @@ void Offensives::MenuLoader()
 		{
 			value.MenuGenerator();
 		}
+		Menu::DropList("Offensives Style", "Activator.Offensives.Style", std::vector<std::string>{ "Always", "Combo" }, 0);
+
 	});
 }
 
 void Offensives::TickLoader(ItemStruct currentItem)
 {
-	if (currentItem.GetItemID() == 0)
+	if (Menu::Get<int>("Activator.Offensives.Style") == 0 || (Menu::Get<int>("Activator.Offensives.Style") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
 	{
-		return;
-	}
-
-	for (auto const &value : OffensiveItemList)
-	{
-		if (currentItem.GetItemID() == value.GetItemID())
+		if (currentItem.GetItemID() == 0 || (LastTimeTickCountOff + (DWORD)Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
 		{
-			ItemStruct caster = ItemStruct(currentItem.GetItemID(), value.GetSDKItem(), (unsigned char)currentItem.GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategoryOff, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
-			caster.CastItem();
-			caster.~ItemStruct();
+			return;
+		}
+
+		for (auto const &value : OffensiveItemList)
+		{
+			if (currentItem.GetItemID() == value.GetItemID())
+			{
+				ItemStruct caster = ItemStruct(currentItem.GetItemID(), value.GetSDKItem(), (unsigned char)currentItem.GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategoryOff, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
+				caster.CastItem();
+				LastTimeTickCountOff = GetTickCount();
+				caster.~ItemStruct();
+			}
 		}
 	}
 
 }
 
 
-
-///Your menu settings go here
-void Offensives::DrawMenu(void * UserData)
-{
-	/*
-	Menu::Tree("Offensives", "Activator.Offensives", false, []()
-	{
-		for (auto& value : OffensiveItemList)
-		{
-			value.MenuGenerator();
-		}
-	});
-	*/
-}
 

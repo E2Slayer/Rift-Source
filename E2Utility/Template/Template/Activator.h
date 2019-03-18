@@ -10,6 +10,8 @@
 #include "ItemRetriever.h"
 
 
+extern DWORD LastTimeTickCount;
+
 class Activator
 {
 public:

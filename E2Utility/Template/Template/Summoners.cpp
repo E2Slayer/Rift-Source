@@ -10,7 +10,7 @@
 std::map<unsigned int, AIHeroClient*> AllyChampions;
 std::map<unsigned int, AIHeroClient*> EnemyChampions;
 
-
+DWORD LastTimeTickCountSumm = 0;
 
 void Summoners::Init()
 {
@@ -23,33 +23,13 @@ void Summoners::Init()
 
 	AllyChampions.clear();
 	EnemyChampions.clear();
-
+	LastTimeTickCountSumm = 0;
 	AllyChampions = pSDK->EntityManager->GetAllyHeroes();
 
 	EnemyChampions = pSDK->EntityManager->GetEnemyHeroes();
 
 }
 
-
-void Summoners::Tick(void * UserData)
-{
-	if (Player.IsAlive() && !Player.IsRecalling())
-	{
-		IgniteCheck();
-		ExhaustCheck();
-		HealCheck();
-		BarrierCheck();
-	}
-}
-
-
-///This gets called X times per second, where X is your league fps.
-///Put any drawings you need here
-void Summoners::Draw(void * UserData)
-{
-
-
-}
 
 
 /*
@@ -74,15 +54,8 @@ bool Summoners::bHealExpanded = false;
 bool Summoners::bHealAllyExpanded = false;
 bool Summoners::bBarrierExpanded = false;
 */
-///Your menu settings go here
-void Summoners::DrawMenu(void * UserData)
-{
-	
 
 
-
-
-}
 
 void Summoners::MenuLoader()
 {
@@ -157,7 +130,7 @@ void Summoners::MenuLoader()
 
 
 			Menu::Checkbox("Use Ignite", "Activator.Summoners.IgniteUse", true);
-			Menu::DropList("Ignite Style", "Activator.Summoners.IgniteStyle", std::vector<std::string>{ "KillSteal", "Combo" }, 0);
+			Menu::DropList("Ignite Style", "Activator.Summoners.IgniteStyle", std::vector<std::string>{ "Always", "Combo" }, 0);
 
 
 			Menu::Tree("Use Ignite For", "Activator.Summoners.IgniteUseTo", false, []()
@@ -219,7 +192,10 @@ void Summoners::MenuLoader()
 
 
 
-			Menu::DropList("Heal Style", "Activator.Summoners.HealStyle", std::vector<std::string>{ "Myself Only", "Ally and Me" }, 0);
+			Menu::DropList("Heal Style", "Activator.Summoners.HealStyle1", std::vector<std::string>{ "Always", "Combo" }, 0);
+
+
+			Menu::DropList("Heal Usage Style", "Activator.Summoners.HealStyle", std::vector<std::string>{ "Myself Only", "Ally and Me" }, 0);
 
 
 
@@ -248,6 +224,9 @@ void Summoners::MenuLoader()
 
 			Menu::SliderInt("Min HP %", "Activator.Summoners.BarrierMinHP", 30, 0, 100);
 
+			Menu::DropList("Barrier Style", "Activator.Summoners.BarrierStyle", std::vector<std::string>{ "Always", "Combo" }, 0);
+
+
 			//Menu::SliderInt("Min Incoming Dmg %", "Activator.Summoners.BarrierMinIncDmg", 20, 1, 50);
 
 			Menu::Checkbox("Use Barrier on Ignite", "Activator.Summoners.BarrierUseIgnite", true);
@@ -261,6 +240,11 @@ void Summoners::MenuLoader()
 
 void Summoners::TickLoader()
 {
+	if ((LastTimeTickCountSumm + (DWORD)Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
+	{
+		return;
+	}
+
 	IgniteCheck();
 	ExhaustCheck();
 	HealCheck();
@@ -274,90 +258,95 @@ void Summoners::IgniteCheck()
 		return;
 	}
 
-	unsigned char ignite = Player.GetSpellSlotFromName("SummonerDot");
-
-	if (ignite == (unsigned char)SpellSlot::Unknown || ignite == NULL)
+	if (Menu::Get<int>("Activator.Summoners.IgniteStyle") == 0 || (Menu::Get<int>("Activator.Summoners.IgniteStyle") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
 	{
-		return;
-		//SdkUiConsoleWrite("You have Ignite");
-	}
+		unsigned char ignite = Player.GetSpellSlotFromName("SummonerDot");
 
-	if (ignite != (unsigned char)SpellSlot::Summoner1 && ignite != (unsigned char)SpellSlot::Summoner2)
-	{
-		return;
-	}
-
-
-	Spell::Targeted igniteSpell = Spell::Targeted(ignite, 600.0f, DamageType::True);
-	
-	if (igniteSpell.LastCast + 0.1f >= Game::Time()) //0.1f second
-	{
-		return;
-	}
-
-	if (!igniteSpell.IsReady())
-	{
-		return;
-	}
-
-	int list = Menu::Get<int>("Activator.Summoners.IgniteStyle"); // "KillSteal", "Combo"
-
-	if (list < 0 || list > 1)
-	{
-		return;
-	}
-
-	if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
-	{
-		return;
-	}
-
-
-	float igniteDamage = 50.0f + (20.0f * ((float)Player.GetLevel() - 1.0f));
-
-	
-	auto heroes_ptr
-	{
-		pSDK->EntityManager->GetEnemyHeroes(igniteSpell.Range, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
-	};
-
-	if (heroes_ptr.empty())
-	{
-		return;
-	}
-
-	for (auto &[netID, heroes] : heroes_ptr)
-	{
-		if (heroes != nullptr && heroes != NULL)
+		if (ignite == (unsigned char)SpellSlot::Unknown || ignite == NULL)
 		{
-			if (heroes->GetHealthPercent() <= 50.0f)
-			{
+			return;
+			//SdkUiConsoleWrite("You have Ignite");
+		}
 
-				if (heroes->IsAlive() && heroes->IsVisible() )
+		if (ignite != (unsigned char)SpellSlot::Summoner1 && ignite != (unsigned char)SpellSlot::Summoner2)
+		{
+			return;
+		}
+
+
+		Spell::Targeted igniteSpell = Spell::Targeted(ignite, 600.0f, DamageType::True);
+
+		if (igniteSpell.LastCast + 0.1f >= Game::Time()) //0.1f second
+		{
+			return;
+		}
+
+		if (!igniteSpell.IsReady())
+		{
+			return;
+		}
+
+		int list = Menu::Get<int>("Activator.Summoners.IgniteStyle"); // "KillSteal", "Combo"
+
+		if (list < 0 || list > 1)
+		{
+			return;
+		}
+
+		if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
+		{
+			return;
+		}
+
+
+		float igniteDamage = 50.0f + (20.0f * ((float)Player.GetLevel() - 1.0f));
+
+
+		auto heroes_ptr
+		{
+			pSDK->EntityManager->GetEnemyHeroes(igniteSpell.Range, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+		};
+
+		if (heroes_ptr.empty())
+		{
+			return;
+		}
+
+		for (auto &[netID, heroes] : heroes_ptr)
+		{
+			if (heroes != nullptr && heroes != NULL)
+			{
+				if (heroes->GetHealthPercent() <= 50.0f)
 				{
-					if (!heroes->IsZombie())
+
+					if (heroes->IsAlive() && heroes->IsVisible())
 					{
-						if (!heroes->HasBuff("SummonerDot"))
+						if (!heroes->IsZombie())
 						{
-							std::string menuID = "Activator.Summoners.IgniteUseFor";
-							menuID += heroes->GetCharName();
-							if (Menu::Get<bool>(menuID))
+							if (!heroes->HasBuff("SummonerDot"))
 							{
-								if (list == 0) //KillSteal
+								std::string menuID = "Activator.Summoners.IgniteUseFor";
+								menuID += heroes->GetCharName();
+								if (Menu::Get<bool>(menuID))
 								{
-									if ((heroes->GetHealth().Current + heroes->GetHealth().AllShield) <= igniteDamage)
+									if (list == 0) //KillSteal
 									{
-										igniteSpell.Cast(heroes);
-									}
-								}
-								else if (list == 1 && heroes->GetHealthPercent() <= 40.0f) // combo
-								{
-									if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo))
-									{
-										auto OrbTarget = pCore->Orbwalker->GetTarget();
-										if (pCore->TS->IsValidTarget(OrbTarget) && OrbTarget->GetNetworkID() == heroes->GetNetworkID())
+										if ((heroes->GetHealth().Current + heroes->GetHealth().AllShield) <= igniteDamage)
 										{
 											igniteSpell.Cast(heroes);
+											LastTimeTickCountSumm = GetTickCount();
+										}
+									}
+									else if (list == 1 && heroes->GetHealthPercent() <= 40.0f) // combo
+									{
+										if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo))
+										{
+											auto OrbTarget = pCore->Orbwalker->GetTarget();
+											if (pCore->TS->IsValidTarget(OrbTarget) && OrbTarget->GetNetworkID() == heroes->GetNetworkID())
+											{
+												igniteSpell.Cast(heroes);
+												LastTimeTickCountSumm = GetTickCount();
+											}
 										}
 									}
 								}
@@ -368,7 +357,6 @@ void Summoners::IgniteCheck()
 			}
 		}
 	}
-	
 
 	//SpellSlot::Summoner1;
 	//auto sum1 = Player.GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
@@ -415,72 +403,75 @@ void Summoners::ExhaustCheck()
 		return;
 	}
 
-	unsigned char exhuast = Player.GetSpellSlotFromName("SummonerExhaust");
-
-	if (exhuast == (unsigned char)SpellSlot::Unknown || exhuast == NULL)
+	if (Menu::Get<int>("Activator.Summoners.ExhaustStyle") == 0 || (Menu::Get<int>("Activator.Summoners.ExhaustStyle") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
 	{
-		return;
-		//SdkUiConsoleWrite("You have Ignite");
-	}
 
-	if (exhuast != (unsigned char)SpellSlot::Summoner1 && exhuast != (unsigned char)SpellSlot::Summoner2)
-	{
-		return;
-	}
+		unsigned char exhuast = Player.GetSpellSlotFromName("SummonerExhaust");
 
-	//Player.GetSpell(exhuast); //50 +(20*level) dmg
-
-	Spell::Targeted exhuastSpell = Spell::Targeted(exhuast, 650.0f, DamageType::Mixed);
-
-	if (exhuastSpell.LastCast + 0.1f >= Game::Time()) //0.1f second
-	{
-		return;
-	}
-
-
-	if (!exhuastSpell.IsReady())
-	{
-		return;
-	}
-
-	int list = Menu::Get<int>("Activator.Summoners.ExhaustStyle"); // "Always", "Combo"
-	
-
-	if (list < 0 || list > 1)
-	{
-		return;
-	}
-	
-	
-	if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
-	{
-		return;
-	}
-
-
-
-	auto heroes_ptr
-	{
-		pSDK->EntityManager->GetEnemyHeroes(exhuastSpell.Range, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
-	};
-
-	auto Allyheroes_ptr
-	{
-		pSDK->EntityManager->GetAllyHeroes(1000.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
-	};
-
-	//SdkUiConsoleWrite("are");
-	if (heroes_ptr.empty() || Allyheroes_ptr.empty())
-	{
-		return;
-	}
-
-	for (auto &[netID, heroes] : heroes_ptr)
-	{
-		if (heroes != nullptr && heroes != NULL)
+		if (exhuast == (unsigned char)SpellSlot::Unknown || exhuast == NULL)
 		{
+			return;
+			//SdkUiConsoleWrite("You have Ignite");
+		}
 
-				if (heroes->IsAlive() && heroes->IsVisible() )
+		if (exhuast != (unsigned char)SpellSlot::Summoner1 && exhuast != (unsigned char)SpellSlot::Summoner2)
+		{
+			return;
+		}
+
+		//Player.GetSpell(exhuast); //50 +(20*level) dmg
+
+		Spell::Targeted exhuastSpell = Spell::Targeted(exhuast, 650.0f, DamageType::Mixed);
+
+		if (exhuastSpell.LastCast + 0.1f >= Game::Time()) //0.1f second
+		{
+			return;
+		}
+
+
+		if (!exhuastSpell.IsReady())
+		{
+			return;
+		}
+
+		int list = Menu::Get<int>("Activator.Summoners.ExhaustStyle"); // "Always", "Combo"
+
+
+		if (list < 0 || list > 1)
+		{
+			return;
+		}
+
+
+		if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
+		{
+			return;
+		}
+
+
+
+		auto heroes_ptr
+		{
+			pSDK->EntityManager->GetEnemyHeroes(exhuastSpell.Range, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+		};
+
+		auto Allyheroes_ptr
+		{
+			pSDK->EntityManager->GetAllyHeroes(1000.0f, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+		};
+
+		//SdkUiConsoleWrite("are");
+		if (heroes_ptr.empty() || Allyheroes_ptr.empty())
+		{
+			return;
+		}
+
+		for (auto &[netID, heroes] : heroes_ptr)
+		{
+			if (heroes != nullptr && heroes != NULL)
+			{
+
+				if (heroes->IsAlive() && heroes->IsVisible())
 				{
 
 					std::string menuID = "Activator.Summoners.ExhaustUseFor";
@@ -489,14 +480,14 @@ void Summoners::ExhaustCheck()
 					{
 						if (list == 0 || (list == 1 && pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo))) // "Always", "Combo"
 						{
-							float enemyHealthMinimum = (float) Menu::Get<int>("Activator.Summoners.ExhaustEnemyPct");
+							float enemyHealthMinimum = (float)Menu::Get<int>("Activator.Summoners.ExhaustEnemyPct");
 							float allyHealthMinimum = (float)Menu::Get<int>("Activator.Summoners.ExhaustAllyPct");
 							if (enemyHealthMinimum == 0 || enemyHealthMinimum == NULL || allyHealthMinimum == 0 || allyHealthMinimum == NULL)
 							{
 								continue;
 							}
 
-							
+
 							for (auto &[allynetID, Ally] : Allyheroes_ptr)
 							{
 								if (Ally != nullptr && Ally != NULL)
@@ -510,6 +501,7 @@ void Summoners::ExhaustCheck()
 												if (!heroes->IsFacing(Ally))
 												{
 													exhuastSpell.Cast(heroes);
+													LastTimeTickCountSumm = GetTickCount();
 												}
 
 											}
@@ -518,6 +510,7 @@ void Summoners::ExhaustCheck()
 												if (heroes->IsFacing(Ally))
 												{
 													exhuastSpell.Cast(heroes);
+													LastTimeTickCountSumm = GetTickCount();
 												}
 
 											}
@@ -528,7 +521,8 @@ void Summoners::ExhaustCheck()
 						}
 					}
 				}
-			
+
+			}
 		}
 	}
 }
@@ -574,88 +568,94 @@ void Summoners::HealCheck()
 		return;
 	}
 
-	unsigned char heal = Player.GetSpellSlotFromName("SummonerHeal");
-
-	if (heal == (unsigned char)SpellSlot::Unknown || heal == NULL)
+	if (Menu::Get<int>("Activator.Summoners.HealStyle1") == 0 || (Menu::Get<int>("Activator.Summoners.HealStyle1") == 1 && Menu::Get<Hotkey>("Activator.Config.HealStyle1").Active))
 	{
-		return;
-		//SdkUiConsoleWrite("You have Ignite");
-	}
 
-	if (heal != (unsigned char)SpellSlot::Summoner1 && heal != (unsigned char)SpellSlot::Summoner2)
-	{
-		return;
-	}
+		unsigned char heal = Player.GetSpellSlotFromName("SummonerHeal");
 
-
-	Spell::Active healSpell = Spell::Active(heal, 850.0f, DamageType::True);
-
-
-	if (!healSpell.IsReady())
-	{
-		return;
-	}
-
-	//SdkUiConsoleWrite("here123");
-
-
-	int list = Menu::Get<int>("Activator.Summoners.HealStyle"); // "Myself Only", "Ally and Me"
-
-	if (list < 0 || list > 1)
-	{
-		return;
-	}
-
-	if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
-	{
-		return;
-	}
-
-
-	float healAmount = 75.0f + (15.0f * (float)Player.GetLevel());
-
-
-	//SdkUiConsoleWrite("here1");
-	
-	if (Player.CountEnemiesInRange(healSpell.Range) >= 1)
-	{
-		if (Player.GetHealthPercent() <= (float)Menu::Get<int>("Activator.Summoners.HealMeMinHP"))
+		if (heal == (unsigned char)SpellSlot::Unknown || heal == NULL)
 		{
-			//SdkUiConsoleWrite("gt2");
-			healSpell.Cast();
+			return;
+			//SdkUiConsoleWrite("You have Ignite");
 		}
-	}
-	
-	if (list == 1)
-	{
 
-		auto heroes_ptr
-		{
-			pSDK->EntityManager->GetAllyHeroes(healSpell.Range, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
-		};
-
-		if (heroes_ptr.empty())
+		if (heal != (unsigned char)SpellSlot::Summoner1 && heal != (unsigned char)SpellSlot::Summoner2)
 		{
 			return;
 		}
 
-		for (auto &[netID, heroes] : heroes_ptr)
+
+		Spell::Active healSpell = Spell::Active(heal, 850.0f, DamageType::True);
+
+
+		if (!healSpell.IsReady())
 		{
-			if (heroes != nullptr && heroes != NULL)
+			return;
+		}
+
+		//SdkUiConsoleWrite("here123");
+
+
+		int list = Menu::Get<int>("Activator.Summoners.HealStyle"); // "Myself Only", "Ally and Me"
+
+		if (list < 0 || list > 1)
+		{
+			return;
+		}
+
+		if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
+		{
+			return;
+		}
+
+
+		float healAmount = 75.0f + (15.0f * (float)Player.GetLevel());
+
+
+		//SdkUiConsoleWrite("here1");
+
+		if (Player.CountEnemiesInRange(healSpell.Range) >= 1)
+		{
+			if (Player.GetHealthPercent() <= (float)Menu::Get<int>("Activator.Summoners.HealMeMinHP"))
 			{
-				if (heroes->GetHealthPercent() <= 50.0f)
+				//SdkUiConsoleWrite("gt2");
+				healSpell.Cast();
+				LastTimeTickCountSumm = GetTickCount();
+			}
+		}
+
+		if (list == 1)
+		{
+
+			auto heroes_ptr
+			{
+				pSDK->EntityManager->GetAllyHeroes(healSpell.Range, &pSDK->EntityManager->GetLocalPlayer().GetPosition())
+			};
+
+			if (heroes_ptr.empty())
+			{
+				return;
+			}
+
+			for (auto &[netID, heroes] : heroes_ptr)
+			{
+				if (heroes != nullptr && heroes != NULL)
 				{
-					if (heroes->IsAlive() && !heroes->IsZombie())
+					if (heroes->GetHealthPercent() <= 50.0f)
 					{
-						std::string menuID = "Activator.Summoners.HealUseFor";
-						menuID += heroes->GetCharName();
-						if (Menu::Get<bool>(menuID))
+						if (heroes->IsAlive() && !heroes->IsZombie())
 						{
-							if (Player.CountEnemiesInRange(healSpell.Range) >= 1)
+							std::string menuID = "Activator.Summoners.HealUseFor";
+							menuID += heroes->GetCharName();
+							if (Menu::Get<bool>(menuID))
 							{
-								if (heroes->GetHealthPercent() <= (float)Menu::Get<int>("Activator.Summoners.HealAllyMinHP"))
+								if (Player.CountEnemiesInRange(healSpell.Range) >= 1)
 								{
-									healSpell.Cast();
+									if (heroes->GetHealthPercent() <= (float)Menu::Get<int>("Activator.Summoners.HealAllyMinHP"))
+									{
+										healSpell.Cast();
+										LastTimeTickCountSumm = GetTickCount();
+									}
 								}
 							}
 						}
@@ -669,100 +669,72 @@ void Summoners::HealCheck()
 
 void Summoners::BarrierCheck()
 {
-	/*
-		bool bBarrierExpanded = true;
-		Menu::Tree("Barrier", "Activator.Summoners.Barrier", &bBarrierExpanded, []()
-		{
-			Menu::Checkbox("Use Barrier", "Activator.Summoners.BarrierUse", true);
-
-			Menu::SliderInt("Min HP %", "Activator.Summoners.BarrierMinHP", 30, 0, 100);
-
-			//Menu::SliderInt("Min Incoming Dmg %", "Activator.Summoners.BarrierMinIncDmg", 20, 1, 50);
-
-			Menu::Checkbox("Use Barrier on Ignite", "Activator.Summoners.BarrierUseIgnite", true);
-
-
-
-		});
-	*/
-
+	
 	if (!Menu::Get<bool>("Activator.Summoners.BarrierUse"))
 	{
 		return;
 	}
 
-	unsigned char barrier = Player.GetSpellSlotFromName("SummonerBarrier");
-
-	if (barrier == (unsigned char)SpellSlot::Unknown || barrier == NULL)
+	if (Menu::Get<int>("Activator.Summoners.BarrierStyle") == 0 || (Menu::Get<int>("Activator.Summoners.BarrierStyle") == 1 && Menu::Get<Hotkey>("Activator.Config.HealStyle1").Active))
 	{
-		return;
-		//SdkUiConsoleWrite("You have Ignite");
-	}
+		unsigned char barrier = Player.GetSpellSlotFromName("SummonerBarrier");
 
-	if (barrier != (unsigned char)SpellSlot::Summoner1 && barrier != (unsigned char)SpellSlot::Summoner2)
-	{
-		return;
-	}
-
-
-	Spell::Active barrierSpell = Spell::Active(barrier, 750.0f , DamageType::True);
-
-
-	if (!barrierSpell.IsReady())
-	{
-		return;
-	}
-
-	//SdkUiConsoleWrite("here123");
-
-
-
-
-	if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
-	{
-		return;
-	}
-
-
-	//float healAmount = 75.0f + (15.0f * (float)Player.GetLevel());
-
-
-	//SdkUiConsoleWrite("here1");
-
-
-	
-
-	if (Player.CountEnemiesInRange(barrierSpell.Range) >= 1)
-	{
-		if (Player.GetHealthPercent() <= (float)Menu::Get<int>("Activator.Summoners.BarrierMinHP"))
+		if (barrier == (unsigned char)SpellSlot::Unknown || barrier == NULL)
 		{
-			//SdkUiConsoleWrite("gt2");
+			return;
+			//SdkUiConsoleWrite("You have Ignite");
+		}
+
+		if (barrier != (unsigned char)SpellSlot::Summoner1 && barrier != (unsigned char)SpellSlot::Summoner2)
+		{
+			return;
+		}
+
+
+		Spell::Active barrierSpell = Spell::Active(barrier, 750.0f, DamageType::True);
+
+
+		if (!barrierSpell.IsReady())
+		{
+			return;
+		}
+
+		//SdkUiConsoleWrite("here123");
+
+
+
+
+		if (!pSDK->EntityManager->GetLocalPlayer().GetPosition().IsValid())
+		{
+			return;
+		}
+
+
+		//float healAmount = 75.0f + (15.0f * (float)Player.GetLevel());
+
+
+		//SdkUiConsoleWrite("here1");
+
+
+
+
+		if (Player.CountEnemiesInRange(barrierSpell.Range) >= 1)
+		{
+			if (Player.GetHealthPercent() <= (float)Menu::Get<int>("Activator.Summoners.BarrierMinHP"))
+			{
+				//SdkUiConsoleWrite("gt2");
+				barrierSpell.Cast();
+				LastTimeTickCountSumm = GetTickCount();
+			}
+		}
+
+		if (Player.HasBuff("SummonerDot") && Menu::Get<bool>("Activator.Summoners.BarrierUseIgnite"))
+		{
 			barrierSpell.Cast();
+			LastTimeTickCountSumm = GetTickCount();
 		}
 	}
 
-	if (Player.HasBuff("SummonerDot") && Menu::Get<bool>("Activator.Summoners.BarrierUseIgnite"))
-	{
-		barrierSpell.Cast();
-	}
-
 
 }
 
-
-
-/*
-void Summoners::Tick(_In_ void* UserData)
-{
-
-}
-
-void Summoners::Draw(_In_ void* UserData)
-{
-
-}
-
-void Summoners::DrawMenu(_In_ void* UserData)
-{
-
-}*/

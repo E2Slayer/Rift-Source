@@ -1,6 +1,8 @@
 #pragma once
 #include "Activator.h"
 
+extern DWORD LastTimeTickCountSumm;
+
 class Summoners
 {
 private:
@@ -18,10 +20,10 @@ private:
 public:
 	static void Init();
 
-	static void	__cdecl	Tick(_In_ void* UserData);
+	//static void	__cdecl	Tick(_In_ void* UserData);
 	//static void	__cdecl	Update(_In_ void* UserData);
-	static void	__cdecl	Draw(_In_ void* UserData);
-	static void __cdecl DrawMenu(_In_ void* UserData);
+	//static void	__cdecl	Draw(_In_ void* UserData);
+	//static void __cdecl DrawMenu(_In_ void* UserData);
 	static void MenuLoader();
 	static void TickLoader();
 	static void __cdecl IgniteCheck();
