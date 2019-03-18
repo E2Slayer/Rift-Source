@@ -4,7 +4,6 @@
 #include "ItemRetriever.h"
 #include "ItemStruct.h"
 
-extern DWORD LastTimeTickCountCon;
 
 class Consumables
 {

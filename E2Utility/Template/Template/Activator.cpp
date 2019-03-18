@@ -25,6 +25,19 @@ void Activator::Init()
 
 void Activator::Tick(void * UserData)
 {
+	if (!Menu::Get<bool>("Activator.Config.Enable"))
+	{
+		return;
+	}
+
+	/*
+	if (Player.HasBuffType((unsigned char)BUFF_TYPE_STUN))
+	{
+		auto difference = Player.GetBuffByType((unsigned char)BUFF_TYPE_STUN).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_STUN).StartTime;
+
+		SdkUiConsoleWrite("Duration : %f", difference);
+	}*/
+
 	if (Player.IsAlive() && !Player.IsRecalling())
 	{
 
@@ -62,7 +75,7 @@ void Activator::DrawMenu(void * UserData)
 
 			Menu::Checkbox("Enable Humanizer", "Activator.Config.HumanizerEnable", true);
 			Menu::SliderInt("Humanizer Delay (ms)", "Activator.Config.HumanizerDelay", 200, 10, 500);
-			SdkUiText("^-> This is a Spamming Preventer. I recommend you to keep it around 200 - 300 ms");
+			SdkUiText("^-> This is a Spamming Preventer. I recommend you to keep it around 150 - 300 ms");
 
 		});
 	});

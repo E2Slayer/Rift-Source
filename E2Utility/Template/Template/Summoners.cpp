@@ -240,7 +240,7 @@ void Summoners::MenuLoader()
 
 void Summoners::TickLoader()
 {
-	if ((LastTimeTickCountSumm + (DWORD)Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
+	if ((LastTimeTickCountSumm + Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
 	{
 		return;
 	}

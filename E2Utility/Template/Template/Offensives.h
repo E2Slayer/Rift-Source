@@ -4,8 +4,6 @@
 #include "ItemStruct.h"
 
 
-extern DWORD LastTimeTickCountOff;
-
 class Offensives
 {
 private:

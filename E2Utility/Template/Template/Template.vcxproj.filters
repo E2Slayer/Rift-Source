@@ -43,6 +43,18 @@
     <Filter Include="My Script Files\Data\Headers">
       <UniqueIdentifier>{9ec17a25-97fd-484f-a977-eca6ddde241a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="My Script Files\Detector">
+      <UniqueIdentifier>{532c60b8-da86-4cf5-ac39-99d9479769eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Detector\Header">
+      <UniqueIdentifier>{0709fe9c-69b8-471f-a7f8-ed919009d346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Others">
+      <UniqueIdentifier>{0119ba11-b6e7-4e67-b1f3-dd6725d42f14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Others\Header">
+      <UniqueIdentifier>{9a3adae2-ddba-4998-b1b3-cb733ba0309f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -50,9 +62,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
-    <ClInclude Include="Template.h">
-      <Filter>My Script Files\Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\clipper.hpp">
       <Filter>My Script Files\SDK Extensions</Filter>
@@ -150,6 +159,18 @@
     <ClInclude Include="Cleansers.h">
       <Filter>My Script Files\Activator\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="TurnAround.h">
+      <Filter>My Script Files\Detector\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Detector.h">
+      <Filter>My Script Files\Detector\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="AntiAFK.h">
+      <Filter>My Script Files\Others\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Others.h">
+      <Filter>My Script Files\Others\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -187,6 +208,18 @@
     </ClCompile>
     <ClCompile Include="Cleansers.cpp">
       <Filter>My Script Files\Activator</Filter>
+    </ClCompile>
+    <ClCompile Include="TurnAround.cpp">
+      <Filter>My Script Files\Detector</Filter>
+    </ClCompile>
+    <ClCompile Include="Detector.cpp">
+      <Filter>My Script Files\Detector</Filter>
+    </ClCompile>
+    <ClCompile Include="AntiAFK.cpp">
+      <Filter>My Script Files\Others</Filter>
+    </ClCompile>
+    <ClCompile Include="Others.cpp">
+      <Filter>My Script Files\Others</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

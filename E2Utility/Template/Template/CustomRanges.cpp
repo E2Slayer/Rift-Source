@@ -45,6 +45,15 @@ void CustomRanges::Draw(void * UserData)
 
 		screenPos.y -= 20.0f;
 		Draw::Text(NULL, &screenPos, std::to_string(Game::Time()), "Arial", &Color::Green, 24, 6);
+
+
+		//screenPos.y -= 20.0f;
+		//auto hi = Menu::Get<Hotkey_t>("Others.AntiAFK.Toggle").Active;
+	//	Draw::Text(NULL, &screenPos, std::to_string(Menu::Get<KeyToggle_t>("Others.AntiAFK.Toggle").Toggle), "Arial", &Color::Red, 24, 6);
+
+
+
+		//Menu::Get<Hotkey>("Others.AntiAFK.Toggle").Active
 		/*
 		if (hi)
 		{
@@ -58,6 +67,18 @@ void CustomRanges::Draw(void * UserData)
 	}
 
 
+
+
+	SDKVECTOR direction{ 100.f, 100.f, 100.f };
+
+	auto orignialPath = Player.GetWaypoints();
+	for (auto const& value : orignialPath)
+	{
+
+		Vector3 temp{ value };
+		Draw::Circle(&temp, 100.0f, &Color::Green, 2, &direction);
+		
+	}
 
 	/*
 	for(int i=0; i<7; i++)
@@ -97,6 +118,7 @@ void CustomRanges::Draw(void * UserData)
 	*/
 
 
+	/*
 	Draw::Circle(&Player.GetPosition(), 750.0f, &Color::Red);
 	Draw::Circle(&Player.GetPosition(), 650.0f, &Color::Green);
 
@@ -120,7 +142,7 @@ void CustomRanges::Draw(void * UserData)
 			}
 		}
 	}
-
+	*/
 
 
 }
@@ -135,9 +157,13 @@ void CustomRanges::SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* Use
 		return;
 	}
 
-	//SdkUiConsoleWrite("Name %s ", SpellCast->Spell.Name);
-	//SdkUiConsoleWrite("1Name %s ", SpellCast->Spell.ScriptName);
-	//SdkUiConsoleWrite("2Name %s ", SpellCast->Spell.AnimationName);
+
+	/*
+	SdkUiConsoleWrite("Name %s ", SpellCast->Spell.Name);
+	SdkUiConsoleWrite("1Name %s ", SpellCast->Spell.ScriptName);
+	SdkUiConsoleWrite("2Name %s ", SpellCast->Spell.AlternateName);
+	*/
+	//SdkUiConsoleWrite("2Name %s ", Player.GetResource().Type);
 	//SdkUiConsoleWrite("3Name %s ", SpellCast->Spell.MissileEffectName);
 
 	//SdkUiConsoleWrite("4Name %s ", SpellCast->Spell.MissileSpeed);

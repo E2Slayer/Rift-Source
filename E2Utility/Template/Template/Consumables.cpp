@@ -8,7 +8,6 @@ const char* subCategory = "Consumables";
 
 std::vector<ItemStruct> ItemList;
 
-DWORD LastTimeTickCountCon = 0;
 
 
 /*
@@ -44,7 +43,7 @@ void Consumables::Init()
 	//std::fill_n(expandedArray, 50, false);
 
 	ItemList.clear();
-	LastTimeTickCountCon = 0;
+	
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Consumables::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Update);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Consumables::DrawMenu);
@@ -150,9 +149,9 @@ void Consumables::TickLoader(ItemStruct currentItem)
 
 	if (Menu::Get<int>("Activator.Consumables.Style") == 0 || (Menu::Get<int>("Activator.Consumables.Style") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
 	{
-		if (currentItem.GetItemID() == 0 || (LastTimeTickCountCon + (DWORD)Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
+		if (currentItem.GetItemID() == 0 || (LastTimeTickCount + (DWORD)Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
 		{
-			return;
+			//return;
 		}
 
 		for (auto const &value : ItemList)
@@ -161,7 +160,6 @@ void Consumables::TickLoader(ItemStruct currentItem)
 			{
 				ItemStruct caster = ItemStruct(currentItem.GetItemID(), value.GetSDKItem(), (unsigned char)currentItem.GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategory, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
 				caster.CastItem();
-				LastTimeTickCountCon = GetTickCount();
 				caster.~ItemStruct();
 			}
 		}

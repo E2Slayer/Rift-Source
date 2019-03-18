@@ -120,10 +120,12 @@ void Cleansers::MenuLoader()
 				{
 					for (auto const &ent : AllyChampionsCleanse)
 					{
-
-						std::string menuID = "Activator.Cleansers.MikaelsCrucibleUseFor";
-						menuID += (&ent)->second->GetCharName();
-						Menu::Checkbox((&ent)->second->GetCharName(), menuID, true);
+						if (Player.GetNetworkID() != (&ent)->second->GetNetworkID())
+						{
+							std::string menuID = "Activator.Cleansers.MikaelsCrucibleUseFor";
+							menuID += (&ent)->second->GetCharName();
+							Menu::Checkbox((&ent)->second->GetCharName(), menuID, true);
+						}
 
 					}
 				}
@@ -154,7 +156,7 @@ void Cleansers::TickLoader(ItemStruct currentItem)
 	{
 
 
-			if (currentItem.GetItemID() == 0 || (LastTimeTickCountClean + (DWORD)Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
+			if (currentItem.GetItemID() == 0 || (LastTimeTickCountClean + Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
 			{
 				return;
 			}
@@ -266,6 +268,7 @@ void Cleansers::CleanseCheck()
 		{
 
 
+			
 			//SdkUiConsoleWrite("Cast Cleanse Actual : %f" , Game::Time());
 			pSDK->EventHandler->DelayedAction([cleanse]()
 			{ 

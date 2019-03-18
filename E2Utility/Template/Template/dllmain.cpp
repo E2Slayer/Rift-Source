@@ -2,9 +2,9 @@
 
 #include "../../Include/SDK Extensions.h"
 #include "Activator.h"
-#include "CustomRanges.h"
-
-
+//#include "CustomRanges.h"
+//#include "Detector.h"
+#include "Others.h"
 
 PLUGIN_SETUP("E2Utility", OnLoad);
 
@@ -17,7 +17,9 @@ void __cdecl OnLoad(void* UserData)
 		//MyTemplateClass::Init();
 		Activator::Init();
 		
-		CustomRanges::Init();
+		//CustomRanges::Init();
+		Others::Init();
+		//Detector::Init();
 		//Game::PrintChat(R"(<font color="#832232">test.</font>)");
 	}
 }

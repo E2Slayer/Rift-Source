@@ -238,7 +238,8 @@ void ItemStruct::CastItem()
 	{
 		Spell::Active item2 = Spell::Active(this->itemSlot); //temporary
 		item2.Cast();
-		SdkUiConsoleWrite("Instant Cast");
+		LastTimeTickCount = GetTickCount();
+		//SdkUiConsoleWrite("Instant Cast");
 		// cast right away
 	}
 
@@ -273,10 +274,12 @@ void ItemStruct::CastItem()
 		//Menu::SliderInt(name.c_str(), oss.str(), 25, 1, 100);
 
 
-		if (myManaPct == 0)
+		if (myManaPct == 0 || Player.GetResource().Type == ABILITY_TYPE_MANA)
 		{
 			return;
 		}
+
+		//if(Player.GetResource().Type)
 
 		if (Player.GetManaPercent() <= myManaPct)
 		{
@@ -501,6 +504,7 @@ void ItemStruct::SpellCaster(SpellTypes type, float range)
 	{
 		Spell::Active item = Spell::Active(this->itemSlot); //temporary
 		item.Cast();
+		LastTimeTickCount = GetTickCount();
 
 	}
 	else if (type == SpellTypes::Targeted)
@@ -514,6 +518,7 @@ void ItemStruct::SpellCaster(SpellTypes type, float range)
 				{
 					item.Cast(target);
 					item.Cast(&target->GetServerPosition());
+					LastTimeTickCount = GetTickCount();
 				}
 			}
 	
@@ -540,6 +545,7 @@ void ItemStruct::SpellAllyCaster(SpellTypes type, float range, AIHeroClient* all
 	{
 		Spell::Active item = Spell::Active(this->itemSlot); //temporary
 		item.Cast();
+		LastTimeTickCount = GetTickCount();
 
 	}
 	else if (type == SpellTypes::Targeted)
@@ -554,6 +560,7 @@ void ItemStruct::SpellAllyCaster(SpellTypes type, float range, AIHeroClient* all
 				//SdkUiConsoleWrite("Did you come here4");
 				item.Cast(allyTarget);
 				item.Cast(&allyTarget->GetServerPosition());
+				LastTimeTickCount = GetTickCount();
 			}
 		}
 

@@ -4,7 +4,6 @@
 std::vector<ItemStruct> DefensivesItemList;
 const char* subCategoryDef = "Defensives";
 
-DWORD LastTimeTickCountDef = 0;
 
 //const enum ItemTypes { AffectEnemy, AffectAlly, AllyTarget, SpeedUp, LowMyHealth};
 
@@ -12,7 +11,7 @@ DWORD LastTimeTickCountDef = 0;
 
 void Defensives::Init()
 {
-	LastTimeTickCountDef = 0;
+
 	DefensivesItemList.clear();
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Defensives::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Update);
@@ -28,7 +27,7 @@ void Defensives::Init()
 	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::SeraphsEmbrace, "Seraphs Embrace", "SeraphsEmbrace", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
 	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Stopwatch, "Stopwatch", "Stopwatch", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
 	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::ZhonyasHourglass, "Zhonyas Hourglass", "ZhonyasHourglass", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
-	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Ohmwrecker, "Ohmwrecker", "Ohmwrecker", subCategoryDef, MenuTypes::AllyHealth | MenuTypes::AllyNumber, SpellTypes::Active, 1100.0f));
+	//DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Ohmwrecker, "Ohmwrecker", "Ohmwrecker", subCategoryDef, MenuTypes::AllyHealth | MenuTypes::AllyNumber, SpellTypes::Active, 1100.0f));
 }
 
 
@@ -53,19 +52,28 @@ void Defensives::TickLoader(ItemStruct currentItem)
 {
 	if (Menu::Get<int>("Activator.Defensives.Style") == 0 || (Menu::Get<int>("Activator.Defensives.Style") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
 	{
-		if (currentItem.GetItemID() == 0 || (LastTimeTickCountDef + (DWORD) Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
+		if (currentItem.GetItemID() == 0 )
 		{
 			
 			return;
 		}
 
+		if (LastTimeTickCount + Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount())
+		{
+			return;
+		}
+
+		if (currentItem.GetItemID() == (int)ItemID::GargoyleStoneplate)
+		{
+			//SdkUiConsoleWrite("WHY");
+		}
 		for (auto const &value : DefensivesItemList)
 		{
 			if (currentItem.GetItemID() == value.GetItemID())
 			{
 				ItemStruct caster = ItemStruct(currentItem.GetItemID(), value.GetSDKItem(), (unsigned char)currentItem.GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategoryDef, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
 				caster.CastItem();
-				LastTimeTickCountDef = GetTickCount();
+				
 				caster.~ItemStruct();
 			}
 		}

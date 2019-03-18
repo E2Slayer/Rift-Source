@@ -3,7 +3,6 @@
 
 std::vector<ItemStruct> OffensiveItemList;
 const char* subCategoryOff = "Offensives";
-DWORD LastTimeTickCountOff = 0;
 
 //const enum ItemTypes { Active, Timats, Target, HextTechs };
 
@@ -38,7 +37,7 @@ std::map<int, std::string> HextTechsItems
 
 void Offensives::Init()
 {
-	LastTimeTickCountOff = 0;
+
 	OffensiveItemList.clear();
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Offensives::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Update);
@@ -124,8 +123,15 @@ void Offensives::TickLoader(ItemStruct currentItem)
 {
 	if (Menu::Get<int>("Activator.Offensives.Style") == 0 || (Menu::Get<int>("Activator.Offensives.Style") == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active))
 	{
-		if (currentItem.GetItemID() == 0 || (LastTimeTickCountOff + (DWORD)Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
+		if (currentItem.GetItemID() == 0 )
 		{
+			//SdkUiConsoleWrite("waht?");
+			return;
+		}
+
+		if ((LastTimeTickCount + Menu::Get<int>("Activator.Config.HumanizerDelay") >= GetTickCount()))
+		{
+			//SdkUiConsoleWrite("waht?22");
 			return;
 		}
 
@@ -135,7 +141,6 @@ void Offensives::TickLoader(ItemStruct currentItem)
 			{
 				ItemStruct caster = ItemStruct(currentItem.GetItemID(), value.GetSDKItem(), (unsigned char)currentItem.GetItemSlot() - 6, value.GetDisplayName(), value.GetMenuID(), subCategoryOff, value.GetMenuTypes(), value.GetSpellTypes(), value.GetSpellRange());
 				caster.CastItem();
-				LastTimeTickCountOff = GetTickCount();
 				caster.~ItemStruct();
 			}
 		}
