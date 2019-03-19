@@ -189,6 +189,9 @@
     <ClInclude Include="DropLists.h">
       <Filter>My Script Files\Data\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="CustomRange.h">
+      <Filter>My Script Files\Drawings\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -246,6 +249,9 @@
       <Filter>My Script Files\Data</Filter>
     </ClCompile>
     <ClCompile Include="GankAlerter.cpp">
+      <Filter>My Script Files\Drawings</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomRange.cpp">
       <Filter>My Script Files\Drawings</Filter>
     </ClCompile>
   </ItemGroup>

@@ -182,6 +182,7 @@
     <ClInclude Include="ChampionStuct.h" />
     <ClInclude Include="Cleansers.h" />
     <ClInclude Include="Consumables.h" />
+    <ClInclude Include="CustomRange.h" />
     <ClInclude Include="CustomRanges.h" />
     <ClInclude Include="Defensives.h" />
     <ClInclude Include="Detector.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="ChampionStuct.cpp" />
     <ClCompile Include="Cleansers.cpp" />
     <ClCompile Include="Consumables.cpp" />
+    <ClCompile Include="CustomRange.cpp" />
     <ClCompile Include="CustomRanges.cpp" />
     <ClCompile Include="Defensives.cpp" />
     <ClCompile Include="Detector.cpp" />

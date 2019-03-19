@@ -21,7 +21,7 @@ void Drawings::Tick(void * UserData)
 
 void Drawings::DrawMenu(void * UserData)
 {
-	Menu::Tree("Drawings", "Drawings.", false, []()
+	Menu::Tree("Drawings", "Drawings.", true, []()
 	{
 		/*
 		Summoners::MenuLoader();
@@ -31,6 +31,7 @@ void Drawings::DrawMenu(void * UserData)
 		Cleansers::MenuLoader();
 		*/
 		GankAlerter::MenuLoader();
+	//	CustomRange::MenuLoader();
 
 		Menu::Tree("Drawings Configs", "Drawings.Config", false, []()
 		{

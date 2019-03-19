@@ -106,7 +106,7 @@ void GankAlerter::MenuLoader()
 
 		
 		Menu::SliderInt("Detecting Range", "Drawings.GankAlerter.Range", 3000, 500, 5000);
-		SdkUiText("^-> You may check ranges by using the Custom Ranges feature to know how far it is");
+		//SdkUiText("^-> You may check ranges by using the Custom Ranges feature to know how far it is");
 
 		Menu::SliderInt("Detecting CoolTime (Seconds)", "Drawings.GankAlerter.CoolTime", 5, 1, 30);
 

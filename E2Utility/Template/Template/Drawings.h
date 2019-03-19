@@ -1,6 +1,8 @@
 #pragma once
 #include "../../Include/SDK Extensions.h"
 #include "GankAlerter.h"
+//#include "CustomRange.h"
+
 class Drawings
 {
 public:

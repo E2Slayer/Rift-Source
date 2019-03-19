@@ -48,21 +48,21 @@ void Cleansers::MenuLoader()
 
 			Menu::Tree("Cleanse Config", "Activator.Cleansers.CleanseConfig", false, []()
 			{
-				Menu::Checkbox("Use Cleanse On Slow", "Activator.Cleansers.CleanseUseSlow", true);
-				Menu::Checkbox("Use Cleanse On Stun", "Activator.Cleansers.CleanseUseStun", true);
-				Menu::Checkbox("Use Cleanse On Charm", "Activator.Cleansers.CleanseUseCharm", true);
+				Menu::Checkbox("Use Cleanse On Slow", "Activator.Cleansers.CleanseUseSlow", true); //
+				Menu::Checkbox("Use Cleanse On Stun", "Activator.Cleansers.CleanseUseStun", true); //
+				Menu::Checkbox("Use Cleanse On Charm", "Activator.Cleansers.CleanseUseCharm", true); //
 				Menu::Checkbox("Use Cleanse On Asleep", "Activator.Cleansers.CleanseUseAsleep", true);
-				Menu::Checkbox("Use Cleanse On Grounded", "Activator.Cleansers.CleanseUseGrounded", true);
-				Menu::Checkbox("Use Cleanse On KnockUp", "Activator.Cleansers.CleanseUseKnockUp", true);
-				Menu::Checkbox("Use Cleanse On KnockBack", "Activator.Cleansers.CleanseUseKnockBack", true);
+				//Menu::Checkbox("Use Cleanse On Grounded", "Activator.Cleansers.CleanseUseGrounded", true);
+				//Menu::Checkbox("Use Cleanse On KnockUp", "Activator.Cleansers.CleanseUseKnockUp", true);
+				//Menu::Checkbox("Use Cleanse On KnockBack", "Activator.Cleansers.CleanseUseKnockBack", true);
 				Menu::Checkbox("Use Cleanse On Taunt", "Activator.Cleansers.CleanseUseTaunt", true);
 				Menu::Checkbox("Use Cleanse On Fear", "Activator.Cleansers.CleanseUseFear", true);
 				Menu::Checkbox("Use Cleanse On Snare", "Activator.Cleansers.CleanseUseSnare", true);
 				Menu::Checkbox("Use Cleanse On Silence", "Activator.Cleansers.CleanseUseSilence", true);
-				Menu::Checkbox("Use Cleanse On Suppression", "Activator.Cleansers.CleanseUseSuppression", true);
+				//Menu::Checkbox("Use Cleanse On Suppression", "Activator.Cleansers.CleanseUseSuppression", true);
 				Menu::Checkbox("Use Cleanse On Polymorph", "Activator.Cleansers.CleanseUsePolymorph", true);
-				Menu::Checkbox("Use Cleanse On Blind", "Activator.Cleansers.CleanseUseBlind", true);
-				Menu::Checkbox("Use Cleanse On Poison", "Activator.Cleansers.CleanseUsePoison", true);
+				Menu::Checkbox("Use Cleanse On Blind", "Activator.Cleansers.CleanseUseBlind", true); //
+				Menu::Checkbox("Use Cleanse On Poison", "Activator.Cleansers.CleanseUsePoison", true); 
 
 			});
 
