@@ -55,6 +55,12 @@
     <Filter Include="My Script Files\Others\Header">
       <UniqueIdentifier>{9a3adae2-ddba-4998-b1b3-cb733ba0309f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="My Script Files\Drawings">
+      <UniqueIdentifier>{137e0dea-ffa5-4d61-b46f-236847478645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Drawings\Header">
+      <UniqueIdentifier>{4dce8e79-1471-4385-ad75-c30df5735bef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -171,6 +177,18 @@
     <ClInclude Include="Others.h">
       <Filter>My Script Files\Others\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Drawings.h">
+      <Filter>My Script Files\Drawings\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="ChampionStuct.h">
+      <Filter>My Script Files\Data\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GankAlerter.h">
+      <Filter>My Script Files\Drawings\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DropLists.h">
+      <Filter>My Script Files\Data\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -220,6 +238,15 @@
     </ClCompile>
     <ClCompile Include="Others.cpp">
       <Filter>My Script Files\Others</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawings.cpp">
+      <Filter>My Script Files\Drawings</Filter>
+    </ClCompile>
+    <ClCompile Include="ChampionStuct.cpp">
+      <Filter>My Script Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="GankAlerter.cpp">
+      <Filter>My Script Files\Drawings</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
