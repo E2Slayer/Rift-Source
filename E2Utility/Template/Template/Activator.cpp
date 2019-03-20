@@ -54,6 +54,7 @@ void Activator::Tick(void * UserData)
 			Offensives::TickLoader(currentItems[i]);
 			Defensives::TickLoader(currentItems[i]);
 			Cleansers::TickLoader(currentItems[i]);
+			
 		}
 	}
 }

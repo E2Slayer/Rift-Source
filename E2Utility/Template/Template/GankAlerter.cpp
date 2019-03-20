@@ -42,17 +42,23 @@ void GankAlerter::Init()
 					temp.LastTrigger = 0;
 					temp.isAlly = true;
 
+					/*
 					unsigned char smite = hero->GetSpellSlotFromName("SummonerSmite");
+					if (smite == NULL || smite == 66)
+					{
+						continue;
+					}
+
 					if (smite == (unsigned char)SpellSlot::Summoner1 || smite == (unsigned char)SpellSlot::Summoner2)
 					{
-						SdkUiConsoleWrite("ally smite added %s", hero->GetCharName());
+						//SdkUiConsoleWrite("ally smite added %s", hero->GetCharName());
 						temp.isJungler = true;
 					}
 					else
 					{
-						SdkUiConsoleWrite("ally none smite %s", hero->GetCharName());
+						//SdkUiConsoleWrite("ally none smite %s", hero->GetCharName());
 						temp.isJungler = false;
-					}
+					}*/
 
 					ChampionObjects.emplace_back(temp);
 				}
@@ -76,17 +82,43 @@ void GankAlerter::Init()
 					temp.LastTrigger = 0;
 					temp.isAlly = false;
 
-					unsigned char smite = hero->GetSpellSlotFromName("SummonerSmite");
-					if (smite == (unsigned char)SpellSlot::Summoner1 || smite == (unsigned char)SpellSlot::Summoner2)
+
+					/*
+					const char* ss = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
+						
+					const char* ss2 = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
+
+					if (strcmp(ss, "SummonerSmite") == 0)
 					{
-						SdkUiConsoleWrite("rr smite added %s", hero->GetCharName());
+						temp.isJungler = true;
+					}
+					else if (strcmp(ss2, "SummonerSmite") == 0)
+					{
 						temp.isJungler = true;
 					}
 					else
 					{
-						SdkUiConsoleWrite("en none smite %s", hero->GetCharName());
 						temp.isJungler = false;
 					}
+					*/
+					/*
+					unsigned char smite = hero->GetSpellSlotFromName("SummonerSmite");
+					if (smite == NULL || smite == 66)
+					{
+						continue;
+					}
+
+					if (smite == (unsigned char)SpellSlot::Summoner1 || smite == (unsigned char)SpellSlot::Summoner2)
+					{
+						//SdkUiConsoleWrite("rr smite added %s", hero->GetCharName());
+						temp.isJungler = true;
+					}
+					else
+					{
+						//SdkUiConsoleWrite("en none smite %s", hero->GetCharName());
+						temp.isJungler = false;
+					}
+					*/
 					ChampionObjects.emplace_back(temp);
 				}
 			}

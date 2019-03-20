@@ -2,8 +2,8 @@
 
 #include "../../Include/SDK Extensions.h"
 #include "Activator.h"
-//#include "CustomRanges.h"
-//#include "Detector.h"
+#include "CustomRanges.h"
+#include "Detector.h"
 #include "Drawings.h"
 
 #include "Others.h"
@@ -20,9 +20,9 @@ void __cdecl OnLoad(void* UserData)
 		//MyTemplateClass::Init();
 		Activator::Init();
 		Drawings::Init();
-		//CustomRanges::Init();
+		CustomRanges::Init();
 		Others::Init();
-		//Detector::Init();
+		Detector::Init();
 		//Game::PrintChat(R"(<font color="#832232">test.</font>)");
 	}
 }

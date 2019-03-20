@@ -253,14 +253,14 @@ void Cleansers::CleanseCheck()
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseStun") && Player.HasBuffType((unsigned char)BUFF_TYPE_STUN) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseCharm") && Player.HasBuffType((unsigned char)BUFF_TYPE_CHARM) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseAsleep") && Player.HasBuffType((unsigned char)BUFF_TYPE_ASLEEP) ||
-			Menu::Get<bool>("Activator.Cleansers.CleanseUseGrounded") && Player.HasBuffType((unsigned char)BUFF_TYPE_GROUNDED) ||
-			Menu::Get<bool>("Activator.Cleansers.CleanseUseKnockUp") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKUP) ||
-			Menu::Get<bool>("Activator.Cleansers.CleanseUseKnockBack") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKBACK) ||
+			//Menu::Get<bool>("Activator.Cleansers.CleanseUseGrounded") && Player.HasBuffType((unsigned char)BUFF_TYPE_GROUNDED) ||
+			//Menu::Get<bool>("Activator.Cleansers.CleanseUseKnockUp") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKUP) ||
+			//Menu::Get<bool>("Activator.Cleansers.CleanseUseKnockBack") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKBACK) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseTaunt") && Player.HasBuffType((unsigned char)BUFF_TYPE_TAUNT) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseFear") && Player.HasBuffType((unsigned char)BUFF_TYPE_FEAR) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseSnare") && Player.HasBuffType((unsigned char)BUFF_TYPE_SNARE) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseSilence") && Player.HasBuffType((unsigned char)BUFF_TYPE_SILENCE) ||
-			Menu::Get<bool>("Activator.Cleansers.CleanseUseSuppression") && Player.HasBuffType((unsigned char)BUFF_TYPE_SUPPRESSION) ||
+			//Menu::Get<bool>("Activator.Cleansers.CleanseUseSuppression") && Player.HasBuffType((unsigned char)BUFF_TYPE_SUPPRESSION) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUsePolymorph") && Player.HasBuffType((unsigned char)BUFF_TYPE_POLYMORPH) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseBlind") && Player.HasBuffType((unsigned char)BUFF_TYPE_BLIND) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUsePoison") && Player.HasBuffType((unsigned char)BUFF_TYPE_POISON) 

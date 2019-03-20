@@ -41,10 +41,14 @@ void CustomRanges::Draw(void * UserData)
 		//hi.Active;
 
 		//Menu::Hotkey
-		Draw::Text(NULL, &screenPos, std::to_string(GetTickCount()), "Arial", &Color::White, 24, 6);
+		Draw::Text(NULL, &screenPos, std::to_string(Game::Time()), "Arial", &Color::White, 24, 6);
 
 		screenPos.y -= 20.0f;
-		Draw::Text(NULL, &screenPos, std::to_string(Game::Time()), "Arial", &Color::Green, 24, 6);
+
+	//	Draw::Text(NULL, &screenPos, std::to_string(Player.GetPosition().z), "Arial", &Color::White, 24, 6);
+
+		screenPos.y -= 20.0f;
+		Draw::Text(NULL, &screenPos, std::to_string(Player.GetExperience()), "Arial", &Color::Green, 24, 6);
 
 
 		//screenPos.y -= 20.0f;
@@ -118,10 +122,10 @@ void CustomRanges::Draw(void * UserData)
 	*/
 
 
-	/*
-	Draw::Circle(&Player.GetPosition(), 750.0f, &Color::Red);
-	Draw::Circle(&Player.GetPosition(), 650.0f, &Color::Green);
 
+	Draw::Circle(&Player.GetPosition(), 1450.0f, &Color::Red);
+	//Draw::Circle(&Player.GetPosition(), 650.0f, &Color::Green);
+	/*
 	const auto target = pCore->TS->GetTarget(2000.0f);
 	if (target != NULL && target != nullptr)
 	{

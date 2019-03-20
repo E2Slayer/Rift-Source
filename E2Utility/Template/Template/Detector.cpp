@@ -7,12 +7,15 @@ void Detector::Init()
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Detector::DrawMenu);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, CustomRanges::Draw);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, CustomRanges::SpellCastStart);
-	TurnAround::Init();
+	//TurnAround::Init();
+	SharedExperience::InitLoader();
 }
 
 void Detector::Tick(void * UserData)
 {
-	TurnAround::TickLoader();
+	//TurnAround::TickLoader();
+
+	SharedExperience::TickLoader();
 }
 
 void Detector::DrawMenu(void * UserData)
@@ -26,7 +29,9 @@ void Detector::DrawMenu(void * UserData)
 		Defensives::MenuLoader();
 		Cleansers::MenuLoader();
 		*/
-		TurnAround::MenuLoader();
+		//TurnAround::MenuLoader();
+
+		
 
 		Menu::Tree("Detector Configs", "Detector.Config", false, []()
 		{

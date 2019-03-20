@@ -192,6 +192,9 @@
     <ClInclude Include="CustomRange.h">
       <Filter>My Script Files\Drawings\Header</Filter>
     </ClInclude>
+    <ClInclude Include="SharedExperience.h">
+      <Filter>My Script Files\Detector\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -253,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="CustomRange.cpp">
       <Filter>My Script Files\Drawings</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedExperience.cpp">
+      <Filter>My Script Files\Detector</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
