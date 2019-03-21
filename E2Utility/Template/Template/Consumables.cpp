@@ -8,6 +8,7 @@ const char* subCategory = "Consumables";
 
 std::vector<ItemStruct> ItemList;
 
+Vector3 fountainLocation;
 
 
 /*
@@ -43,7 +44,7 @@ void Consumables::Init()
 	//std::fill_n(expandedArray, 50, false);
 
 	ItemList.clear();
-	
+	fountainLocation = Vector3(0.0f, 0.0f, 0.0f);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Consumables::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Summoners::Update);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Consumables::DrawMenu);
@@ -77,9 +78,34 @@ void Consumables::Init()
 
 
 	//ItemList.emplace_back(ItemStruct((int)ItemID::HealthPotion, "Health Potion", "HealthPotion", subCategory, ItemStruct::MenuTypes::MyHealth));
+	auto turrets = pSDK->EntityManager->GetAllyTurrets();
+	
+	if (turrets.empty())
+	{
+		return;
+	}
+
+	for (auto &[netid, turret] : turrets)
+	{
+		if (netid && turret)
+		{
+			if (turret->GetName() == NULL)
+			{
+				continue;
+			}
+
+			if (strstr(turret->GetName(), "Turret_OrderTurretShrine_A"))
+			{
 
 
+				if (turret->GetPosition().IsValid() )
+				{
+					fountainLocation = turret->GetPosition();
+				}
+			}
+		}
 
+	}
 
 
 
@@ -139,6 +165,12 @@ void Consumables::MenuLoader()
 
 void Consumables::TickLoader(ItemStruct currentItem)
 {
+	if (Player.Distance(&fountainLocation) <= 1500.0f)
+	{
+		return; 
+	}
+
+
 	if (Player.GetLevel() == 1 && Menu::Get<bool>("Activator.Consumables.Level1"))
 	{
 		if (currentItem.GetItemID() != (int)ItemID::RefillablePotion && currentItem.GetItemID() != (int)ItemID::HuntersPotion && currentItem.GetItemID() != (int)ItemID::CorruptingPotion)

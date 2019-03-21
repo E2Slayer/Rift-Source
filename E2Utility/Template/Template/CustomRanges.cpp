@@ -28,7 +28,7 @@ void CustomRanges::Draw(void * UserData)
 	//for (auto const& value : currentItems)
 
 
-	if (pos.IsValid() && pos.IsOnScreen())
+	if (pos.IsValid() )
 	{
 
 
@@ -45,10 +45,42 @@ void CustomRanges::Draw(void * UserData)
 
 		screenPos.y -= 20.0f;
 
-	//	Draw::Text(NULL, &screenPos, std::to_string(Player.GetPosition().z), "Arial", &Color::White, 24, 6);
+		Draw::Text(NULL, &screenPos, std::to_string(Player.GetPosition().x), "Arial", &Color::White, 24, 6);
 
 		screenPos.y -= 20.0f;
-		Draw::Text(NULL, &screenPos, std::to_string(Player.GetExperience()), "Arial", &Color::Green, 24, 6);
+		Draw::Text(NULL, &screenPos, std::to_string(Player.GetPosition().y), "Arial", &Color::Green, 24, 6);
+
+		screenPos.y -= 20.0f;
+		Draw::Text(NULL, &screenPos, std::to_string(Player.GetPosition().z), "Arial", &Color::Green, 24, 6);
+
+
+		Vector3 blueFountain = Vector3(585.0f, 183.284f, 512.0f);
+
+
+		auto shops = pSDK->EntityManager->GetAllyTurrets();
+		
+
+
+
+		for (auto &[netid, shop] : shops)
+		{
+			if (strstr(shop->GetName(), "Turret_OrderTurretShrine_A"))
+			{
+				Draw::Circle(&shop->GetPosition(), 1500.0f, &Color::Blue);
+
+				if (Player.Distance(&shop->GetPosition()) <= 1500.0f)
+				{
+					screenPos.y -= 20.0f;
+					Draw::Text(NULL, &screenPos, "Is in Fountain", "Arial", &Color::Red, 24, 6);
+
+				}
+			}
+
+			Draw::Text(&shop->GetPosition(), NULL, shop->GetName(), "Arial", &Color::Red, 24, 6);
+		}
+
+		//Draw::Circle(&blueFountain, 900.0f, &Color::Red);
+
 
 
 		//screenPos.y -= 20.0f;
@@ -123,7 +155,7 @@ void CustomRanges::Draw(void * UserData)
 
 
 
-	Draw::Circle(&Player.GetPosition(), 1450.0f, &Color::Red);
+	Draw::Circle(&Player.GetPosition(), 1050.0f, &Color::Red);
 	//Draw::Circle(&Player.GetPosition(), 650.0f, &Color::Green);
 	/*
 	const auto target = pCore->TS->GetTarget(2000.0f);

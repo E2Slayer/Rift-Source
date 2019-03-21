@@ -9,6 +9,7 @@ void Drawings::Init()
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Drawings::Draw);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, CustomRanges::SpellCastStart);
 	GankAlerter::Init();
+	CustomRange::Init();
 }
 
 void Drawings::Tick(void * UserData)
@@ -31,7 +32,7 @@ void Drawings::DrawMenu(void * UserData)
 		Cleansers::MenuLoader();
 		*/
 		GankAlerter::MenuLoader();
-	//	CustomRange::MenuLoader();
+		CustomRange::MenuLoader();
 
 		Menu::Tree("Drawings Configs", "Drawings.Config", false, []()
 		{

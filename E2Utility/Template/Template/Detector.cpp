@@ -5,6 +5,7 @@
 
 void Detector::Init()
 {
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Detector::Update);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Detector::Tick);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Detector::DrawMenu);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, CustomRanges::Draw);
@@ -13,11 +14,18 @@ void Detector::Init()
 	SharedExperience::InitLoader();
 }
 
+void Detector::Update(void * UserData)
+{
+	SharedExperience::TickLoader();
+}
+
 void Detector::Tick(void * UserData)
 {
 	//TurnAround::TickLoader();
 
-	SharedExperience::TickLoader();
+	//SharedExperience::TickLoader();
+	//SharedExperience::testing();
+	//SharedExperience::TickLoader();
 }
 
 void Detector::DrawMenu(void * UserData)

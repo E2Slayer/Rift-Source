@@ -18,6 +18,10 @@ struct ChampionEXPObject
 	float LastTrigger;
 	float LastExp;
 	float LastExpTime;
+
+	float CurrentExp;
+	float CurrentExpTime;
+
 	unsigned int netID;
 	int NearByHeroes;
 	int UnsureNearByHeroes;
@@ -29,7 +33,7 @@ struct ChampionEXPObject
 
 	float MeleeExp;
 
-	float CurrentExp;
+	//float CurrentExp;
 	bool isAlly;
 	bool isJungler;
 };
@@ -48,5 +52,7 @@ public:
 	static bool AreSame(float a, float b, float tolerance);
 	static void	__cdecl	Draw(_In_ void* UserData);
 	
+
+	static void testing();
 };
 

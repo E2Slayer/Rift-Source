@@ -12,7 +12,9 @@ public:
 	virtual void MenuLoader();
 	virtual void TickLoader();
 	virtual void DrawLoader();
+	static void __cdecl Update(_In_ void* UserData);
 	static void	__cdecl	Tick(_In_ void* UserData);
 	static void __cdecl DrawMenu(_In_ void* UserData);
+	
 };
 
