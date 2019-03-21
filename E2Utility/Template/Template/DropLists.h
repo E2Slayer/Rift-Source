@@ -2,14 +2,26 @@
 #include "../../Include/SDK Extensions.h"
 
 
-const extern std::vector<std::string> ColorMenuList{ "Black", "Blue", "Cyan", "DarkBlue", "DarkGreen", "Green", "Grey", "Magenta", "Orange", "Purple", "Red", "White", "Yellow" };
+const std::vector<std::string> ColorMenuList{ "Black", "Blue", "Cyan", "DarkBlue", "DarkGreen", "Green", "Grey", "Magenta", "Orange", "Purple", "Red", "White", "Yellow" };
 
-const extern std::vector<std::string> PingTypes { "Default", "Charge", "Danger", "Missing", "On the Way", "Back", "Come", "Warded" };
+const std::vector<std::string> PingTypes { "Default", "Charge", "Danger", "Missing", "On the Way", "Back", "Come", "Warded" };
 
 // &GetColor(Menu::Get<int>("Kalista.drawWColor"))
 class DropLists
 {
+
+
 public:
+	static std::vector<std::string> GetColorMenuList()
+	{
+		return ColorMenuList;
+	}
+
+	static std::vector<std::string> GetPingTypes()
+	{
+		return PingTypes;
+	}
+
 	static SDKCOLOR GetColor(int selectedCombo)
 	{
 		/*

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SharedExperience.h"
-
+#include "DropLists.h"
 
 const float meleeEXP = 58.879882f;
 const float rangedEXP = 29.439941f;
@@ -19,7 +19,7 @@ void SharedExperience::InitLoader()
 {
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Drawings::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Drawings::DrawMenu);
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::DeleteObject, SharedExperience::DeleteObject);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::DeleteObject, SharedExperience::DeleteObject);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, SharedExperience::Draw);
 
 
@@ -54,6 +54,7 @@ void SharedExperience::InitLoader()
 	ChampionEXPObjects.clear();
 
 
+	auto ally1{ pSDK->EntityManager->GetAllyHeroes() };
 
 	auto enemy1{ pSDK->EntityManager->GetEnemyHeroes() };
 
@@ -62,7 +63,7 @@ void SharedExperience::InitLoader()
 		return;
 	}
 
-	/*
+	
 	if (!ally1.empty())
 	{
 
@@ -78,19 +79,19 @@ void SharedExperience::InitLoader()
 					temp.Hero = hero;
 					temp.Distance = 0;
 					temp.LastTrigger = 0;
-					temp.isAlly = true;
+					temp.isAlly = false;
+					temp.PossibleInvalidNumber = false;
 					temp.LastExp = 0;
-
+					temp.LastExpTime = 0;
 
 					temp.SiegeExp = 0;
-					temp.LastSiegeExp = 0;
-
 					temp.RangedExp = 0;
-					temp.LastRangedExp = 0;
 
 					temp.MeleeExp = 0;
-					temp.LastMeleeExp = 0;
+
+
 					temp.NearByHeroes = 0;
+					temp.UnsureNearByHeroes = 0;
 		
 					ChampionEXPObjects.emplace_back(temp);
 				}
@@ -98,7 +99,7 @@ void SharedExperience::InitLoader()
 		}
 	}
 	//SummonerSmite - Smite
-	*/
+	
 	if (!enemy1.empty())
 	{
 		for (auto &[netID, hero] : enemy1)
@@ -113,18 +114,18 @@ void SharedExperience::InitLoader()
 					temp.Distance = 0;
 					temp.LastTrigger = 0;
 					temp.isAlly = false;
+					temp.PossibleInvalidNumber = false;
 					temp.LastExp = 0;
+					temp.LastExpTime = 0;
 
 					temp.SiegeExp = 0;
-					temp.LastSiegeExp = 0;
-
 					temp.RangedExp = 0;
-					temp.LastRangedExp = 0;
 
 					temp.MeleeExp = 0;
-					temp.LastMeleeExp = 0;
+
 
 					temp.NearByHeroes = 0;
+					temp.UnsureNearByHeroes = 0;
 					/*
 					unsigned char smite = hero->GetSpellSlotFromName("SummonerSmite");
 					if (smite == (unsigned char)SpellSlot::Summoner1 || smite == (unsigned char)SpellSlot::Summoner2)
@@ -153,55 +154,62 @@ void SharedExperience::MenuLoader()
 		Menu::Checkbox("Use Shared XP Detector", "Detector.SharedXP.Use", true);
 
 
-		Menu::SliderInt("Detecting Range", "Drawings.GankAlerter.Range", 1450, 500, 1450);
-		//SdkUiText("^-> You may check ranges by using the Custom Ranges feature to know how far it is");
+		Menu::SliderInt("Detect Enemies Only Within Range From Player", "Detector.SharedXP.Range", 3000, 500, 5000);
+		Menu::Checkbox("Detect All Enemies ", "Detector.SharedXP.All", false);
+		SdkUiText("^-> If you check it, Shared XP Detector will always track all enemies no matter how far they are.");
 
-		Menu::SliderInt("Detecting CoolTime (Seconds)", "Drawings.GankAlerter.CoolTime", 5, 1, 30);
+		//Menu::SliderInt("Detecting CoolTime (Seconds)", "Drawings.GankAlerter.CoolTime", 5, 1, 30);
 
-		Menu::SliderInt("Draw Only Decteted # equal or above", "Drawings.GankAlerter.LineDuration", 1, 0, 5);
-
-		Menu::SliderInt("Alerter Line Width", "Drawings.GankAlerter.LineWidth", 3, 1, 10);
+		Menu::SliderInt("Draw Only Decteted if there are minimum # enemies around", "Detector.SharedXP.DetectNumber", 0, 0, 4);
 
 
-		Menu::Checkbox("Draw Only ", "Drawings.GankAlerter.Name", true);
+		Menu::Tree("Shared XP Drawing Settings", "Detector.SharedXP.Drawings", false, []()
+		{
+			Menu::SliderInt("Font Size", "Detector.SharedXP.FontSize", 24, 20, 30);
 
-		/*
-		Menu::Checkbox("Don't Use Last Position Checker", "Drawings.GankAlerter.LastPos", false);
-		SdkUiText("^-> If you turn it on, Gank Alerter is triggered every time a tracked champion is visible again        ");
-		SdkUiText("^-> Might be little bit annoying but some people prefer it so I added it");
-		*/
+			Menu::SliderInt("Drawing Position X-axis", "Detector.SharedXP.DrawingX", 22, 1, 80);
+			Menu::SliderInt("Drawing Position Y-axis", "Detector.SharedXP.DrawingY", 53, 1, 80);
+
+			Menu::SliderInt("Don't Draw If the detector's data was # Seconds ago", "Detector.SharedXP.TimerMax", 30, 5, 60);
+
+
+
+
+			Menu::SliderInt("Draw Only Decteted if there are minimum # enemies around", "Detector.SharedXP.DetectNumber", 0, 0, 4);
+			Menu::DropList("^-> Color", "Detector.SharedXP.Enemy.Color", ColorMenuList, 11); //white
+
+
+			Menu::Checkbox("Change the Color If mimimum # enemies around", "Detector.SharedXP.ChangeColor", true);
+			Menu::SliderInt("^-> Number", "Detector.SharedXP.WarningDetectNumber", 2, 1, 4);
+			Menu::DropList("^-> Color ", "Detector.SharedXP.Enemy.ColorWarning", ColorMenuList, 10); //red
+
+
+			Menu::Checkbox("Use the Timer shows when the detector data collected ", "Detector.SharedXP.Timer", true);
+			Menu::SliderInt("^- Minimum # Seconds to Show the Timer", "Detector.SharedXP.TimerMin", 3, 1, 20);
+			
+
+		});
 
 	
 
 
-		Menu::Tree("Shared XP Enemy Settings", "Detector.SharedXP.Enemy", false, []()
+
+		Menu::Tree("Shared XP Enemy Use On", "Detector.SharedXP.Enemy", false, []()
 		{
 
-			Menu::Checkbox("Track Only Enemy Jungler (Has Smite)", "Drawings.GankAlerter.Enemy.Jungler", false);
-
-			Menu::Checkbox("Track Enemy With a Line", "Drawings.GankAlerter.Enemy.LineUse", true);
-			Menu::DropList("^-> Color ", "Drawings.GankAlerter.Enemy.LineUseColor", ColorMenuList, 10);
-
-			Menu::Checkbox("Use Ping to Alert Enemy (Local)", "Drawings.GankAlerter.Enemy.Ping", true);
-			Menu::DropList("^-> Type of the Ping ", "Drawings.GankAlerter.Enemy.PingType", PingTypes, 2);
-
-			//Menu::Checkbox("Track Enemy on The Minimap", "Drawings.GankAlerter.Enemy.Minimap", true);
-
-			Menu::Tree("Enemy Settings", "Drawings.GankAlerter.EnemyList", false, []()
+			if (!ChampionEXPObjects.empty())
 			{
-				if (!ChampionEXPObjects.empty())
+				for (auto const ent : ChampionEXPObjects)
 				{
-					for (auto const ent : ChampionEXPObjects)
+					if ((&ent)->Hero->GetNetworkID() != Player.GetNetworkID() && (&ent)->isAlly == false)
 					{
-						if ((&ent)->Hero->GetNetworkID() != Player.GetNetworkID() && (&ent)->isAlly == false)
-						{
-							std::string menuID = "Drawings.GankAlerter.Enemy.UseFor";
-							menuID += (&ent)->Hero->GetCharName();
-							Menu::Checkbox((&ent)->Hero->GetCharName(), menuID, true);
-						}
+						std::string menuID = "Detector.SharedXP.Enemy.UseFor";
+						menuID += (&ent)->Hero->GetCharName();
+						Menu::Checkbox((&ent)->Hero->GetCharName(), menuID, true);
 					}
 				}
-			});
+			}
+			
 		});
 
 
@@ -215,221 +223,261 @@ bool SharedExperience::AreSame(float a, float b, float tolerance)
 
 
 void SharedExperience::TickLoader()
-{
-	
-	/*
-	for (auto &value : ChampionEXPObjects)
+{	
+	if (!Menu::Get<bool>("Detector.SharedXP.Use") || ChampionEXPObjects.empty())
 	{
-		if (value.LastExp != value.Hero->GetExperience())
-		{
+		return;
+	}
 
-			float difference = value.Hero->GetExperience() - value.LastExp;
-		//	std::llround(difference)
-			//difference = std::llround(difference);
-			//float difference2 = round(difference * 100) / 100;
-			
+
+
+
+
+
+	for (auto &heroValue : ChampionEXPObjects)
+	{
+
 		
-			if (difference == 59.0f) //38 26 19 15
-			{
-				SdkUiConsoleWrite("Difference Melee %f", difference);
-
-			}
-			else if (difference == 29.0f) //19 13 10 8
-			{
-				SdkUiConsoleWrite("Difference Range %f", difference);
-
-			}
-			else if (difference == 92.0f) //60 40 30 24
-			{
-				SdkUiConsoleWrite("Difference Siege %f", difference);
-
-			}
-			else
-			{
-				SdkUiConsoleWrite("Difference Other %f", difference);
-
-			}
-	
-		}
-		value.LastExp = value.Hero->GetExperience();
-	}*/
-
-	//auto minion_ptr{ pSDK->EntityManager->GetEnemyMinions() };
-
-
-	if (ChampionEXPObjects.empty())
-	{
-		return;
-	}
-	auto minion_ptr{ pSDK->EntityManager->GetAllyMinions() };
-
-
-	if (minion_ptr.empty())
-	{
-		return;
-	}
-
-	for (auto &[netID, value] : minion_ptr)
-	{
-		if (netID && value)
+		std::string menuID = "Detector.SharedXP.Enemy.UseFor";
+		menuID += heroValue.Hero->GetCharName();
+		if (!Menu::Get<bool>(menuID))
 		{
-			if (!value->IsAlive())
+			continue;
+		}
+
+		auto heroPos = heroValue.Hero->GetServerPosition();
+
+		float detectingRange = (float) Menu::Get<int>("Detector.SharedXP.Range");
+
+		if (heroPos.IsValid() && heroValue.Hero->IsVisible() && Player.Distance(heroPos) > detectingRange && !Menu::Get<bool>("Detector.SharedXP.All"))
+		{
+			//SdkUiConsoleWrite("emprt target %s %f", heroValue.Hero->GetCharName(), Player.Distance(heroPos));
+			//SdkUiConsoleWrite("deac %f", detectingRange);
+			continue;
+		}
+		
+
+
+		auto heroPos = heroValue.Hero->GetServerPosition();
+
+		//if ( Menu::Get<bool>("Detector.SharedXP.All"))
+		{
+			if (heroPos.IsValid())
 			{
-				auto miniPos = value->GetPosition();
+				auto minion_ptr{ pSDK->EntityManager->GetAllyMinions(1400.0f, &heroPos) }; // 1450 is more accurate but wanna make it sure
 
+			//	auto minion_ptr{ pSDK->EntityManager->GetEnemyMinions(1400.0f, &heroPos) }; // 1450 is more accurate but wanna make it sure
 
-				for (auto &heroValue : ChampionEXPObjects)
+				if (minion_ptr.empty())
 				{
-					auto heroPos = heroValue.Hero->GetPosition();
+					//SdkUiConsoleWrite("emprt");
+					continue;
+				}
 
-					if (heroPos.IsValid() && heroValue.Hero->Distance(miniPos) <= 1450.0f )
+				for (auto &[netID, value] : minion_ptr)
+				{
+					if (netID && value)
 					{
-						float death = value->GetDeathTime();
-
-						if (death == NULL || death == 0)
+						if (!value->IsAlive())
 						{
-							continue;
-						}
+							
+							float death = value->GetDeathTime();
 
-						if (death + 1.0f > Game::Time() )
-						{
-
-							float currentEXP = heroValue.Hero->GetExperience();
-							if (heroValue.LastExp != currentEXP)
+							if (death == NULL || death == 0)
 							{
-								float difference = heroValue.Hero->GetExperience() - heroValue.LastExp;
-								difference = std::llround(difference);
-								if (difference <= 0.0f || difference > 500.0f)
-								{
-									continue;
-								}
-
-								//float difference = heroValue.Hero->GetExperience() - heroValue.LastExp;
-								//	std::llround(difference)
-									//difference = std::llround(difference);
-									//float difference2 = round(difference * 100) / 100;
-
-								if (value->IsSiegeMinion() )  //92 60 40 30 24
-								{
-
-									if (AreSame(90.0f, difference, 10.0f))
-									{
-										heroValue.NearByHeroes = 0;
-									}
-									else if (AreSame(60.0f, difference, 5.0f))
-									{
-										heroValue.NearByHeroes = 1;
-									}
-									else if (AreSame(40.0f, difference, 5.0f))
-									{
-										heroValue.NearByHeroes = 2;
-									}
-									else if (AreSame(30.0f, difference, 3.0f))
-									{
-										heroValue.NearByHeroes = 3;
-									}
-									else if (AreSame(24.0f, difference, 2.0f))
-									{
-										heroValue.NearByHeroes = 4;
-									}
-
-									heroValue.SiegeExp = difference;
-									SdkUiConsoleWrite("1dead siege added %f NearBy %s number %d", difference, heroValue.Hero->GetCharName(), heroValue.NearByHeroes);
-								}
-								else if (value->IsLaneMinion() && value->IsMelee() ) //59 38 26 19 15
-								{
-
-									if (AreSame(59.0f, difference, 5.0f))
-									{
-										heroValue.NearByHeroes = 0;
-									}
-									else if (AreSame(38.0f, difference, 5.0f))
-									{
-										heroValue.NearByHeroes = 1;
-									}
-									else if (AreSame(26.0f, difference, 5.0f))
-									{
-										heroValue.NearByHeroes = 2;
-									}
-									else if (AreSame(19.0f, difference, 2.0f))
-									{
-										heroValue.NearByHeroes = 3;
-									}
-									else if (AreSame(15.0f, difference, 1.5f))
-									{
-										heroValue.NearByHeroes = 4;
-									}
-
-									heroValue.MeleeExp = difference;
-									SdkUiConsoleWrite("2dead Melee added %f NearBy %s number %d", difference, heroValue.Hero->GetCharName(), heroValue.NearByHeroes);
-								}
-								else if (value->IsLaneMinion() && !value->IsMelee() ) //29 19 13 10 8
-								{
-
-									if (AreSame(29.0f, difference, 5.0f))
-									{
-										heroValue.NearByHeroes = 0;
-									}
-									else if (AreSame(19.0f, difference, 3.0f))
-									{
-										heroValue.NearByHeroes = 1;
-									}
-									else if (AreSame(13.0f, difference, 1.5f))
-									{
-										heroValue.NearByHeroes = 2;
-									}
-									else if (AreSame(10.0f, difference, 1.0f))
-									{
-										heroValue.NearByHeroes = 3;
-									}
-									else if (AreSame(8.0f, difference, 0.9f))
-									{
-										heroValue.NearByHeroes = 4;
-									}
-
-									heroValue.RangedExp = difference;
-									SdkUiConsoleWrite("3dead Ranged added %f NearBy %s number %d", difference, heroValue.Hero->GetCharName(), heroValue.NearByHeroes);
-								}
-
-
+								continue;
 							}
-							heroValue.LastExp = currentEXP;
-							heroValue.LastExpTime = Game::Time();
 
-
-
-
-
-
-
-
-
-							/*
-							if (value->IsSiegeMinion())
+							if (death + 0.5f > Game::Time())
 							{
 								
+								float currentEXP = heroValue.Hero->GetExperience();
+								if (heroValue.LastExp != currentEXP)
+								{
+									float difference = heroValue.Hero->GetExperience() - heroValue.LastExp;
+									difference = std::llround(difference);
 
-								SdkUiConsoleWrite("dead siege added %f NearBy %s", value->GetDeathTime(), heroValue.Hero->GetCharName());
+									//SdkUiConsoleWrite("inside34 %f %f %f", heroValue.Hero->GetExperience(), heroValue.LastExp, difference);
+
+									if ( (difference <= 0.0f || difference > 500.0f) && heroValue.LastExp != 0)
+									{
+										continue;
+									}
+									
+									//float difference = heroValue.Hero->GetExperience() - heroValue.LastExp;
+									//	std::llround(difference)
+										//difference = std::llround(difference);
+										//float difference2 = round(difference * 100) / 100;
+
+
+									//IsValidNumber
+
+									if (value->IsLaneMinion() && value->IsSiegeMinion())  //92 60 40 30 24
+									{
+
+										int tempStock = 0;
+
+										if (AreSame(90.0f, difference, 10.0f))
+										{
+											tempStock = 0;
+										}
+										else if (AreSame(60.0f, difference, 5.0f))
+										{
+											tempStock = 1;
+										}
+										else if (AreSame(40.0f, difference, 5.0f))
+										{
+											tempStock = 2;
+										}
+										else if (AreSame(30.0f, difference, 3.0f))
+										{
+											tempStock = 3;
+										}
+										else if (AreSame(24.0f, difference, 2.0f))
+										{
+											tempStock = 4;
+										}
+
+										if ((tempStock - heroValue.NearByHeroes >= 2) && !heroValue.PossibleInvalidNumber && heroValue.UnsureNearByHeroes == 6)
+										{
+											heroValue.PossibleInvalidNumber = true;
+											heroValue.UnsureNearByHeroes = tempStock;
+										}
+										else if (heroValue.PossibleInvalidNumber)
+										{
+											if (heroValue.UnsureNearByHeroes == tempStock)
+											{
+												heroValue.NearByHeroes = tempStock;
+											}
+
+											heroValue.UnsureNearByHeroes = 6;
+											heroValue.PossibleInvalidNumber = false;
+										}
+										else
+										{
+											heroValue.NearByHeroes = tempStock;
+										}
+
+
+
+										heroValue.SiegeExp = difference;
+										heroValue.LastExpTime = Game::Time();
+										SdkUiConsoleWrite("1dead siege added difference: %f NearBy %s number %d", difference, heroValue.Hero->GetCharName(), heroValue.NearByHeroes);
+									}
+									else if (value->IsLaneMinion() && value->IsMelee()) //59 38 26 19 15
+									{
+										int tempStock = 0;
+
+										if (AreSame(59.0f, difference, 5.0f))
+										{
+											tempStock = 0;
+										}
+										else if (AreSame(38.0f, difference, 5.0f))
+										{
+											tempStock = 1;
+										}
+										else if (AreSame(26.0f, difference, 5.0f))
+										{
+											tempStock = 2;
+										}
+										else if (AreSame(19.0f, difference, 2.0f))
+										{
+											tempStock = 3;
+										}
+										else if (AreSame(15.0f, difference, 1.5f))
+										{
+											tempStock = 4;
+										}
+
+										if ((tempStock - heroValue.NearByHeroes >= 2) && !heroValue.PossibleInvalidNumber)
+										{
+											heroValue.PossibleInvalidNumber = true;
+											heroValue.UnsureNearByHeroes = tempStock;
+										}
+										else if (heroValue.PossibleInvalidNumber)
+										{
+											if (heroValue.UnsureNearByHeroes == tempStock)
+											{
+												heroValue.NearByHeroes = tempStock;
+											}
+
+											heroValue.UnsureNearByHeroes = 6;
+											heroValue.PossibleInvalidNumber = false;
+										}
+										else
+										{
+											heroValue.NearByHeroes = tempStock;
+										}
+
+										heroValue.MeleeExp = difference;
+										heroValue.LastExpTime = Game::Time();
+										SdkUiConsoleWrite("2dead melee added difference: %f NearBy %s number %d", difference, heroValue.Hero->GetCharName(), heroValue.NearByHeroes);
+									}
+									else if (value->IsLaneMinion() && !value->IsMelee()) //29 19 13 10 8
+									{
+										int tempStock = 0;
+										if (AreSame(29.0f, difference, 5.0f))
+										{
+											tempStock = 0;
+										}
+										else if (AreSame(19.0f, difference, 3.0f))
+										{
+											tempStock = 1;
+										}
+										else if (AreSame(13.0f, difference, 1.5f))
+										{
+											tempStock = 2;
+										}
+										else if (AreSame(10.0f, difference, 1.0f))
+										{
+											tempStock = 3;
+										}
+										else if (AreSame(8.0f, difference, 0.9f))
+										{
+											tempStock = 4;
+										}
+
+										if ((tempStock - heroValue.NearByHeroes >= 2) && !heroValue.PossibleInvalidNumber)
+										{
+											heroValue.PossibleInvalidNumber = true;
+											heroValue.UnsureNearByHeroes = tempStock;
+										}
+										else if (heroValue.PossibleInvalidNumber)
+										{
+											if (heroValue.UnsureNearByHeroes == tempStock)
+											{
+												heroValue.NearByHeroes = tempStock;
+											}
+
+											heroValue.UnsureNearByHeroes = 6;
+											heroValue.PossibleInvalidNumber = false;
+										}
+										else
+										{
+											heroValue.NearByHeroes = tempStock;
+										}
+
+										heroValue.RangedExp = difference;
+										heroValue.LastExpTime = Game::Time();
+										SdkUiConsoleWrite("3dead ranged added difference: %f NearBy %s number %d", difference, heroValue.Hero->GetCharName(), heroValue.NearByHeroes);
+									}
+
+
+								}
+								heroValue.LastExp = currentEXP;
+								
+
 							}
-							else if (value->IsLaneMinion() && value->IsMelee())
-							{
-								SdkUiConsoleWrite("dead Melee added %f NearBy %s", value->GetDeathTime(), heroValue.Hero->GetCharName());
-							}
-							else if (value->IsLaneMinion() && !value->IsMelee())
-							{
-								SdkUiConsoleWrite("dead Ranged added %f NearBy %s", value->GetDeathTime(), heroValue.Hero->GetCharName());
-							}
-							*/
+
 
 						}
 					}
 				}
 			}
-			//MinionObject temp;
-			//temp.Minion = value;
-			//temp.netID = netID;
-			//MinionsObjects.emplace_back(temp);
 		}
+		
+
+	
 	}
 
 }
@@ -444,31 +492,119 @@ void SharedExperience::Draw(_In_ void* UserData)
 
 	for (auto const& drawHero : ChampionEXPObjects)
 	{
+
+		std::string menuID = "Detector.SharedXP.Enemy.UseFor";
+		menuID += drawHero.Hero->GetCharName();
+		if (!Menu::Get<bool>(menuID))
+		{
+			continue;
+		}
+
+		auto heroPos = drawHero.Hero->GetServerPosition();
+
+		float detectingRange = (float)Menu::Get<int>("Detector.SharedXP.Range");
+
+		if (heroPos.IsValid() && Player.Distance(heroPos) > detectingRange && !Menu::Get<bool>("Detector.SharedXP.All"))
+		{
+			continue;
+		}
+
+
+
+		//SdkUiConsoleWrite("here1");
 		Vector3 pos{ drawHero.Hero->GetPosition() };
 		Vector2 screenPos{ Renderer::WorldToScreen(pos) };
 		//for (auto const& value : currentItems)
 
 
-		if (pos.IsValid() && pos.IsOnScreen() && drawHero.Hero->IsAlive() && drawHero.Hero->IsVisible())
+		Vector2 posHP{ drawHero.Hero->GetHealthBarScreenPos() };
+		posHP.x += (float)Menu::Get<int>("Detector.SharedXP.DrawingX");
+		posHP.y -= (float)Menu::Get<int>("Detector.SharedXP.DrawingY");
+
+		//Detector.SharedXP.DrawingX
+		if (posHP.IsValid() && drawHero.Hero->GetPosition().IsOnScreen() && drawHero.Hero->IsAlive() && drawHero.Hero->IsVisible())
 		{
 
-
+			//SdkUiConsoleWrite("here12");
 			screenPos.y -= 160.0f;
 			screenPos.x += 80.0f;
-			Draw::Text(NULL, &screenPos, "Nearby: ", "Arial", &Color::Red, 28, 6);
 
-			screenPos.x += 60.0f;
-
+		
 			//auto hi = Menu::Get<Hotkey>("Activator.Config.ComboKey");
 
 
+			//Detector.SharedXP.FontSize
+			int minimumEnemy = Menu::Get<int>("Detector.SharedXP.DetectNumber");
+			
+			int fontSize = Menu::Get<int>("Detector.SharedXP.FontSize");
+
+			if (minimumEnemy >= 0 && minimumEnemy < 5 && fontSize)
+			{
+			
+				int detectNumber = Menu::Get<int>("Detector.SharedXP.WarningDetectNumber");
+
+				if (detectNumber >= 0 && detectNumber < 5)
+				{
+					//Draw::Text(NULL, &screenPos, "3", "Arial", &Color::Red, 28, 6);
+
+					screenPos.y -= 40.0f;
+					//Draw::Text(NULL, &screenPos, std::to_string(minimumEnemy), "Arial", &Color::Green, 28, 6); //1
+					screenPos.y -= 40.0f;
+
+					float timePassed = Game::Time() - drawHero.LastExpTime;
+					Draw::Text(NULL, &screenPos, std::to_string(timePassed), "Arial", &Color::Green, 28, 6); //0
+
+					if (minimumEnemy <= drawHero.NearByHeroes)
+					{
+						screenPos.x += 60.0f;
+
+						std::stringstream ss;
+						ss.precision(1); //for decimal
+						ss.setf(std::ios_base::fixed, std::ios_base::floatfield);
+
+						ss << "" << drawHero.NearByHeroes;
+
+						float maxTimer = (float)Menu::Get<int>("Detector.SharedXP.TimerMax");
+						if (timePassed <= maxTimer)
+						{
 
 
 
-			//hi.Active;
+							if (Menu::Get<bool>("Detector.SharedXP.Timer"))//Detector.SharedXP.Timer
+							{
+								float minTimer = (float)Menu::Get<int>("Detector.SharedXP.TimerMin");
+								//Detector.SharedXP.TimerMin
 
-			//Menu::Hotkey
-			Draw::Text(NULL, &screenPos, std::to_string(drawHero.NearByHeroes), "Arial", &Color::Red, 28, 6);
+								if (timePassed >= minTimer)
+								{
+									ss << " (" << timePassed << "s)";
+								}
+
+							}
+
+
+							if (detectNumber <= drawHero.NearByHeroes && Menu::Get<bool>("Detector.SharedXP.ChangeColor"))
+							{
+
+								Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.ColorWarning")), fontSize, 6);
+							}
+							else if (detectNumber > drawHero.NearByHeroes)
+							{
+
+								Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
+							}
+							else
+							{
+								Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
+							}
+						}
+					}
+
+				}
+				
+			}
+
+
 		}
 	}
 }
@@ -478,56 +614,3 @@ void SharedExperience::DrawLoader()
 
 }
 
-bool __cdecl SharedExperience::DeleteObject(void * Object, unsigned int NetworkID, void * UserData)
-{
-
-	return true;
-	if (Object && NetworkID)
-	{
-	
-
-		
-		//if(pSDK->EntityManager->GetObjectFromPTR(Object))
-		//pSDK->EntityManager->GetObjectFromPTR(Object);
-		AIMinionClient* minions = (AIMinionClient*) pSDK->EntityManager->GetObjectFromPTR(Object);
-
-		if ( minions)
-		{
-
-
-				auto miniPos = minions->GetPosition();
-				if (miniPos.IsValid() && minions->GetTeamID() != Player.GetTeamID())
-				{
-					if (minions->IsLaneMinion() || minions->IsSiegeMinion())
-					{
-						if (Player.Distance(&miniPos) <= 1450.0f)
-						{
-							SdkUiConsoleWrite("mini ded x %f y %f z %f %s", miniPos.x, miniPos.y, miniPos.z, minions->GetCharName());
-						}
-					}
-					/*
-					for (auto& value : ChampionEXPObjects)
-					{
-						if (value.Hero->Distance(&miniPos) <= 1450.0f)
-						{
-							//SdkUiConsoleWrite("mini ded x %f y %f z %f Nearby %s", miniPos.x, miniPos.y, miniPos.z, value.Hero->GetCharName());
-
-						}
-
-						//value.Hero->GetServerPosition()
-					}*/
-
-
-
-				}
-			
-		
-
-
-			
-		}
-
-	}
-
-	return true;
-}

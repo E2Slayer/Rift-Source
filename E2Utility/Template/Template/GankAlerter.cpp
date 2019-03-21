@@ -6,7 +6,6 @@
 
 
 
-
 std::vector<ChampionObject> ChampionObjects;
 
 //std::vector<ChampionObject>ChampionObjects;

@@ -20,7 +20,7 @@ void __cdecl OnLoad(void* UserData)
 		//MyTemplateClass::Init();
 		Activator::Init();
 		Drawings::Init();
-		CustomRanges::Init();
+		//CustomRanges::Init();
 		Others::Init();
 		Detector::Init();
 		//Game::PrintChat(R"(<font color="#832232">test.</font>)");

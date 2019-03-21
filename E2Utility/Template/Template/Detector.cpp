@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Detector.h"
 
+
+
 void Detector::Init()
 {
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Detector::Tick);
@@ -29,7 +31,7 @@ void Detector::DrawMenu(void * UserData)
 		Defensives::MenuLoader();
 		Cleansers::MenuLoader();
 		*/
-		//TurnAround::MenuLoader();
+		SharedExperience::MenuLoader();
 
 		
 

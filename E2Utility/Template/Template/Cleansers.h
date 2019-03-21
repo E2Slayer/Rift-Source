@@ -17,6 +17,6 @@ public:
 	static void CleanseCheck();
 	static void QSSCheck(int targetID, SpellSlot itemSlot);
 	static void MikaelCheck(int targetID, SpellSlot itemSlot, float spellRange);
-
+	
 };
 

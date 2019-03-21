@@ -265,8 +265,8 @@ public:
 
 	bool CanSpellHit();
 
-	bool IsValidTarget() {
-		return IsValid() && IsAlive() && !IsZombie() && IsVisible() && CanSpellHit();
+	bool IsValidTarget(bool CheckIfSpellCanHit = true) {
+		return IsValid() && IsAlive() && !IsZombie() && IsVisible() && (!CheckIfSpellCanHit || CanSpellHit());
 	}
 };
 
@@ -973,18 +973,20 @@ inline bool GameObject::CanSpellHit() {
 }
 
 inline bool GameObject::IsHeroInGame(std::string Name, bool EnemiesOnly) {
-	if (LoadedHeroes.empty()) {
+	if (LoadedHeroes.size() < 6) {
 		auto Heroes{ pSDK->EntityManager->GetEnemyHeroes() };
 		auto Allies{ pSDK->EntityManager->GetAllyHeroes() };
 		Heroes.insert(Allies.begin(), Allies.end());
 
-		for (auto &[_, Hero] : Heroes) {
-			std::string name{ Hero->GetCharName() };
-			if (Hero->IsEnemy())
-				LoadedHeroes[name] = true;
-			else
-				LoadedHeroes[name] = false;
-		}
+		if (LoadedHeroes.size() != Heroes.size()) {
+			for (auto &[_, Hero] : Heroes) {
+				std::string name{ Hero->GetCharName() };
+				if (Hero->IsEnemy())
+					LoadedHeroes[name] = true;
+				else
+					LoadedHeroes[name] = false;
+			}
+		}		
 	}
 	return (LoadedHeroes.count(Name) > 0 && (!EnemiesOnly || LoadedHeroes[Name]));
 }

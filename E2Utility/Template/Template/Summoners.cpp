@@ -339,14 +339,19 @@ void Summoners::IgniteCheck()
 									}
 									else if (list == 1 && heroes->GetHealthPercent() <= 40.0f) // combo
 									{
-										if (pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo))
+										if (Menu::Get<Hotkey>("Activator.Config.ComboKey").Active)
 										{
+											/*
 											auto OrbTarget = pCore->Orbwalker->GetTarget();
 											if (pCore->TS->IsValidTarget(OrbTarget) && OrbTarget->GetNetworkID() == heroes->GetNetworkID())
 											{
 												igniteSpell.Cast(heroes);
 												LastTimeTickCountSumm = GetTickCount();
-											}
+											}*/
+
+											igniteSpell.Cast(heroes);
+											LastTimeTickCountSumm = GetTickCount();
+											
 										}
 									}
 								}
@@ -478,7 +483,8 @@ void Summoners::ExhaustCheck()
 					menuID += heroes->GetCharName();
 					if (Menu::Get<bool>(menuID))
 					{
-						if (list == 0 || (list == 1 && pCore->Orbwalker->IsModeActive(OrbwalkingMode::Combo))) // "Always", "Combo"
+
+						if (list == 0 || list == 1 && Menu::Get<Hotkey>("Activator.Config.ComboKey").Active) // "Always", "Combo"
 						{
 							float enemyHealthMinimum = (float)Menu::Get<int>("Activator.Summoners.ExhaustEnemyPct");
 							float allyHealthMinimum = (float)Menu::Get<int>("Activator.Summoners.ExhaustAllyPct");

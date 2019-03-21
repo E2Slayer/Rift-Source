@@ -20,15 +20,14 @@ struct ChampionEXPObject
 	float LastExpTime;
 	unsigned int netID;
 	int NearByHeroes;
+	int UnsureNearByHeroes;
 
+	bool PossibleInvalidNumber;
 	float SiegeExp;
-	float LastSiegeExp;
 
 	float RangedExp;
-	float LastRangedExp;
 
 	float MeleeExp;
-	float LastMeleeExp;
 
 	float CurrentExp;
 	bool isAlly;
@@ -48,7 +47,6 @@ public:
 	static void DrawLoader();
 	static bool AreSame(float a, float b, float tolerance);
 	static void	__cdecl	Draw(_In_ void* UserData);
-	static bool __cdecl DeleteObject(void* Object, unsigned int NetworkID, void* UserData);
 	
 };
 
