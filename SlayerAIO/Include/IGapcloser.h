@@ -1,6 +1,10 @@
 #pragma once
 
+#pragma warning(push, 0)
+#pragma warning(disable: 4774)
 #include <string>
+#pragma warning(pop)
+
 #include "Vectors.hpp"
 
 struct GapcloseData {

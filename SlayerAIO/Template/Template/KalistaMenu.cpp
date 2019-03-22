@@ -40,7 +40,7 @@ void KalistaMenu::DrawMenu(void * UserData)
 	Menu::Tree("Kalista", "Kalista.Main", &bKalistaExpanded, []()
 	{
 		//SdkUiText("MataView 1.1 [Beta] - E2Slayer");
-		SdkUiColoredText(&Color::Green, "Kalista 1.4 (Beta)");
+		SdkUiColoredText(&Color::Green, "Kalista 1.5 (Beta)");
 
 		//bool bComboExpanded = false;
 		Menu::Tree("Combo", "Kalista.Combo", &bComboExpanded, []()

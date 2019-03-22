@@ -1,7 +1,11 @@
 #pragma once
 
+#pragma warning(push, 0)
+#pragma warning(disable: 4774)
 #include <string>
 #include <vector>
+#pragma warning(pop)
+
 
 class AIHeroClient;
 

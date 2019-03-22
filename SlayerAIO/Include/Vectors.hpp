@@ -1,11 +1,12 @@
 #pragma once
 
 #pragma warning(push, 0)
-#pragma warning(disable: 26495)
+#pragma warning(disable: 26495 4774)
 #include <d3dx9.h>
 #include <d3d9.h>
 #include <Windows.h>
 #include <vector>
+#include <sstream>
 #pragma warning(pop)
 
 class Vector3;
@@ -118,6 +119,7 @@ public:
 	}
 	#pragma endregion
 
+	std::string ToString();
 	float Length();
 	Vector2 Normalize();
 	Vector2 Normalized();
@@ -296,6 +298,7 @@ public:
 	}
 	#pragma endregion
 	
+	std::string ToString();
 	float Length();
 	Vector3 Normalize();
 	Vector3 Normalized();
@@ -774,6 +777,11 @@ __declspec(selectany) PSDK_CONTEXT SDK_CONTEXT_GLOBAL;
 __declspec(selectany) void* g_LocalPlayer;
 
 #pragma region Vector2 Implementations
+inline std::string Vector2::ToString() {
+	std::ostringstream out;
+	out << "{ " << this->x << ", " << this->y << " }";
+	return out.str();
+}
 
 inline Vector3 Vector2::Closest(std::vector<Vector3>& arr) {
 	Vector3 result = Vector3{};
@@ -1052,6 +1060,12 @@ inline Vector2 Vector2::Closest(std::vector<Vector2>& arr) {
 #pragma endregion
 
 #pragma region Vector3 Implementations
+
+inline std::string Vector3::ToString() {
+	std::ostringstream out;
+	out << "{ " << this->x << ", " << this->y << ", " << this->z << " }";
+	return out.str();
+}
 
 inline float Vector3::Length() {
 	return (float)sqrt((x * x) + (y * y) + (z * z));

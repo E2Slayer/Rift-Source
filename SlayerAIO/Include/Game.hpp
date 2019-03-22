@@ -83,6 +83,15 @@ enum class PingType {
 	BigIcon
 };
 
+enum class RecallType {
+	Unknown,
+	Recall,
+	EmpoweredRecall,
+	Teleport,
+	ShenR,
+	TwistedFateR
+};
+
 class Game {
 public:
 	static float Time() {
@@ -151,5 +160,71 @@ public:
 
 	static bool IsHeroInGame(std::string Name, bool EnemiesOnly = false) {
 		return GameObject::IsHeroInGame(Name, EnemiesOnly);
+	}
+
+	static RecallType GetRecallType(const char * Type) {
+		if (strcmp(Type, "recall") == 0)
+			return RecallType::Recall;
+
+		if (strcmp(Type, "SummonerTeleport") == 0)
+			return RecallType::Teleport;
+
+		if (strcmp(Type, "SuperRecall") == 0)
+			return RecallType::EmpoweredRecall;
+
+		if (strcmp(Type, "shenrchannelmanager") == 0)
+			return RecallType::ShenR;
+
+		if (strcmp(Type, "Gate") == 0)
+			return RecallType::TwistedFateR;
+
+		return RecallType::Unknown;
+	}
+
+	static std::string GetRecallName(RecallType Type) {
+		switch (Type) {
+			case (RecallType::Recall):
+				return "recall";
+			case (RecallType::Teleport):
+				return "SummonerTeleport";
+			case (RecallType::EmpoweredRecall):
+				return "SuperRecall";
+			case (RecallType::ShenR):
+				return "shenrchannelmanager";
+			case (RecallType::TwistedFateR):
+				return "Gate";
+			case (RecallType::Unknown):
+			default:
+				return "Unknown";
+
+		}				
+	}
+
+	static float GetRecallDuration(RecallType Type) {
+		switch (Type) {
+			case (RecallType::Recall):
+				return 8.0f;
+			case (RecallType::Teleport):
+				return 4.0f;
+			case (RecallType::EmpoweredRecall):
+				return 4.0f;
+			case (RecallType::ShenR):
+				return 3.0f;
+			case (RecallType::TwistedFateR):
+				return 1.5f;
+			case (RecallType::Unknown):
+			default:
+				return 0.0f;
+		}			
+	}
+
+	static void __cdecl UpdateLocalPlayer(void* _) {
+		UNREFERENCED_PARAMETER(_);
+
+		void* tmp{ NULL };
+		if (SDKSTATUS_SUCCESS(SdkGetLocalPlayer(&tmp)) && g_LocalPlayer != tmp) {
+			g_LocalPlayer = tmp;
+			Player = AIHeroClient(g_LocalPlayer);
+		}		
 	}
 };

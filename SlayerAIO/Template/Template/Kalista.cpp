@@ -314,7 +314,7 @@ void Kalista::Tick(void * UserData)
 
 	Spells::SpellEUseSub(OrbwalkingMode::Custom);
 
-	Spells::SpellWUse(OrbwalkingMode::None);
+	//Spells::SpellWUse(OrbwalkingMode::None);
 	
 	UseEBeforeDeath();
 	//Geometry::BestCoveringRectangle
@@ -1172,13 +1172,17 @@ void Kalista::Draw(void * UserData)
 		}
 	}*/
 
-
-	/*
+	
+	auto buffs
+	{
+		Player.GetBuffs()
+	};
 
 	
+	
 		Vector3 pos{ Player.GetPosition() };
-		
-		//for (auto buffname : buffs)
+		Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+		for (auto buffname : buffs)
 		{
 
 
@@ -1188,11 +1192,11 @@ void Kalista::Draw(void * UserData)
 			{
 				//We get the screen position and offset it a little so it doesnt draw over the above text
 				//Vector2 screenPos{ Renderer::WorldToScreen(pos) };
-				Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+				//Vector2 screenPos{ Renderer::WorldToScreen(pos) };
 				screenPos.y -= 20.0f;
 
 
-				Draw::Text(NULL, &screenPos, std::to_string(InstDamage.size()), "Arial Narrow", &Color::White, 20, 6);
+				//Draw::Text(NULL, &screenPos, std::to_string(InstDamage.size()), "Arial Narrow", &Color::White, 20, 6);
 
 				//screenPos.y -= 20.0f;
 
@@ -1204,11 +1208,11 @@ void Kalista::Draw(void * UserData)
 
 				//if (Player.GetHealthPercent() <= 10)
 				{
-					screenPos.y -= 20.0f;
-					Draw::Text(NULL, &screenPos, std::to_string(Player.GetHealthPercent()), "Arial Narrow", &Color::Red, 20, 6);
+					
+					Draw::Text(NULL, &screenPos, buffname.Name, "Arial Narrow", &Color::Red, 20, 6);
 				}
 
-
+				/*
 				
 				Draw::Text(NULL, &screenPos, std::to_string(pos.x), "Arial Narrow", &Color::White, 20, 6);
 				screenPos.y -= 20.0f;
@@ -1218,11 +1222,11 @@ void Kalista::Draw(void * UserData)
 
 				Draw::Text(NULL, &screenPos, std::to_string(pos.z), "Arial Narrow", &Color::Red, 20, 6);
 
-				
+				*/
 			}
 
 		}
-	*/
+	
 
 
 	/*
@@ -1523,49 +1527,52 @@ void Kalista::Draw(void * UserData)
 				{
 					if (heroes != nullptr && heroes != NULL)
 					{
-						//if (heroes->IsAlive() && heroes->IsVisible() && heroes->HasBuff("kalistaexpungemarker", false))
-						if (heroes->HasBuff("kalistaexpungemarker", false))
+						
+						if (heroes->IsAlive() && heroes->IsVisible())
 						{
-							if (Menu::Get<bool>("Kalista.drawEDmgHPBar")) //Kalista.drawEDmgHPBar
+							if (heroes->HasBuff("kalistaexpungemarker", false))
 							{
-								if (Damage::RendDamageToHealth(heroes, true) >= 0.0f)
+								if (Menu::Get<bool>("Kalista.drawEDmgHPBar")) //Kalista.drawEDmgHPBar
 								{
-									heroes->DrawDamageOnHP(Damage::RendDamageToHealth(heroes, true));
+									if (Damage::RendDamageToHealth(heroes, true) >= 0.0f)
+									{
+										heroes->DrawDamageOnHP(Damage::RendDamageToHealth(heroes, true));
+									}
 								}
-							}
 
-							if (Menu::Get<bool>("Kalista.drawEDmgPctHero"))
-							{
-								float calc = Damage::RendDamageToHealth(heroes, false);
-
-
-								if (heroes->GetHealthBarScreenPos() != NULL || heroes->GetHealthBarScreenPos() != nullptr)
+								if (Menu::Get<bool>("Kalista.drawEDmgPctHero"))
 								{
+									float calc = Damage::RendDamageToHealth(heroes, false);
 
 
-
-									Vector2 posHP{ heroes->GetHealthBarScreenPos() };
-
-
-									if (posHP.IsValid())
+									if (heroes->GetHealthBarScreenPos() != NULL || heroes->GetHealthBarScreenPos() != nullptr)
 									{
 
 
-										std::stringstream ss;
-										ss.precision(0); //for decimal
-										ss.setf(std::ios_base::fixed, std::ios_base::floatfield);
 
-										ss << calc << "%";
+										Vector2 posHP{ heroes->GetHealthBarScreenPos() };
 
-										posHP.x += 25;
-										posHP.y += 10;
 
-										Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &Color::White, 24, 8);
+										if (posHP.IsValid())
+										{
 
+
+											std::stringstream ss;
+											ss.precision(0); //for decimal
+											ss.setf(std::ios_base::fixed, std::ios_base::floatfield);
+
+											ss << calc << "%";
+
+											posHP.x += 25;
+											posHP.y += 10;
+
+											Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &Color::White, 24, 8);
+
+										}
 									}
 								}
-							}
 
+							}
 						}
 					}
 				}
