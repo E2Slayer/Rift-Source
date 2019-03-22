@@ -63,6 +63,10 @@ void Cleansers::MenuLoader()
 				Menu::SliderInt("^-> Cleanse Minimum Taunt Duration (ms)", "Activator.Cleansers.CleanseUseTauntDuration", 1500, 500, 5000);
 				Menu::Checkbox("Use Cleanse On Fear", "Activator.Cleansers.CleanseUseFear", true);
 				Menu::SliderInt("^-> Cleanse Minimum Fear Duration (ms)", "Activator.Cleansers.CleanseUseFearDuration", 1500, 500, 5000);
+
+				Menu::Checkbox("Use Cleanse On Flee", "Activator.Cleansers.CleanseUseFear", true);
+				Menu::SliderInt("^-> Cleanse Minimum Flee Duration (ms)", "Activator.Cleansers.CleanseUseFleeDuration", 1500, 500, 5000);
+
 				Menu::Checkbox("Use Cleanse On Snare", "Activator.Cleansers.CleanseUseSnare", true);
 				Menu::SliderInt("^-> Cleanse Minimum Snare Duration (ms)", "Activator.Cleansers.CleanseUseSnareDuration", 1500, 500, 5000);
 				Menu::Checkbox("Use Cleanse On Silence", "Activator.Cleansers.CleanseUseSilence", true);
@@ -117,6 +121,10 @@ void Cleansers::MenuLoader()
 
 				Menu::Checkbox("Use QSS On Fear", "Activator.Cleansers.QSSUseFear", true);
 				Menu::SliderInt("^-> QSS Minimum Fear Duration (ms)", "Activator.Cleansers.QSSUseFearDuration", 1500, 500, 5000);
+
+				Menu::Checkbox("Use QSS On Flee", "Activator.Cleansers.QSSUseFear", true);
+				Menu::SliderInt("^-> QSS Minimum Flee Duration (ms)", "Activator.Cleansers.QSSUseFleeDuration", 1500, 500, 5000);
+
 
 				Menu::Checkbox("Use QSS On Snare", "Activator.Cleansers.QSSUseSnare", true);
 				Menu::SliderInt("^-> QSS Minimum Snare Duration (ms)", "Activator.Cleansers.QSSUseSnareDuration", 1500, 500, 5000);
@@ -309,6 +317,8 @@ void Cleansers::CleanseCheck()
 			//Menu::Get<bool>("Activator.Cleansers.CleanseUseKnockBack") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKBACK) ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseTaunt") && Player.HasBuffType((unsigned char)BUFF_TYPE_TAUNT) && Player.GetBuffByType((unsigned char)BUFF_TYPE_TAUNT).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_TAUNT).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.CleanseUseTauntDuration") / 1000.0f ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseFear") && Player.HasBuffType((unsigned char)BUFF_TYPE_FEAR) && Player.GetBuffByType((unsigned char)BUFF_TYPE_FEAR).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_FEAR).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.CleanseUseFearDuration") / 1000.0f ||
+			Menu::Get<bool>("Activator.Cleansers.CleanseUseFlee") && Player.HasBuffType((unsigned char)BUFF_TYPE_FLEE) && Player.GetBuffByType((unsigned char)BUFF_TYPE_FLEE).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_FLEE).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.CleanseUseFleeDuration") / 1000.0f ||
+
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseSnare") && Player.HasBuffType((unsigned char)BUFF_TYPE_SNARE) && Player.GetBuffByType((unsigned char)BUFF_TYPE_SNARE).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_SNARE).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.CleanseUseSnareDuration") / 1000.0f ||
 			Menu::Get<bool>("Activator.Cleansers.CleanseUseSilence") && Player.HasBuffType((unsigned char)BUFF_TYPE_SILENCE) && Player.GetBuffByType((unsigned char)BUFF_TYPE_SILENCE).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_SILENCE).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.CleanseUseSilenceDuration") / 1000.0f ||
 			//Menu::Get<bool>("Activator.Cleansers.CleanseUseSuppression") && Player.HasBuffType((unsigned char)BUFF_TYPE_SUPPRESSION) ||
@@ -397,6 +407,7 @@ void Cleansers::QSSCheck(int targetID, SpellSlot itemSlot)
 			Menu::Get<bool>("Activator.Cleansers.QSSUseKnockBack") && Player.HasBuffType((unsigned char)BUFF_TYPE_KNOCKBACK) && Player.GetBuffByType((unsigned char)BUFF_TYPE_KNOCKBACK).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_KNOCKBACK).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.QSSUseKnockBackDuration") / 1000.0f ||
 			Menu::Get<bool>("Activator.Cleansers.QSSUseTaunt") && Player.HasBuffType((unsigned char)BUFF_TYPE_TAUNT) && Player.GetBuffByType((unsigned char)BUFF_TYPE_TAUNT).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_TAUNT).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.QSSUseTauntDuration") / 1000.0f ||
 			Menu::Get<bool>("Activator.Cleansers.QSSUseFear") && Player.HasBuffType((unsigned char)BUFF_TYPE_FEAR) && Player.GetBuffByType((unsigned char)BUFF_TYPE_FEAR).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_FEAR).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.QSSUseFearDuration") / 1000.0f ||
+			Menu::Get<bool>("Activator.Cleansers.QSSUseFlee") && Player.HasBuffType((unsigned char)BUFF_TYPE_FLEE) && Player.GetBuffByType((unsigned char)BUFF_TYPE_FLEE).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_FLEE).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.QSSUseFleeDuration") / 1000.0f ||
 			Menu::Get<bool>("Activator.Cleansers.QSSUseSnare") && Player.HasBuffType((unsigned char)BUFF_TYPE_SNARE) && Player.GetBuffByType((unsigned char)BUFF_TYPE_SNARE).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_SNARE).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.QSSUseSnareDuration") / 1000.0f ||
 			Menu::Get<bool>("Activator.Cleansers.QSSUseSilence") && Player.HasBuffType((unsigned char)BUFF_TYPE_SILENCE) && Player.GetBuffByType((unsigned char)BUFF_TYPE_SILENCE).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_SILENCE).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.QSSUseSilenceDuration") / 1000.0f ||
 			Menu::Get<bool>("Activator.Cleansers.QSSUseSuppression") && Player.HasBuffType((unsigned char)BUFF_TYPE_SUPPRESSION) && Player.GetBuffByType((unsigned char)BUFF_TYPE_SUPPRESSION).EndTime - Player.GetBuffByType((unsigned char)BUFF_TYPE_SUPPRESSION).StartTime >= (float)Menu::Get<int>("Activator.Cleansers.QSSUseSuppressionDuration") / 1000.0f ||

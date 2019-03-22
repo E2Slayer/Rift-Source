@@ -160,18 +160,18 @@ public:
 	}
 
 	bool IsEnemy() {		
-		int tmpID;
+		int tmpID{-1};
 		CHECKFAIL(SdkGetObjectTeamID(g_LocalPlayer, &tmpID));
 		return (300 - tmpID) == GetTeamID();
 	}
 
 	bool IsAlly() {		
-		int tmpID;
+		int tmpID{-1};
 		CHECKFAIL(SdkGetObjectTeamID(g_LocalPlayer, &tmpID));
 		return tmpID == GetTeamID();
 	}
 	bool IsAlive() {		
-		bool tmpb;
+		bool tmpb{true};
 		CHECKFAIL(SdkIsObjectDead(Object, &tmpb));
 		return !tmpb;
 	}
@@ -261,13 +261,17 @@ public:
 
 	void* PTR() {
 		return Object;
-	}
-
-	bool CanSpellHit();
+	}	
 
 	bool IsValidTarget(bool CheckIfSpellCanHit = true) {
 		return IsValid() && IsAlive() && !IsZombie() && IsVisible() && (!CheckIfSpellCanHit || CanSpellHit());
 	}
+
+	bool IsRealTarget();
+	bool CanSpellHit();
+	bool IsRealWard();
+	bool IsJunglePlant();
+	bool IsBarrel();
 };
 
 class AttackableUnit : public GameObject
@@ -456,6 +460,11 @@ public:
 	bool IsChannelling() {
 		auto spell{ GetActiveSpell() };
 		return spell.Valid && spell.IsChanneling;
+	}
+
+	bool IsCharging() {
+		auto spell{ GetActiveSpell() };
+		return spell.Valid && spell.IsCharging;
 	}
 
 	SDK_SPELL GetSpell(unsigned char Slot) {
@@ -954,22 +963,64 @@ public:
 	}
 };
 
-inline bool GameObject::CanSpellHit() {
-	auto AI{ AsAIBaseClient() };
-	if (!AI || AI->GetHealth().Max <= 10.0f) { return false; }
-
-	bool UntargetableValidTarget{ AI->HasBuff("illaoiespirit") };
-	if (!AI->IsTargetableToTeam() && !UntargetableValidTarget) {
+inline bool GameObject::IsRealTarget() {
+	auto Attackable{ AsAttackableUnit() };
+	if (!Attackable) {
 		return false;
 	}
-
-	if (IsMinion()) {
-		std::string m_charName(AI->GetCharName());
-		if (InvalidTargets.count(m_charName) > 0) {
-			return false;
+	else {
+		if (IsMinion()) {
+			std::string m_charName(Attackable->GetCharName());
+			if (InvalidTargets.count(m_charName) > 0) {
+				return false;
+			}
 		}
+
+		auto AI{ AsAIBaseClient() };
+		if (AI) {
+			bool UntargetableValidTarget{ AI->HasBuff("illaoiespirit") };
+			if (!AI->IsTargetableToTeam() && !UntargetableValidTarget) {
+				return false;
+			}
+		}		
 	}
 	return true;
+}
+
+inline bool GameObject::CanSpellHit() {
+	auto Attackable{ AsAttackableUnit() };
+	if (!Attackable || Attackable->GetHealth().Max <= 10.0f) { return false; }
+		
+	return IsRealTarget();
+}
+
+inline bool GameObject::IsRealWard() {	
+	auto Minion{ AsAIMinionClient() };
+	if (Minion != NULL && !Minion->IsMonster() && IsRealTarget() ) {
+		if (Minion->IsWard() && (Minion->GetType() & MINION_TYPE_LANE_MINION)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+inline bool GameObject::IsJunglePlant() {
+	auto Minion{ AsAIMinionClient() };
+	if (Minion != NULL) {
+		const char* name{ Minion->GetCharName() };
+		if (name && strstr(name, "SRU_Plant_")) {
+			return true;
+		}		
+	}
+	return false;
+}
+
+inline bool GameObject::IsBarrel() {
+	auto Minion{ AsAIMinionClient() };
+	if (Minion != NULL) {
+		return Minion->HasBuff("gangplankebarrelactive");				
+	}
+	return false;
 }
 
 inline bool GameObject::IsHeroInGame(std::string Name, bool EnemiesOnly) {

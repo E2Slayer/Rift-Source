@@ -10,6 +10,28 @@ struct MinionObject
 
 };
 
+
+
+
+struct DeadMinionStruct
+{
+
+	unsigned int netID;
+	AIMinionClient* Minion;
+	float DeathTimer;
+	bool isDeadSameTime;
+
+
+
+};
+
+/*
+struct SortByX
+{
+	bool operator() (ChampionEXPObject const & L, ChampionEXPObject const & R) { return L.DeathTimer < R.DeathTimer; }
+};
+*/
+
 struct ChampionEXPObject
 {
 	AIHeroClient* Hero;
@@ -49,7 +71,7 @@ public:
 	static void MenuLoader();
 	static void TickLoader();
 	static void DrawLoader();
-	static bool AreSame(float a, float b, float tolerance);
+	//static bool AreSame(float a, float b, float tolerance);
 	static void	__cdecl	Draw(_In_ void* UserData);
 	
 

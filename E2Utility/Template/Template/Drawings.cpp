@@ -44,5 +44,9 @@ void Drawings::DrawMenu(void * UserData)
 
 void Drawings::Draw(void * UserData)
 {
-	
+
+	if (Menu::Get<bool>("Drawings.Config.Enable"))
+	{
+		CustomRange::DrawLoader();
+	}
 }

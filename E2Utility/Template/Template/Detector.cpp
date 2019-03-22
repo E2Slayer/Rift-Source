@@ -5,10 +5,10 @@
 
 void Detector::Init()
 {
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Detector::Update);
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Detector::Update);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Detector::Tick);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Detector::DrawMenu);
-	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, CustomRanges::Draw);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Detector::Draw);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, CustomRanges::SpellCastStart);
 	//TurnAround::Init();
 	SharedExperience::InitLoader();
@@ -16,16 +16,21 @@ void Detector::Init()
 
 void Detector::Update(void * UserData)
 {
-	SharedExperience::TickLoader();
+	//SharedExperience::TickLoader();
 }
 
 void Detector::Tick(void * UserData)
 {
+
+	if (!Menu::Get<bool>("Detector.Config.Enable"))
+	{
+		return;
+	}
 	//TurnAround::TickLoader();
 
 	//SharedExperience::TickLoader();
 	//SharedExperience::testing();
-	//SharedExperience::TickLoader();
+	SharedExperience::TickLoader();
 }
 
 void Detector::DrawMenu(void * UserData)
@@ -49,4 +54,15 @@ void Detector::DrawMenu(void * UserData)
 
 		});
 	});
+}
+
+void Detector::Draw(_In_ void* UserData)
+{
+	if (!Menu::Get<bool>("Detector.Config.Enable"))
+	{
+		return;
+	}
+
+	SharedExperience::DrawLoader();
+
 }
