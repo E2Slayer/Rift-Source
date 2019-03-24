@@ -35,7 +35,7 @@ if ((Object == NULL || !SDKSTATUS_SUCCESS(status)) && DEBUG_PRINT) { \
 #define CHECKRAWFAIL(CODE)\
 int status = CODE;\
 if ((!SDKSTATUS_SUCCESS(status)) && DEBUG_PRINT) { \
-	SdkUiConsoleWrite("[error][SDK Extensions] Error! %s\n", __FUNCTION__);\
+	SdkUiConsoleWrite("[error][SDK Extensions] Error! %s errorCode: %d \n", __FUNCTION__, (int)CODE);\
 }
 
 #define MAKE_GET_DEF(NAME,TYPE,FUNCTIONDEF, DEFAULT)                    \

@@ -85,9 +85,10 @@ __declspec(selectany) std::map<std::string, bool> InvalidTargets{
 };
 
 class GameObject {
-public:
+protected:
 	void* Object; // object ptr
 	unsigned int NetworkID;
+public:	
 
 	GameObject() {};
 	GameObject(void*obj) : Object(obj) {
@@ -311,6 +312,11 @@ public:
 		return (res & TARGET_FLAG_UNTARGETABLE_ALLY_TEAM) == 0;
 	}
 
+	bool IsTargetableToPlayer() {
+		int res = GetTargetability();
+		return (res & (IsEnemy() ? TARGET_FLAG_UNTARGETABLE_ENEMY_TEAM : TARGET_FLAG_UNTARGETABLE_ALLY_TEAM)) == 0;
+	}
+
 	bool IsMonster() {
 		return GetTeamID() == TEAM_TYPE_NEUTRAL;
 	}
@@ -367,9 +373,10 @@ public:
 	MAKE_GET(AttackDelay, float, SdkGetAIAttackDelay);
 	MAKE_GET(AttackCastDelay, float, SdkGetAIAttackCastDelay);
 	MAKE_GET(AttackData, SDK_SPELL, SdkGetAIBasicAttack);
-	MAKE_GET(BaseAttackDamage, float, SdkGetAIBaseAttackDamage);
 	MAKE_GET(BonusAttackDamage, float, SdkGetAIBonusAttackDamage);
-	MAKE_GET(Direction, SDKVECTOR, SdkGetAIFacingDirection);	
+	MAKE_GET(Direction, SDKVECTOR, SdkGetAIFacingDirection);
+
+
 
 	bool IsFacing(Vector2& position) {
 		auto Pos{ position - GetPosition().To2D() };
@@ -437,6 +444,114 @@ public:
 	float GetAbilityResourceRegens(unsigned char Slot = ABILITY_SLOT_PRIMARY) {
 		float tmp{};
 		CHECKFAIL(SdkGetAIAbilityResourceRegen(Object, Slot, &tmp));
+		return tmp;
+	}
+
+	float GetBaseHealth() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseHealth(Object, &tmp, NULL));
+		return tmp;
+	}
+
+	float GetBaseHealthPerLevel() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseHealth(Object, NULL, &tmp));
+		return tmp;
+	}
+
+	float GetBaseHealthRegen() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseHealthRegen(Object, &tmp, NULL));
+		return tmp;
+	}
+
+	float GetBaseHealthRegenPerLevel() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseHealthRegen(Object, NULL, &tmp));
+		return tmp;
+	}
+
+	float GetBaseMana() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseAbilityResource(Object, ABILITY_SLOT_PRIMARY, &tmp, NULL));
+		return tmp;
+	}
+
+	float GetBaseManaPerLevel() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseAbilityResource(Object, ABILITY_SLOT_PRIMARY, NULL, &tmp));
+		return tmp;
+	}
+
+	float GetBaseManaRegen() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseAbilityResourceRegen(Object, ABILITY_SLOT_PRIMARY, &tmp, NULL));
+		return tmp;
+	}
+
+	float GetBaseManaRegenPerLevel() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseAbilityResourceRegen(Object, ABILITY_SLOT_PRIMARY, NULL, &tmp));
+		return tmp;
+	}
+
+	float GetBaseAttackDamage() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseAttackDamageEx(Object, &tmp, NULL));
+		return tmp;
+	}
+
+	float GetBaseAttackDamagePerLevel() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseAttackDamageEx(Object, NULL, &tmp));
+		return tmp;
+	}
+
+	float GetBaseArmor() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseArmor(Object, &tmp, NULL));
+		return tmp;
+	}
+
+	float GetBaseArmorPerLevel() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseArmor(Object, NULL, &tmp));
+		return tmp;
+	}
+
+	float GetBaseMagicResist() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseMagicResist(Object, &tmp, NULL));
+		return tmp;
+	}
+
+	float GetBaseMagicResistPerLevel() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseMagicResist(Object, NULL, &tmp));
+		return tmp;
+	}
+
+	float GetBaseCritChance() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseCrit(Object, &tmp, NULL, NULL));
+		return tmp;
+	}
+
+	float GetBaseCritChancePerLevel() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseCrit(Object, NULL, &tmp, NULL));
+		return tmp;
+	}
+
+	float GetBaseCritModifier() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseCrit(Object, NULL, NULL, &tmp));
+		return tmp;
+	}
+
+	float GetBaseMovementSpeed() {
+		float tmp{};
+		CHECKFAIL(SdkGetAIBaseMovementSpeed(Object, &tmp));
 		return tmp;
 	}
 
@@ -978,12 +1093,10 @@ inline bool GameObject::IsRealTarget() {
 		}
 
 		auto AI{ AsAIBaseClient() };
-		if (AI) {
-			bool UntargetableValidTarget{ AI->HasBuff("illaoiespirit") };
-			if (!AI->IsTargetableToTeam() && !UntargetableValidTarget) {
-				return false;
-			}
-		}		
+		bool UntargetableValidTarget{ AI && AI->HasBuff("illaoiespirit") };
+		if (!Attackable->IsTargetableToPlayer() && !UntargetableValidTarget) {
+			return false;
+		}				
 	}
 	return true;
 }

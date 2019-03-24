@@ -1406,6 +1406,15 @@ typedef SDKSTATUS (__cdecl* SdkRegisterOnShopLocalPlayer_t)(ONPLAYERSHOPCALLBACK
 typedef SDKSTATUS (__cdecl* SdkUseObjectLocalPlayer_t)(void* Unit, bool* Used);
 typedef SDKSTATUS (__cdecl* SdkRegisterOnBuffUpdate_t)(ONAIBUFFUPDATECALLBACK Callback, void* UserData);
 typedef SDKSTATUS (__cdecl* SdkRegisterOnModuleAttachDetach_t)(ONATTACHDETACHCALLBACK Callback, void* UserData);
+typedef SDKSTATUS (__cdecl* SdkGetAIBaseHealth_t)(void* AI, float* BaseHealth, float* HealthPerLevel);
+typedef SDKSTATUS (__cdecl* SdkGetAIBaseHealthRegen_t)(void* AI, float* BaseHealthRegen, float* HealthRegenPerLevel);
+typedef SDKSTATUS (__cdecl* SdkGetAIBaseAbilityResource_t)(void* AI, unsigned char Slot, float* BaseAbilityResource, float* AbilityResourcePerLevel);
+typedef SDKSTATUS (__cdecl* SdkGetAIBaseAbilityResourceRegen_t)(void* AI, unsigned char Slot, float* BaseAbilityResourceRegen, float* AbilityResourceRegenPerLevel);
+typedef SDKSTATUS (__cdecl* SdkGetAIBaseAttackDamageEx_t)(void* AI, float* BaseAttackDamage, float* AttackDamagePerLevel);
+typedef SDKSTATUS (__cdecl* SdkGetAIBaseArmor_t)(void* AI, float* BaseArmor, float* ArmorPerLevel);
+typedef SDKSTATUS (__cdecl* SdkGetAIBaseMagicResist_t)(void* AI, float* BaseMagicResist, float* MagicResistPerLevel);
+typedef SDKSTATUS (__cdecl* SdkGetAIBaseCrit_t)(void* AI, float* BaseCrit, float* CritPerLevel, float* CritDamageMultiplier);
+typedef SDKSTATUS (__cdecl* SdkGetAIBaseMovementSpeed_t)(void* AI, float* BaseMovementSpeed);
 
 //
 // The SDK context structure, which contains a reference to the 
@@ -1646,6 +1655,15 @@ typedef struct _SDK_CONTEXT
 	SdkUseObjectLocalPlayer_t _SdkUseObjectLocalPlayer;
 	SdkRegisterOnBuffUpdate_t _SdkRegisterOnBuffUpdate;
 	SdkRegisterOnModuleAttachDetach_t _SdkRegisterOnModuleAttachDetach;
+	SdkGetAIBaseHealth_t _SdkGetAIBaseHealth;
+	SdkGetAIBaseHealthRegen_t _SdkGetAIBaseHealthRegen;
+	SdkGetAIBaseAbilityResource_t _SdkGetAIBaseAbilityResource;
+	SdkGetAIBaseAbilityResourceRegen_t _SdkGetAIBaseAbilityResourceRegen;
+	SdkGetAIBaseAttackDamageEx_t _SdkGetAIBaseAttackDamageEx;
+	SdkGetAIBaseArmor_t _SdkGetAIBaseArmor;
+	SdkGetAIBaseMagicResist_t _SdkGetAIBaseMagicResist;
+	SdkGetAIBaseCrit_t _SdkGetAIBaseCrit;
+	SdkGetAIBaseMovementSpeed_t _SdkGetAIBaseMovementSpeed;
 } SDK_CONTEXT, *PSDK_CONTEXT;
 
 //
@@ -3260,7 +3278,7 @@ typedef struct _SDK_CONTEXT
 //
 //		Unit - The attackable unit.
 //
-//		Slot - Currently, only ABILITY_SLOT_PRIMARY and 
+//		Slot - Currently only ABILITY_SLOT_PRIMARY and 
 //			ABILITY_SLOT_SECONDARY are allowed for input.
 //
 //		AbilityResource - Stores information regarding the ability 
@@ -4357,7 +4375,7 @@ typedef struct _SDK_CONTEXT
 //
 //		AI - The artificially intelligent object.
 //
-//		Slot - Currently, only ABILITY_SLOT_PRIMARY and 
+//		Slot - Currently only ABILITY_SLOT_PRIMARY and 
 //			ABILITY_SLOT_SECONDARY are allowed for input.
 //
 //		AbilityResourceRegen - Stores the ability regeneration rate
@@ -8157,4 +8175,291 @@ typedef struct _SDK_CONTEXT
 //		An SDKSTATUS code.
 //
 //--
-#define SdkRegisterOnModuleAttachDetach(Callback, UserData) SDK_CONTEXT_GLOBAL->_SdkRegisterOnModuleAttachDetach(Callback, UserData);
+#define SdkRegisterOnModuleAttachDetach(Callback, UserData) SDK_CONTEXT_GLOBAL->_SdkRegisterOnModuleAttachDetach(Callback, UserData)
+
+//++
+//
+// SDKSTATUS
+// SdkGetAIBaseHealth(
+//		_In_ void* AI,
+//		_Out_opt_ float* BaseHealth,
+//		_Out_opt_ float* HealthPerLevel
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the base health and health per level
+//		of the artificially intelligent object.
+//
+// Arguments:
+//
+//		AI - The artificially intelligent object.
+//
+//		BaseHealth - Stores the base health of the object on success.
+//
+//		HealthPerLevel - Stores the health per level of the object on 
+//			success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetAIBaseHealth(AI, BaseHealth, HealthPerLevel) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseHealth(AI, BaseHealth, HealthPerLevel)
+
+//++
+//
+// SDKSTATUS
+// SdkGetAIBaseHealthRegen(
+//		_In_ void* AI,
+//		_Out_opt_ float* BaseHealthRegen,
+//		_Out_opt_ float* HealthRegenPerLevel
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the base health regen and health regen 
+//		per level of the artificially intelligent object.
+//
+// Arguments:
+//
+//		AI - The artificially intelligent object.
+//
+//		BaseHealthRegen - Stores the base health regen of the object 
+//			on success.
+//
+//		HealthRegenPerLevel - Stores the health regen per level of 
+//			the object on success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetAIBaseHealthRegen(AI, BaseHealthRegen, HealthRegenPerLevel) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseHealthRegen(AI, BaseHealthRegen, HealthRegenPerLevel)
+
+//++
+//
+// SDKSTATUS
+// SdkGetAIBaseAbilityResource(
+//		_In_ void* AI,
+//		_In_ unsigned char Slot,
+//		_Out_opt_ float* BaseAbilityResource,
+//		_Out_opt_ float* AbilityResourcePerLevel
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the base ability resource information
+//		of the artificially intelligent object. 
+//
+// Arguments:
+//
+//		AI - The artificially intelligent object.
+//
+//		Slot - Currently only ABILITY_SLOT_PRIMARY and 
+//			ABILITY_SLOT_SECONDARY are allowed for input.
+//
+//		BaseAbilityResource - Stores the base ability resource of the 
+//			object on success.
+//
+//		AbilityResourcePerLevel - Stores the ability resource per
+//			level of the object on success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetAIBaseAbilityResource(AI, Slot, BaseAbilityResource, AbilityResourcePerLevel) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseAbilityResource(AI, Slot, BaseAbilityResource, AbilityResourcePerLevel)
+
+//++
+//
+// SDKSTATUS
+// SdkGetAIBaseAbilityResourceRegen(
+//		_In_ void* AI,
+//		_In_ unsigned char Slot,
+//		_Out_opt_ float* BaseAbilityResourceRegen,
+//		_Out_opt_ float* AbilityResourceRegenPerLevel
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the base ability resource regen information
+//		of the artificially intelligent object. 
+//
+// Arguments:
+//
+//		AI - The artificially intelligent object.
+//
+//		Slot - Currently only ABILITY_SLOT_PRIMARY and 
+//			ABILITY_SLOT_SECONDARY are allowed for input.
+//
+//		BaseAbilityResourceRegen - Stores the base ability resource 
+//			regen of the object on success.
+//
+//		AbilityResourceRegenPerLevel - Stores the ability resource 
+//			regen per level of the object on success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetAIBaseAbilityResourceRegen(AI, Slot, BaseAbilityResourceRegen, AbilityResourceRegenPerLevel) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseAbilityResourceRegen(AI, Slot, BaseAbilityResourceRegen, AbilityResourceRegenPerLevel)
+
+
+//++
+//
+// SDKSTATUS
+// SdkGetAIBaseAttackDamageEx(
+//		_In_ void* AI,
+//		_Out_opt_ float* BaseAttackDamage,
+//		_Out_opt_ float* AttackDamagePerLevel
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the base attack damage and attack damage 
+//		per level of the artificially intelligent object.
+//
+// Arguments:
+//
+//		AI - The artificially intelligent object.
+//
+//		BaseAttackDamage - Stores the base attack damage of the object 
+//			on success.
+//
+//		AttackDamagePerLevel - Stores the attack damage per level of 
+//			the object on success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetAIBaseAttackDamageEx(AI, BaseAttackDamage, AttackDamagePerLevel) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseAttackDamageEx(AI, BaseAttackDamage, AttackDamagePerLevel)
+
+//++
+//
+// SDKSTATUS
+// SdkGetAIBaseArmor(
+//		_In_ void* AI,
+//		_Out_opt_ float* BaseArmor,
+//		_Out_opt_ float* ArmorPerLevel
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the base armor and armor per level
+//		of the artificially intelligent object.
+//
+// Arguments:
+//
+//		AI - The artificially intelligent object.
+//
+//		BaseArmor - Stores the base armor of the object on success.
+//
+//		ArmorPerLevel - Stores the armor per level of the object on 
+//			success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetAIBaseArmor(AI, BaseArmor, ArmorPerLevel) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseArmor(AI, BaseArmor, ArmorPerLevel)
+
+//++
+//
+// SDKSTATUS
+// SdkGetAIBaseMagicResist(
+//		_In_ void* AI,
+//		_Out_opt_ float* BaseMagicResist,
+//		_Out_opt_ float* MagicResistPerLevel
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the base magic rest and magic resist 
+//		per level of the artificially intelligent object.
+//
+// Arguments:
+//
+//		AI - The artificially intelligent object.
+//
+//		BaseMagicResist - Stores the base magic resist of the object 
+//			on success.
+//
+//		MagicResistPerLevel - Stores the magic resist per level of 
+//			the object on success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetAIBaseMagicResist(AI, BaseMagicResist, MagicResistPerLevel) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseMagicResist(AI, BaseMagicResist, MagicResistPerLevel)
+
+//++
+//
+// SDKSTATUS
+// SdkGetAIBaseCrit(
+//		_In_ void* AI,
+//		_Out_opt_ float* BaseCrit,
+//		_Out_opt_ float* CritPerLevel,
+//		_Out_opt_ float* CritDamageMultiplier
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the base crit chance, crit per level, 
+//		and crit damage multiplier of the artificially intelligent 
+//		object.
+//
+// Arguments:
+//
+//		AI - The artificially intelligent object.
+//
+//		BaseCrit - Stores the base crit chance of the object 
+//			on success.
+//
+//		CritPerLevel - Stores the crit per level of the object
+//			on success.
+//
+//		CritDamageMultiplier - Stores the crit damage multiplier 
+//			of the object on success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetAIBaseCrit(AI, BaseCrit, CritPerLevel, CritDamageMultiplier) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseCrit(AI, BaseCrit, CritPerLevel, CritDamageMultiplier)
+
+//++
+//
+// SDKSTATUS
+// SdkGetAIBaseMovementSpeed(
+//		_In_ void* AI,
+//		_Out_ float* BaseMovementSpeed
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the base movement speed of the
+//		artificially intelligent object.
+//
+// Arguments:
+//
+//		AI - The artificially intelligent object.
+//
+//		BaseMovementSpeed - Stores the base movement speed of the object 
+//			on success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetAIBaseMovementSpeed(AI, BaseMovementSpeed) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseMovementSpeed(AI, BaseMovementSpeed)

@@ -75,10 +75,6 @@ void Teleport::MenuLoader()
 	{
 		Menu::Checkbox("Use Teleport Tracker", "Detector.Teleport.Use", true);
 
-		Menu::Checkbox("Notify Start on the Chat", "Detector.Teleport.ChatStart", true);
-		Menu::Checkbox("Notify Aborted on the Chatr", "Detector.Teleport.ChatAborted", true);
-		Menu::Checkbox("Notify Finshed on the Chat", "Detector.Teleport.ChatFinished", true);
-
 
 
 		Menu::Checkbox("Track Recall", "Detector.Teleport.Recall", true);
@@ -87,6 +83,53 @@ void Teleport::MenuLoader()
 		Menu::Checkbox("Track Teleport", "Detector.Teleport.Teleport", true);
 		Menu::Checkbox("Track Shen's R", "Detector.Teleport.ShenR", true);
 		Menu::Checkbox("Track Twisted Fate's R", "Detector.Teleport.TwisitedFateR", true);
+
+
+		Menu::Tree("Chat Notification Settings", "Detector.Teleport.ChatSettings", false, []()
+		{
+			Menu::Checkbox("Notify Start on the Chat", "Detector.Teleport.ChatStart", true);
+			Menu::Checkbox("Notify Aborted on the Chat", "Detector.Teleport.ChatAborted", true);
+			Menu::Checkbox("Notify Finshed on the Chat", "Detector.Teleport.ChatFinished", true);
+
+			Menu::Checkbox("Use [E2Utility] Prefix on the Beginning", "Detector.Teleport.Chat.Prefix", true);
+			
+			Menu::Tree("Champion Name Color Picker", "Detector.Teleport.ChatSettings1", false, []()
+			{
+				Menu::ColorPicker("Champion Name Color Picker", "Detector.Teleport.Chat.ChampName", SDKVECTOR(210, 35, 35));
+			});
+			
+
+			Menu::Tree("Health Percentage Color Picker", "Detector.Teleport.ChatSettings2", false, []()
+			{
+				Menu::ColorPicker("Health Percentage Color Picker", "Detector.Teleport.Chat.Health", SDKVECTOR(35, 210, 35));
+			});
+
+			Menu::Tree("Started Color Picker", "Detector.Teleport.ChatSettings3", false, []()
+			{
+				Menu::ColorPicker("Started Color Picker", "Detector.Teleport.Chat.Started", SDKVECTOR(255, 255, 255));
+			});
+
+			Menu::Tree("Aborted Color Picker", "Detector.Teleport.ChatSettings4", false, []()
+			{
+				Menu::ColorPicker("Aborted Color Picker", "Detector.Teleport.Chat.Aborted", SDKVECTOR(210, 35, 35));
+			});
+
+			Menu::Tree("Finished Color Picker", "Detector.Teleport.ChatSettings5", false, []()
+			{
+				Menu::ColorPicker("Finished Color Picker", "Detector.Teleport.Chat.Finished", SDKVECTOR(33, 235, 25));
+			});
+
+
+			Menu::Tree("Teleport Type Color Picker", "Detector.Teleport.ChatSettings6", false, []()
+			{
+				Menu::ColorPicker("Teleport Type Color Picker", "Detector.Teleport.Chat.Teleport", SDKVECTOR(25, 150, 235));
+			});
+
+			//Menu::Checkbox("Use [E2Utility] Prefix on the Beginning", "Detector.Teleport.Chat.Prefix", true);
+
+		});
+
+
 
 		Menu::Tree("Teleport Tracker Drawing Settings", "Detector.Teleport.Drawings", false, []()
 		{
@@ -221,14 +264,14 @@ void Teleport::DrawLoader()
 
 
 
-					DrawHelper::DrawOutlineText(NULL, &Vector2(barPos.x - 7.0f + percentage, barPos.y - 85.0f), target.second.Hero->GetCharName(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.Teleport.TextColor")), 24, 8, 0,
+					DrawHelper::DrawOutlineText(NULL, &Vector2(barPos.x - 7.0f + percentage, barPos.y - 85.0f), target.second.Hero->GetCharName(), "Calibri Bold", &color, 24, 8, 0,
 						&DropLists::GetColor(Menu::Get<int>("Detector.Teleport.OutlineColor")), false);
 
 					std::stringstream ss1;
 					ss1.precision(0); //for decimal
 					ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
 					ss1 << target.second.Hero->GetHealthPercent() << "% ";
-					DrawHelper::DrawOutlineText(NULL, &Vector2(barPos.x - 7.0f + percentage, barPos.y - 70.0f), ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.Teleport.TextColor")), 24, 8, 0,
+					DrawHelper::DrawOutlineText(NULL, &Vector2(barPos.x - 7.0f + percentage, barPos.y - 70.0f), ss1.str().c_str(), "Calibri Bold", &color, 24, 8, 0,
 						&DropLists::GetColor(Menu::Get<int>("Detector.Teleport.OutlineColor")), false);
 
 
@@ -239,7 +282,7 @@ void Teleport::DrawLoader()
 
 					ss << "(" << (target.second.Duration - difference) << ")";
 
-					DrawHelper::DrawOutlineText(NULL, &Vector2(barPos.x - 7.0f + percentage, barPos.y - 50.0f), ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.Teleport.TextColor")), 24, 8, 0,
+					DrawHelper::DrawOutlineText(NULL, &Vector2(barPos.x - 7.0f + percentage, barPos.y - 50.0f), ss.str().c_str(), "Calibri Bold", &color, 24, 8, 0,
 						&DropLists::GetColor(Menu::Get<int>("Detector.Teleport.OutlineColor")), false);
 				}
 			}
@@ -423,7 +466,7 @@ void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* User
 			if (Menu::Get<bool>("Detector.Teleport.ChatStart"))
 			{
 				//it->second.Hero->GetHealthPercent()
-				PrintChat(sender->AsAIHeroClient()->GetCharName(), Type, "Started", it->second.Hero->AsAIHeroClient()->GetHealthPercent());
+				PrintChat(sender->AsAIHeroClient()->GetCharName(), Type, "Started", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 
 			}
 
@@ -436,7 +479,7 @@ void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* User
 			if (Menu::Get<bool>("Detector.Teleport.ChatAborted"))
 			{
 				//
-				PrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Aborted", it->second.Hero->AsAIHeroClient()->GetHealthPercent());
+				PrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Aborted", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 
 			}
 			//SdkUiConsoleWrite("Abort %ld %f", testStruct.Start, testStruct.Duration);
@@ -448,7 +491,7 @@ void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* User
 			if (Menu::Get<bool>("Detector.Teleport.ChatFinished"))
 			{
 
-				PrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Finished", it->second.Hero->AsAIHeroClient()->GetHealthPercent());
+				PrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Finished", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 
 			}
 			//SdkUiConsoleWrite("Finished %ld %f", testStruct.Start, testStruct.Duration);
@@ -525,41 +568,82 @@ const char* Teleport::GetTeleportName(const char* Name)
 	return "Unknown";
 }
 
-void Teleport::PrintChat(const char* champName, const char* TeleportName, const char* recallStatusText, float healthPCT)
+void Teleport::PrintChat(const char* champName, const char* TeleportName, const char* recallStatusText, float healthPCT, TeleportTypes tpType)
 {
-	std::string temp = R"(<font color="#25dbad">[E2Utility] </font>)";
+	std::stringstream sstream;
 
-	temp += R"(<font color = "#ff3232">)";
+	if (Menu::Get<bool>("Detector.Teleport.Chat.Prefix") )
+	{
+		sstream << R"(<font color="#25dbad">[E2Utility] </font>)" <<"";
+	}
 
-	temp += champName;
+	auto Color = Menu::Get<SDKCOLOR>("Detector.Teleport.Chat.ChampName");
 
-	temp += R"(</font>)";
+	sstream << R"(<font color="#)";
+	sstream << std::hex << int(Color.R);
+	sstream << std::hex << int(Color.G);
+	sstream << std::hex << int(Color.B);
+	sstream << R"(">)" << champName << R"(</font>)";
+
+	//sstream << champName << R"(</font>)";
+	//SdkUiConsoleWrite(" %s", sstream.str());
+
+	
+	Color = Menu::Get<SDKCOLOR>("Detector.Teleport.Chat.Health");
+	sstream << R"(<font color="#)";
+	sstream << std::hex << int(Color.R);
+	sstream << std::hex << int(Color.G);
+	sstream << std::hex << int(Color.B);
+	sstream << R"(">)";
+
 
 
 	std::stringstream ss1;
 	ss1.precision(0); //for decimal
 	ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
+	int health = (int)healthPCT;
 
 
 	ss1 << " ["<< healthPCT << "%]";
+	sstream << ss1.str() << R"(</font>)";
 
 
-	int health = (int)healthPCT;
-
-	temp += ss1.str();
+	sstream << R"(<font color = "#FFFFFF"> has </font>)";
 
 
-	temp += R"(<font color = "#FFFFFF"> has )";
+	if (tpType == TeleportTypes::Start)
+	{
+		Color = Menu::Get<SDKCOLOR>("Detector.Teleport.Chat.Started");
+	}
+	else if (tpType == TeleportTypes::Abort)
+	{
+		Color = Menu::Get<SDKCOLOR>("Detector.Teleport.Chat.Aborted");
+	}
+	else if (tpType == TeleportTypes::Finished)
+	{
+		Color = Menu::Get<SDKCOLOR>("Detector.Teleport.Chat.Finished");
+	}
 
-	temp += recallStatusText;
+	sstream << R"(<font color="#)";
+	sstream << std::hex << int(Color.R);
+	sstream << std::hex << int(Color.G);
+	sstream << std::hex << int(Color.B);
+	sstream << R"(">)";
+
+	sstream << recallStatusText << R"(</font>)";
 
 
 
-	temp += R"( - </font><font color = "#2165a5">)";
+	sstream << R"(<font color = "#FFFFFF"> - </font>)";
 
-	temp += GetTeleportName(TeleportName);
+	Color = Menu::Get<SDKCOLOR>("Detector.Teleport.Chat.Teleport");
+	sstream << R"(<font color="#)";
+	sstream << std::hex << int(Color.R);
+	sstream << std::hex << int(Color.G);
+	sstream << std::hex << int(Color.B);
+	sstream << R"(">)";
 
+	sstream << GetTeleportName(TeleportName) << R"(</font>)";
 	
-	temp += R"(</font>)";
-	Game::PrintChat(temp, CHAT_FLAG_UNKNOWN1);
+	Game::PrintChat(sstream.str(), CHAT_FLAG_UNKNOWN1);
 }

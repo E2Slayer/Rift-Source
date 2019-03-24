@@ -70,6 +70,9 @@
     <Filter Include="My Script Files\Helpers">
       <UniqueIdentifier>{66dc5a73-46b0-41b8-92fd-ad111c9462f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="My Script Files\Classes">
+      <UniqueIdentifier>{a6f86709-e3d2-454e-adff-689e83b2382e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -216,6 +219,9 @@
     <ClInclude Include="DrawHelper.h">
       <Filter>My Script Files\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="Base.h">
+      <Filter>My Script Files\Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -286,6 +292,9 @@
     </ClCompile>
     <ClCompile Include="Trackers.cpp">
       <Filter>My Script Files\Trackers</Filter>
+    </ClCompile>
+    <ClCompile Include="Base.cpp">
+      <Filter>My Script Files\Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

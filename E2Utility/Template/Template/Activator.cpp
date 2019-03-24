@@ -10,7 +10,7 @@ void Activator::Init()
 
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Activator::Tick);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Activator::DrawMenu);
-
+	//pSDK->EventHandler->RegisterCallback(CallbackEnum::ModuleLoadAndUnload)
 
 	ItemRetriever::Init();
 	Summoners::Init();
