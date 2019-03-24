@@ -61,6 +61,15 @@
     <Filter Include="My Script Files\Drawings\Header">
       <UniqueIdentifier>{4dce8e79-1471-4385-ad75-c30df5735bef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="My Script Files\Trackers">
+      <UniqueIdentifier>{2efc3bf4-03a7-42ad-a100-58253eaf301d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Trackers\Headers">
+      <UniqueIdentifier>{811140c4-a40e-4a14-920d-1ba99d2988ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My Script Files\Helpers">
+      <UniqueIdentifier>{66dc5a73-46b0-41b8-92fd-ad111c9462f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -165,12 +174,6 @@
     <ClInclude Include="Cleansers.h">
       <Filter>My Script Files\Activator\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="TurnAround.h">
-      <Filter>My Script Files\Detector\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Detector.h">
-      <Filter>My Script Files\Detector\Header</Filter>
-    </ClInclude>
     <ClInclude Include="AntiAFK.h">
       <Filter>My Script Files\Others\Header</Filter>
     </ClInclude>
@@ -194,6 +197,24 @@
     </ClInclude>
     <ClInclude Include="SharedExperience.h">
       <Filter>My Script Files\Detector\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Teleport.h">
+      <Filter>My Script Files\Detector\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Detector.h">
+      <Filter>My Script Files\Detector\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="AbilityTimer.h">
+      <Filter>My Script Files\Trackers\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Trackers.h">
+      <Filter>My Script Files\Trackers\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawHelper.h">
+      <Filter>My Script Files\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -233,9 +254,6 @@
     <ClCompile Include="Cleansers.cpp">
       <Filter>My Script Files\Activator</Filter>
     </ClCompile>
-    <ClCompile Include="TurnAround.cpp">
-      <Filter>My Script Files\Detector</Filter>
-    </ClCompile>
     <ClCompile Include="Detector.cpp">
       <Filter>My Script Files\Detector</Filter>
     </ClCompile>
@@ -260,5 +278,24 @@
     <ClCompile Include="SharedExperience.cpp">
       <Filter>My Script Files\Detector</Filter>
     </ClCompile>
+    <ClCompile Include="Teleport.cpp">
+      <Filter>My Script Files\Detector</Filter>
+    </ClCompile>
+    <ClCompile Include="AbilityTimer.cpp">
+      <Filter>My Script Files\Trackers</Filter>
+    </ClCompile>
+    <ClCompile Include="Trackers.cpp">
+      <Filter>My Script Files\Trackers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="E2Utility.rc">
+      <Filter>Arquivos de Recurso</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\RecallBar.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
   </ItemGroup>
 </Project>

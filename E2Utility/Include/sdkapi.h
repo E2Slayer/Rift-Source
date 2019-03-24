@@ -116,6 +116,11 @@ typedef int SDKSTATUS;
 #define SDKSTATUS_INVALID_STATE						((SDKSTATUS)10)
 
 //
+// An object was passed into an SDK function that is not valid.
+//
+#define SDKSTATUS_OBJECT_INVALID					((SDKSTATUS)11)
+
+//
 // Checks the return status of the SDK to determine if 
 // the function was successful.
 //
@@ -642,6 +647,9 @@ typedef int SDKSTATUS;
 #define CALLBACK_TYPE_AI_BUFF_CREATE_DELETE			14
 #define CALLBACK_TYPE_PLAYER_SHOP					15
 #define CALLBACK_TYPE_AI_BUFF_UPDATE				16
+#define CALLBACK_TYPE_MODULE_ATTACH_DETACH			17
+
+#define CALLBACK_FLAG_USE_CALLER					0x80000000
 
 #define CALLBACK_POSITION_FRONT						-1
 #define CALLBACK_POSITION_BACK						-2
@@ -660,6 +668,18 @@ typedef int SDKSTATUS;
 #define SHOP_EVENT_UNDO_ACTION						4
 
 //////////////////////////////////////////////////////////////////////////
+//
+// Module load/unload events.
+//
+
+//
+// The `Event` contained in ONATTACHDETACHCALLBACK.
+//
+#define SDK_EVENT_LOAD_MODULE						1
+#define SDK_EVENT_UNLOAD_MODULE						2
+
+//////////////////////////////////////////////////////////////////////////
+
 ///
 /// Enums.
 ///
@@ -1141,6 +1161,11 @@ typedef void (__cdecl* ONKEYPRESSCALLBACK)(bool KeyDown, unsigned int VirtualKey
 //
 typedef void (__cdecl* ONUNITRECALLCALLBACK)(void* Unit, const char* Name, const char* Type, void* UserData);
 
+//
+// Used by SdkRegisterOnModuleAttachDetach.
+//
+typedef void (__cdecl* ONATTACHDETACHCALLBACK)(int Event, bool IsDependent, const char* ModuleName, void* ImageBase, size_t SizeOfImage, void* UserData);
+
 //////////////////////////////////////////////////////////////////////////
 //
 // SDK API.
@@ -1296,7 +1321,7 @@ typedef SDKSTATUS (__cdecl* SdkSetSettingFloat_t)(const char* Key, float Value);
 typedef SDKSTATUS (__cdecl* SdkGetSettingFloat_t)(const char* Key, float* Value, float Default);
 typedef SDKSTATUS (__cdecl* SdkSetSettingNumber_t)(const char* Key, int Value);
 typedef SDKSTATUS (__cdecl* SdkGetSettingNumber_t)(const char* Key, int* Value, int Default);
-typedef SDKSTATUS (__cdecl* SdkGetMinionVisionRadius_t)(void* Minion, float* Radius);
+typedef SDKSTATUS (__cdecl* SdkGetUnitVisionRadius_t)(void* Unit, float* Radius);
 typedef SDKSTATUS (__cdecl* SdkPingMap_t)(PSDKVECTOR WorldCoordinates, unsigned char Type, bool PlayAudio);
 typedef SDKSTATUS (__cdecl* SdkDisableInput_t)();
 typedef SDKSTATUS (__cdecl* SdkEnableInput_t)();
@@ -1380,6 +1405,7 @@ typedef SDKSTATUS (__cdecl* SdkRegisterOnBuffCreateDelete_t)(ONAIBUFFCREATEDELET
 typedef SDKSTATUS (__cdecl* SdkRegisterOnShopLocalPlayer_t)(ONPLAYERSHOPCALLBACK Callback, void* UserData);
 typedef SDKSTATUS (__cdecl* SdkUseObjectLocalPlayer_t)(void* Unit, bool* Used);
 typedef SDKSTATUS (__cdecl* SdkRegisterOnBuffUpdate_t)(ONAIBUFFUPDATECALLBACK Callback, void* UserData);
+typedef SDKSTATUS (__cdecl* SdkRegisterOnModuleAttachDetach_t)(ONATTACHDETACHCALLBACK Callback, void* UserData);
 
 //
 // The SDK context structure, which contains a reference to the 
@@ -1535,7 +1561,7 @@ typedef struct _SDK_CONTEXT
 	SdkGetSettingFloat_t _SdkGetSettingFloat;
 	SdkSetSettingNumber_t _SdkSetSettingNumber;
 	SdkGetSettingNumber_t _SdkGetSettingNumber;
-	SdkGetMinionVisionRadius_t _SdkGetMinionVisionRadius;
+	SdkGetUnitVisionRadius_t _SdkGetUnitVisionRadius;
 	SdkPingMap_t _SdkPingMap;
 	SdkDisableInput_t _SdkDisableInput;
 	SdkEnableInput_t _SdkEnableInput;
@@ -1619,6 +1645,7 @@ typedef struct _SDK_CONTEXT
 	SdkRegisterOnShopLocalPlayer_t _SdkRegisterOnShopLocalPlayer;
 	SdkUseObjectLocalPlayer_t _SdkUseObjectLocalPlayer;
 	SdkRegisterOnBuffUpdate_t _SdkRegisterOnBuffUpdate;
+	SdkRegisterOnModuleAttachDetach_t _SdkRegisterOnModuleAttachDetach;
 } SDK_CONTEXT, *PSDK_CONTEXT;
 
 //
@@ -5663,18 +5690,19 @@ typedef struct _SDK_CONTEXT
 //++
 //
 // SDKSTATUS
-// SdkGetMinionVisionRadius(
-//		_In_ void* Minion,
+// SdkGetUnitVisionRadius(
+//		_In_ void* Unit,
 //		_Out_ float* Radius
 // )
 //
 // Routine Description:
 //
-//		This function retrieves the vision radius of a minion.
+//		This function retrieves the vision radius of an attackable 
+//		unit.
 //
 // Arguments:
 //
-//		Minion - The minion.
+//		Unit - The attackable unit.
 //
 //		Radius - Stores the vision radius of the object on success.
 //
@@ -5683,7 +5711,7 @@ typedef struct _SDK_CONTEXT
 //		An SDKSTATUS code.
 //
 //--
-#define SdkGetMinionVisionRadius(Minion, Radius) SDK_CONTEXT_GLOBAL->_SdkGetMinionVisionRadius(Minion, Radius)
+#define SdkGetUnitVisionRadius(Unit, Radius) SDK_CONTEXT_GLOBAL->_SdkGetUnitVisionRadius(Unit, Radius)
 
 //++
 //
@@ -8103,3 +8131,30 @@ typedef struct _SDK_CONTEXT
 //
 //--
 #define SdkRegisterOnBuffUpdate(Callback, UserData) SDK_CONTEXT_GLOBAL->_SdkRegisterOnBuffUpdate(Callback, UserData)
+
+//++
+//
+// SDKSTATUS
+// SdkRegisterOnModuleAttachDetach(
+//		_In_ ONATTACHDETACHCALLBACK Callback,
+//		_In_opt_ void* UserData
+// )
+//
+// Routine Description:
+//
+//		This function registers a callback that is invoked each time 
+//		a plugin is loaded or unloaded.
+//
+// Arguments:
+//
+//		Callback - The user-defined callback.
+//
+//		UserData - A pointer to an arbitrary data structure, provided
+//			by the user, that is passed to the callback function.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkRegisterOnModuleAttachDetach(Callback, UserData) SDK_CONTEXT_GLOBAL->_SdkRegisterOnModuleAttachDetach(Callback, UserData);

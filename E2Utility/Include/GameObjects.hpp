@@ -262,13 +262,14 @@ public:
 	void* PTR() {
 		return Object;
 	}	
-
-	bool IsValidTarget(bool CheckIfSpellCanHit = true) {
-		return IsValid() && IsAlive() && !IsZombie() && IsVisible() && (!CheckIfSpellCanHit || CanSpellHit());
-	}
-
+	
 	bool IsRealTarget();
 	bool CanSpellHit();
+
+	bool IsValidTarget(bool CheckIfSpellCanHit = true) {
+		return IsValid() && IsAlive() && !IsZombie() && IsVisible() && IsRealTarget() && (!CheckIfSpellCanHit || CanSpellHit());
+	}
+
 	bool IsRealWard();
 	bool IsJunglePlant();
 	bool IsBarrel();
@@ -291,6 +292,7 @@ public:
 	MAKE_GET(HealthBarPos, Vector3, SdkGetAIHealthbarWorldPosition);
 	MAKE_GET(HealthBarScreenPos, Vector2, SdkGetAIHealthbarScreenPosition);
 	MAKE_GET_DEF(CharName, const char*, SdkGetAIName, "");
+	MAKE_GET(VisionRadius, float, SdkGetUnitVisionRadius);
 	
 	NavData CreateNavPath(PSDKVECTOR DesiredEndPosition, bool SmoothPath = false) {
 		NavData res{Object};
@@ -882,8 +884,7 @@ public:
 	MAKE_RAW(IsLaneMinion, bool, SdkIsMinionLaneMinion);
 	MAKE_GET(Type, int, SdkGetMinionType);
 	MAKE_GET(Level, int, SdkGetMinionLevel);
-	MAKE_RAW(IsWard, bool, SdkIsMinionWard);
-	MAKE_GET(VisionRadius, float, SdkGetMinionVisionRadius);
+	MAKE_RAW(IsWard, bool, SdkIsMinionWard);	
 
 	bool IsJungleMob() {
 		return GetType() == MINION_TYPE_JUNGLE_MONSTER;

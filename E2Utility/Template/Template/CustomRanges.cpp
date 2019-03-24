@@ -64,7 +64,7 @@ void CustomRanges::Draw(void * UserData)
 
 		for (auto &[netid, shop] : shops)
 		{
-			if (strstr(shop->GetName(), "Turret_OrderTurretShrine_A"))
+			if (strstr(shop->GetName(), "Turret_OrderTurretShrine_A") && shop->IsAlly() || strstr(shop->GetName(), "Turret_ChaosTurretShrine") && shop->IsAlly())
 			{
 				Draw::Circle(&shop->GetPosition(), 1500.0f, &Color::Blue);
 

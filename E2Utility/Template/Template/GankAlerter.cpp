@@ -41,24 +41,61 @@ void GankAlerter::Init()
 					temp.LastTrigger = 0;
 					temp.isAlly = true;
 
-					/*
-					unsigned char smite = hero->GetSpellSlotFromName("SummonerSmite");
-					if (smite == NULL || smite == 66)
-					{
-						continue;
-					}
 
-					if (smite == (unsigned char)SpellSlot::Summoner1 || smite == (unsigned char)SpellSlot::Summoner2)
+					
+					const char* ss = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
+
+					const char* ss2 = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
+
+					if (ss == nullptr || ss2 == nullptr)
 					{
-						//SdkUiConsoleWrite("ally smite added %s", hero->GetCharName());
-						temp.isJungler = true;
+						temp.isJungler = false;
 					}
 					else
 					{
-						//SdkUiConsoleWrite("ally none smite %s", hero->GetCharName());
-						temp.isJungler = false;
-					}*/
+						if (strcmp(ss, "SummonerSmite") == 0)
+						{
+							temp.isJungler = true;
+						}
+						else if (strcmp(ss2, "SummonerSmite") == 0)
+						{
+							temp.isJungler = true;
+						}
+						else
+						{
+							temp.isJungler = false;
+						}
+					}
 
+					
+
+				/*
+					if (hero->GetSpells().empty())
+					{
+						temp.isJungler = false;
+					}
+					else
+					{
+						int smite = int(hero->GetSpellSlotFromName("SummonerSmite"));
+						//
+
+						if (smite == int(SpellSlot::Unknown))
+						{
+							//SdkUiConsoleWrite("ally none2 smite %s", hero->GetCharName());
+							temp.isJungler = false;
+						}
+						else if (smite == int(SpellSlot::Summoner1) || smite == int(SpellSlot::Summoner2))
+						{
+							//SdkUiConsoleWrite("ally smite added %s", hero->GetCharName());
+							temp.isJungler = true;
+						}
+						else
+						{
+							//SdkUiConsoleWrite("en none smite %s", hero->GetCharName());
+							temp.isJungler = false;
+						}
+					}
+					*/
 					ChampionObjects.emplace_back(temp);
 				}
 			}
@@ -81,43 +118,60 @@ void GankAlerter::Init()
 					temp.LastTrigger = 0;
 					temp.isAlly = false;
 
-
-					/*
 					const char* ss = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
-						
+
 					const char* ss2 = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
 
-					if (strcmp(ss, "SummonerSmite") == 0)
-					{
-						temp.isJungler = true;
-					}
-					else if (strcmp(ss2, "SummonerSmite") == 0)
-					{
-						temp.isJungler = true;
-					}
-					else
+					if (ss == nullptr || ss2 == nullptr)
 					{
 						temp.isJungler = false;
 					}
-					*/
-					/*
-					unsigned char smite = hero->GetSpellSlotFromName("SummonerSmite");
-					if (smite == NULL || smite == 66)
+					else
 					{
-						continue;
+						if (strcmp(ss, "SummonerSmite") == 0)
+						{
+							temp.isJungler = true;
+						}
+						else if (strcmp(ss2, "SummonerSmite") == 0)
+						{
+							temp.isJungler = true;
+						}
+						else
+						{
+							temp.isJungler = false;
+						}
 					}
 
-					if (smite == (unsigned char)SpellSlot::Summoner1 || smite == (unsigned char)SpellSlot::Summoner2)
+
+					/*
+					if (hero->GetSpells().empty())
 					{
-						//SdkUiConsoleWrite("rr smite added %s", hero->GetCharName());
-						temp.isJungler = true;
+						temp.isJungler = false;
 					}
 					else
 					{
-						//SdkUiConsoleWrite("en none smite %s", hero->GetCharName());
-						temp.isJungler = false;
+						int smite = int(hero->GetSpellSlotFromName("SummonerSmite"));
+						//
+
+						if (smite == int(SpellSlot::Unknown))
+						{
+							//SdkUiConsoleWrite("ally none2 smite %s", hero->GetCharName());
+							temp.isJungler = false;
+						}
+						else if (smite == int(SpellSlot::Summoner1) || smite == int(SpellSlot::Summoner2))
+						{
+							//SdkUiConsoleWrite("ally smite added %s", hero->GetCharName());
+							temp.isJungler = true;
+						}
+						else
+						{
+							//SdkUiConsoleWrite("en none smite %s", hero->GetCharName());
+							temp.isJungler = false;
+						}
 					}
 					*/
+				
+					
 					ChampionObjects.emplace_back(temp);
 				}
 			}

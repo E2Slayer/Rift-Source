@@ -33,10 +33,6 @@ public:
 
 		//int list = Menu::Get<int>(getHitChance);
 
-		if (selectedCombo == NULL)
-		{
-			return Color::White; //just in case, the fucntion fails.
-		}
 
 		switch (selectedCombo)
 		{
@@ -66,8 +62,7 @@ public:
 			return Color::White;
 		case 12:
 			return Color::Yellow;
-		default:
-			return Color::White;
+
 		}
 
 		return Color::White;

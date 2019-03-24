@@ -8,6 +8,7 @@ void Others::Init()
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, CustomRanges::Draw);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, CustomRanges::SpellCastStart);
 	//Others::Init();
+
 }
 
 void Others::Tick(void * UserData)

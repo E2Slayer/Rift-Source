@@ -94,7 +94,7 @@ void Consumables::Init()
 				continue;
 			}
 
-			if (strstr(turret->GetName(), "Turret_OrderTurretShrine_A"))
+			if (strstr(turret->GetName(), "Turret_OrderTurretShrine_A") && turret->IsAlly() || strstr(turret->GetName(), "Turret_ChaosTurretShrine") && turret->IsAlly())
 			{
 
 

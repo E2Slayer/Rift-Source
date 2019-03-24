@@ -12,11 +12,14 @@ void Detector::Init()
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, CustomRanges::SpellCastStart);
 	//TurnAround::Init();
 	SharedExperience::InitLoader();
+	Teleport::InitLoader();
+	
 }
 
 void Detector::Update(void * UserData)
 {
 	//SharedExperience::TickLoader();
+	//Teleport::TickLoader();
 }
 
 void Detector::Tick(void * UserData)
@@ -45,7 +48,7 @@ void Detector::DrawMenu(void * UserData)
 		Cleansers::MenuLoader();
 		*/
 		SharedExperience::MenuLoader();
-
+		Teleport::MenuLoader();
 		
 
 		Menu::Tree("Detector Configs", "Detector.Config", false, []()
@@ -64,5 +67,5 @@ void Detector::Draw(_In_ void* UserData)
 	}
 
 	SharedExperience::DrawLoader();
-
+	Teleport::DrawLoader();
 }

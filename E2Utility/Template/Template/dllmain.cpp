@@ -5,7 +5,7 @@
 #include "CustomRanges.h"
 #include "Detector.h"
 #include "Drawings.h"
-
+#include "Trackers.h"
 #include "Others.h"
 
 
@@ -21,7 +21,7 @@ void __cdecl OnLoad(void* UserData)
 		Activator::Init();
 		Detector::Init();
 		Drawings::Init();
-
+		Trackers::Init();
 		//CustomRanges::Init();
 		Others::Init();
 	

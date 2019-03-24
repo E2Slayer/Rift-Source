@@ -13,6 +13,8 @@ std::vector<ChampionEXPObject> ChampionEXPObjects;
 
 void SharedExperience::InitLoader()
 {
+
+
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Drawings::Tick);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Drawings::DrawMenu);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::DeleteObject, SharedExperience::DeleteObject);
@@ -120,21 +122,21 @@ void SharedExperience::InitLoader()
 					//SdkUiConsoleWrite("enemy added %s", hero->GetCharName());
 					ChampionEXPObject temp;
 					temp.Hero = hero;
-					temp.Distance = 0;
-					temp.LastTrigger = 0;
+					temp.Distance = 0.0f;
+					temp.LastTrigger = 0.0f;
 					temp.isAlly = false;
 					temp.PossibleInvalidNumber = false;
-					temp.LastExp = 0;
-					temp.LastExpTime = 0;
+					temp.LastExp = 0.0f;
+					temp.LastExpTime = 0.0f;
 
-					temp.SiegeExp = 0;
-					temp.RangedExp = 0;
+					temp.SiegeExp = 0.0f;
+					temp.RangedExp = 0.0f;
 
-					temp.MeleeExp = 0;
+					temp.MeleeExp = 0.0f;
 
-					temp.CurrentExp = 0;
-					temp.CurrentExpTime = 0;
-					temp.NearByHeroes = 0;
+					temp.CurrentExp = 0.0f;
+					temp.CurrentExpTime = 0.0f;
+					temp.NearByHeroes = 0.;
 					temp.UnsureNearByHeroes = 0;
 					/*
 					unsigned char smite = hero->GetSpellSlotFromName("SummonerSmite");
@@ -835,9 +837,9 @@ void SharedExperience::TickLoader()
 										heroValue.LastExp = currentEXP;
 										//SdkUiConsoleWrite("1dead super added difference: %f NearBy %s number %d", difference, heroValue.Hero->GetCharName(), heroValue.NearByHeroes);
 									}
-									else if (value->IsSiegeMinion() && strcmp(value->GetCharName(), "SRU_OrderMinionSiege") == 0)  //92 60 40 30 24 SRU_OrderMinionSiege
+									else if (strcmp(value->GetCharName(), "SRU_OrderMinionSiege") == 0 || strcmp(value->GetCharName(), "SRU_ChaosMinionSiege") == 0)  //92 60 40 30 24 SRU_OrderMinionSiege
 									{//SRU_ChaosMinionSiege
-
+										//value->IsSiegeMinion()
 										int tempStock = 0;
 
 										if (difference >= 100.0f)
@@ -873,7 +875,7 @@ void SharedExperience::TickLoader()
 										heroValue.LastExp = currentEXP;
 										//SdkUiConsoleWrite("1dead siege added difference: %f NearBy %s number %d", difference, heroValue.Hero->GetCharName(), heroValue.NearByHeroes);
 									}
-									else if (!value->IsSuperMinion() && strcmp(value->GetCharName(), "SRU_OrderMinionMelee") == 0) //59 38 26 19 15 SRU_OrderMinionMelee
+									else if (strcmp(value->GetCharName(), "SRU_OrderMinionMelee") == 0 || strcmp(value->GetCharName(), "SRU_ChaosMinionMelee") == 0) //59 38 26 19 15 SRU_OrderMinionMelee
 									{//SRU_ChaosMinionMelee
 
 										
@@ -913,7 +915,7 @@ void SharedExperience::TickLoader()
 										heroValue.LastExp = currentEXP;
 										//SdkUiConsoleWrite("1dead melee added difference: %f NearBy %s number %d", difference, heroValue.Hero->GetCharName(), heroValue.NearByHeroes);
 									}
-									else if (strcmp(value->GetCharName(), "SRU_OrderMinionRanged") == 0) //29 19 13 10 8 SRU_OrderMinionRanged
+									else if (strcmp(value->GetCharName(), "SRU_OrderMinionRanged") == 0 || strcmp(value->GetCharName(), "SRU_ChaosMinionRanged") == 0) //29 19 13 10 8 SRU_OrderMinionRanged
 									{//SRU_ChaosMinionRanged
 										int tempStock = 0;
 										if (difference >= 35.0f)

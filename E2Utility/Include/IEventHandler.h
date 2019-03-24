@@ -39,6 +39,8 @@ enum class CallbackEnum {
 	Interruptible,
 	Dash,
 	GapCloser,	
+
+	ModuleLoadAndUnload,
 };
 
 typedef void(__cdecl* PREMOVECALLBACK)			(bool* Process, Vector3* Position);

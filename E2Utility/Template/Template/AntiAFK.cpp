@@ -42,7 +42,7 @@ void AntiAFK::Execute()
 
 	if (Game::Time() - lastAction >= WarningTime + rValue)
 	{
-		SdkUiConsoleWrite("[E2Utility] Anti-AFK Activated. Time Passed From the Last Cast %f (ms)", Game::Time() - lastAction);
+		SdkUiConsoleWrite("[E2Utility] Anti-AFK Activated. Time Passed From the Last Cast %f (Seconds)", Game::Time() - lastAction);
 
 		if (spellQ.IsReady() && Menu::Get<bool>("Others.AntiAFK.UseQ"))
 		{
