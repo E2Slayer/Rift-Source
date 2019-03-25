@@ -633,7 +633,7 @@ void Teleport::PrintChat(const char* champName, const char* TeleportName, const 
 	sstream << recallStatusText << R"(</font>)";
 
 
-
+	
 	sstream << R"(<font color = "#FFFFFF"> - </font>)";
 
 	Color = Menu::Get<SDKCOLOR>("Detector.Teleport.Chat.Teleport");

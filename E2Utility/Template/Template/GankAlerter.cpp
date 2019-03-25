@@ -45,7 +45,7 @@ void GankAlerter::Init()
 					
 					const char* ss = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
 
-					const char* ss2 = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
+					const char* ss2 = hero->GetSpell((unsigned char)SpellSlot::Summoner2).ScriptName;
 
 					if (ss == nullptr || ss2 == nullptr)
 					{
@@ -120,7 +120,7 @@ void GankAlerter::Init()
 
 					const char* ss = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
 
-					const char* ss2 = hero->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName;
+					const char* ss2 = hero->GetSpell((unsigned char)SpellSlot::Summoner2).ScriptName;
 
 					if (ss == nullptr || ss2 == nullptr)
 					{

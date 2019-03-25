@@ -222,6 +222,12 @@
     <ClInclude Include="Base.h">
       <Filter>My Script Files\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="CloneDetector.h">
+      <Filter>My Script Files\Detector\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DashJumpTracker.h">
+      <Filter>My Script Files\Trackers\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -295,6 +301,12 @@
     </ClCompile>
     <ClCompile Include="Base.cpp">
       <Filter>My Script Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CloneDetector.cpp">
+      <Filter>My Script Files\Detector</Filter>
+    </ClCompile>
+    <ClCompile Include="DashJumpTracker.cpp">
+      <Filter>My Script Files\Trackers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

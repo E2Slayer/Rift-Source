@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Trackers.h"
 #include "AbilityTimer.h"
+#include "DashJumpTracker.h"
 
 void Trackers::Init()
 {
@@ -12,7 +13,7 @@ void Trackers::Init()
 	//TurnAround::Init();
 	//SharedExperience::InitLoader();
 	AbilityTimer::InitLoader();
-
+	DashJumpTracker::Init();
 }
 
 void Trackers::Update(void * UserData)
@@ -28,6 +29,8 @@ void Trackers::Tick(void * UserData)
 	{
 		return;
 	}
+
+	DashJumpTracker::TickLoader();
 	//TurnAround::TickLoader();
 
 	//SharedExperience::TickLoader();
@@ -49,6 +52,7 @@ void Trackers::DrawMenu(void * UserData)
 		//SharedExperience::MenuLoader();
 		//Teleport::MenuLoader();
 		AbilityTimer::MenuLoader();
+		DashJumpTracker::MenuLoader();
 
 		Menu::Tree("Trackers Configs", "Trackers.Config", false, []()
 		{
@@ -66,7 +70,7 @@ void Trackers::Draw(_In_ void* UserData)
 	}
 
 	//Trackers.AbilityTimer.Use
-
+	DashJumpTracker::DrawLoader();
 	AbilityTimer::DrawLoader();
 	//SharedExperience::DrawLoader();
 	//Teleport::DrawLoader();

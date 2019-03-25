@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include <stdio.h>
+#include <string.h>
 #include "AbilityTimer.h"
 #include "DrawHelper.h"
 #include "DropLists.h"
@@ -332,7 +334,7 @@ void AbilityTimer::TickLoader()
 {
 	if (!Menu::Get<bool>("Trackers.AbilityTimer.Use"))
 	{
-		AbilityDrawing.clear();
+
 		return;
 	}
 
@@ -362,7 +364,6 @@ void AbilityTimer::DrawLoader()
 	if (!Menu::Get<bool>("Trackers.AbilityTimer.Use"))
 	{
 
-		AbilityDrawing.clear();
 		return;
 	}
 
@@ -391,11 +392,13 @@ void AbilityTimer::DrawLoader()
 
 					Vector2 screenPos{ Renderer::WorldToScreen(value.Position) };
 
-					if (value.IsDynamic && value.Object->GetPosition().IsValid() && value.Object->GetPosition().IsOnScreen())
+					if (value.Object->GetPosition().IsValid() && value.Object->GetPosition().IsOnScreen())
 					{
-						screenPos = Renderer::WorldToScreen(value.Object->GetPosition());
-					
 
+						if (value.IsDynamic)
+						{
+							screenPos = Renderer::WorldToScreen(value.Object->GetPosition());
+						}
 						screenPos.x += (float)Menu::Get<int>("Trackers.AbilityTimer.DrawingX");
 						screenPos.y += (float)Menu::Get<int>("Trackers.AbilityTimer.DrawingY");
 
@@ -410,8 +413,8 @@ void AbilityTimer::DrawLoader()
 
 						DrawHelper::DrawOutlineText(NULL, &screenPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.AbilityTimer.Color")), Menu::Get<int>("Trackers.AbilityTimer.FontSize"), 10, 0,
 							&DropLists::GetColor(Menu::Get<int>("Trackers.AbilityTimer.OutLineColor")), false);
-					}
 
+					}
 					//Draw::Text(NULL, &screenPos, ss1.str(), "Calibri Bold", &Color::White, 30, 10);
 				}
 
@@ -553,7 +556,7 @@ bool AbilityTimer::OnCreate(void* Object, unsigned int NetworkID, void* UserData
 	
 	for (auto const& value : AbilitiesMap)
 	{
-		if (strcmp(value.first, findSkin.c_str()) == 0 && value.second.Type != AbilityType::OnBuffCreate && Menu::Get<bool>("Trackers.AbilityTimer.AbilityList." + std::string(value.second.MenuID)))
+		if (_stricmp(value.first, findSkin.c_str()) == 0 && value.second.Type != AbilityType::OnBuffCreate && Menu::Get<bool>("Trackers.AbilityTimer.AbilityList." + std::string(value.second.MenuID)))
 		{
 			bool isDynamic = false;
 			bool isEarlyDelete = false;
@@ -567,7 +570,7 @@ bool AbilityTimer::OnCreate(void* Object, unsigned int NetworkID, void* UserData
 			{
 				isEarlyDelete = true;
 			}
-
+			//SdkUiConsoleWrite("AbilityTimer Create 2222222%s", objectName);
 			AbilityDrawing.emplace_back(AbilityDraw(objectPos, sender, Game::Time() + value.second.Time, isDynamic, isEarlyDelete, objectName));
 		}
 	}
@@ -623,7 +626,7 @@ void AbilityTimer::OnBuffCreateAndDelete(void* AI, bool Created, unsigned char T
 	{
 		for (auto const& value : AbilitiesMap)
 		{
-			if (strcmp(value.first, Name) == 0 && value.second.Type == AbilityType::OnBuffCreate && Menu::Get<bool>("Trackers.AbilityTimer.AbilityList." + std::string(value.second.MenuID)))
+			if (_stricmp(value.first, Name) == 0 && value.second.Type == AbilityType::OnBuffCreate && Menu::Get<bool>("Trackers.AbilityTimer.AbilityList." + std::string(value.second.MenuID)))
 			{
 				bool isDynamic = false;
 				bool isEarlyDelete = false;

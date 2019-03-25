@@ -3,6 +3,7 @@
 //#include "TurnAround.h"
 #include "SharedExperience.h"
 #include "Teleport.h"
+#include "CloneDetector.h"
 
 class Detector
 {

@@ -183,9 +183,11 @@
     <ClInclude Include="Base.h" />
     <ClInclude Include="ChampionStuct.h" />
     <ClInclude Include="Cleansers.h" />
+    <ClInclude Include="CloneDetector.h" />
     <ClInclude Include="Consumables.h" />
     <ClInclude Include="CustomRange.h" />
     <ClInclude Include="CustomRanges.h" />
+    <ClInclude Include="DashJumpTracker.h" />
     <ClInclude Include="Defensives.h" />
     <ClInclude Include="Detector.h" />
     <ClInclude Include="DrawHelper.h" />
@@ -214,9 +216,11 @@
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="ChampionStuct.cpp" />
     <ClCompile Include="Cleansers.cpp" />
+    <ClCompile Include="CloneDetector.cpp" />
     <ClCompile Include="Consumables.cpp" />
     <ClCompile Include="CustomRange.cpp" />
     <ClCompile Include="CustomRanges.cpp" />
+    <ClCompile Include="DashJumpTracker.cpp" />
     <ClCompile Include="Defensives.cpp" />
     <ClCompile Include="Detector.cpp" />
     <ClCompile Include="dllmain.cpp" />

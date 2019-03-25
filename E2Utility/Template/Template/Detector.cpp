@@ -13,7 +13,7 @@ void Detector::Init()
 	//TurnAround::Init();
 	SharedExperience::InitLoader();
 	Teleport::InitLoader();
-	
+	CloneDetector::Init();
 }
 
 void Detector::Update(void * UserData)
@@ -49,7 +49,7 @@ void Detector::DrawMenu(void * UserData)
 		*/
 		SharedExperience::MenuLoader();
 		Teleport::MenuLoader();
-		
+		CloneDetector::MenuLoader();
 
 		Menu::Tree("Detector Configs", "Detector.Config", false, []()
 		{
@@ -68,4 +68,5 @@ void Detector::Draw(_In_ void* UserData)
 
 	SharedExperience::DrawLoader();
 	Teleport::DrawLoader();
+	CloneDetector::DrawLoader();
 }

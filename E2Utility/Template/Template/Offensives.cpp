@@ -46,6 +46,7 @@ void Offensives::Init()
 
 
 	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::YoumuusGhostblade, "Youmuus Ghostblade", "YoumuusGhostblade", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Active, 700.0f));
+	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::Spellbinder, "Spell Binder", "Spellbinder", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Active, 700.0f));
 	//OffensiveItemList.emplace_back(ItemStruct((int)ItemID::EdgeofNight, "Edge of Night", "EdgeofNight", subCategoryOff, MenuTypes::EnemyNumber, SpellTypes::Active, 1500.0f));
 	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::TwinShadows, "Twin Shadows", "TwinShadows", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Active, 1000.0f));
 
