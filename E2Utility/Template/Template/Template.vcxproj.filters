@@ -228,6 +228,9 @@
     <ClInclude Include="DashJumpTracker.h">
       <Filter>My Script Files\Trackers\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="CooldownTracker.h">
+      <Filter>My Script Files\Trackers\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -308,6 +311,9 @@
     <ClCompile Include="DashJumpTracker.cpp">
       <Filter>My Script Files\Trackers</Filter>
     </ClCompile>
+    <ClCompile Include="CooldownTracker.cpp">
+      <Filter>My Script Files\Trackers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="E2Utility.rc">
@@ -316,6 +322,21 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\RecallBar.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="Resources\CD\hud1.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="Resources\RecallBar.bmp">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="Resources\CD\CD_Hud.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="Resources\CD\CD_HudSelf.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="Resources\CD\CD_HudSelf2.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
   </ItemGroup>

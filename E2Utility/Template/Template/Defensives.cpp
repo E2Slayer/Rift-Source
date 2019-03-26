@@ -23,10 +23,10 @@ void Defensives::Init()
 	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Redemption, "Redemption", "Redemption", subCategoryDef, MenuTypes::AllyHealth, SpellTypes::Targeted, 5500.0f));
 	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::ShurelyasReverie, "Shurelyas Reverie", "ShurelyasReverie", subCategoryDef, MenuTypes::AllyNumber | MenuTypes::EnemyHealth, SpellTypes::Active, 700.0f));
 	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::RighteousGlory, "Righteous Glory", "RighteousGlory", subCategoryDef, MenuTypes::EnemyHealth, SpellTypes::Active, 1000.0f));
-	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::GargoyleStoneplate, "Gargoyle Stoneplate", "GargoyleStoneplate", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
-	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::SeraphsEmbrace, "Seraphs Embrace", "SeraphsEmbrace", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
-	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Stopwatch, "Stopwatch", "Stopwatch", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
-	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::ZhonyasHourglass, "Zhonyas Hourglass", "ZhonyasHourglass", subCategoryDef, MenuTypes::MyHealth, SpellTypes::Active, 700.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::GargoyleStoneplate, "Gargoyle Stoneplate", "GargoyleStoneplate", subCategoryDef, MenuTypes::MyHealth | MenuTypes::EnemyNumber, SpellTypes::Active, 700.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::SeraphsEmbrace, "Seraphs Embrace", "SeraphsEmbrace", subCategoryDef, MenuTypes::MyHealth | MenuTypes::EnemyNumber, SpellTypes::Active, 700.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Stopwatch, "Stopwatch", "Stopwatch", subCategoryDef, MenuTypes::MyHealth | MenuTypes::EnemyNumber, SpellTypes::Active, 700.0f));
+	DefensivesItemList.emplace_back(ItemStruct((int)ItemID::ZhonyasHourglass, "Zhonyas Hourglass", "ZhonyasHourglass", subCategoryDef, MenuTypes::MyHealth | MenuTypes::EnemyNumber, SpellTypes::Active, 700.0f));
 	//DefensivesItemList.emplace_back(ItemStruct((int)ItemID::Ohmwrecker, "Ohmwrecker", "Ohmwrecker", subCategoryDef, MenuTypes::AllyHealth | MenuTypes::AllyNumber, SpellTypes::Active, 1100.0f));
 }
 

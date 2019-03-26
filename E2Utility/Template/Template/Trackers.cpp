@@ -2,6 +2,8 @@
 #include "Trackers.h"
 #include "AbilityTimer.h"
 #include "DashJumpTracker.h"
+//#include "CooldownTracker.h"
+
 
 void Trackers::Init()
 {
@@ -14,6 +16,7 @@ void Trackers::Init()
 	//SharedExperience::InitLoader();
 	AbilityTimer::InitLoader();
 	DashJumpTracker::Init();
+	//CooldownTracker::Init();
 }
 
 void Trackers::Update(void * UserData)
@@ -40,7 +43,7 @@ void Trackers::Tick(void * UserData)
 
 void Trackers::DrawMenu(void * UserData)
 {
-	Menu::Tree("Trackers", "Trackers.", true, []()
+	Menu::Tree("Trackers", "Trackers.", false, []()
 	{
 		/*
 		Summoners::MenuLoader();
@@ -53,6 +56,8 @@ void Trackers::DrawMenu(void * UserData)
 		//Teleport::MenuLoader();
 		AbilityTimer::MenuLoader();
 		DashJumpTracker::MenuLoader();
+		//CooldownTracker::MenuLoader();
+
 
 		Menu::Tree("Trackers Configs", "Trackers.Config", false, []()
 		{
@@ -72,6 +77,8 @@ void Trackers::Draw(_In_ void* UserData)
 	//Trackers.AbilityTimer.Use
 	DashJumpTracker::DrawLoader();
 	AbilityTimer::DrawLoader();
-	//SharedExperience::DrawLoader();
-	//Teleport::DrawLoader();
+
+	//CooldownTracker::DrawLoader();
+
+
 }

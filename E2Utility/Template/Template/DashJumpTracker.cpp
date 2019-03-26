@@ -10,13 +10,14 @@ std::vector< DashJumpObject> Destinations;
 
 std::vector<DashJumpMenu> DashJumpList
 { 
+
+	DashJumpMenu("Leblanc", "LeblancW", "Leblanc W"), DashJumpMenu("Leblanc", "LeblancRW", "Leblanc RW"), DashJumpMenu("Leblanc", "LeblancWReturn", "Leblanc W Return"), DashJumpMenu("Leblanc", "LeblancRWReturn", "Leblanc RW Return"),
 	DashJumpMenu("Ezreal", "EzrealE", "Ezreal E"), DashJumpMenu("Vayne", "VayneTumble", "Vayne Q(Invisible)"), DashJumpMenu("Kassadin", "RiftWalk", "Kassadin R"), DashJumpMenu("Shaco", "Deceive", "Shaco Q")
-	, DashJumpMenu("LeeSin", "BlindMonkWOne", "LeeSin W"), DashJumpMenu("Talon", "TalonE", "Talon E"), DashJumpMenu("Leblanc", "LeblancW", "Leblanc W"), DashJumpMenu("Leblanc", "LeblancRW", "Leblanc RW")
-	, DashJumpMenu("Katarina", "KatarinaEWrapper", "Katarina E"), DashJumpMenu("Zed", "ZedW", "Zed W (Swap)"), DashJumpMenu("Zed", "ZedR", "Zed R (Swap)")
+	, DashJumpMenu("LeeSin", "BlindMonkWOne", "LeeSin W"), DashJumpMenu("Talon", "TalonE", "Talon E"), DashJumpMenu("Katarina", "KatarinaEWrapper", "Katarina E"), DashJumpMenu("Zed", "ZedW", "Zed W (Swap)"), DashJumpMenu("Zed", "ZedR", "Zed R (Swap)")
 	//KatarinaEWrapper
 };
 
-const float CheckInterval = 300.0f;
+const float CheckInterval = 100.0f;
 float _lastCheck = 0.0f;
 
 
@@ -25,8 +26,7 @@ void DashJumpTracker::Init()
 	Destinations.clear();
 	_lastCheck = 0.0f;
 
-
-//	auto enemy1{ pSDK->EntityManager->GetEnemyHeroes() };
+	//auto enemy1{ pSDK->EntityManager->GetAllyHeroes() };
 
 
 	auto enemy1{ pSDK->EntityManager->GetEnemyHeroes() };
@@ -168,6 +168,9 @@ void DashJumpTracker::TickLoader()
 	{
 		if (value.Casted)
 		{
+		
+
+
 			if (Game::Time() > value.TimeCasted + 2.0f || !value.Hero->IsAlive())
 			{
 				value.Casted = false;
@@ -289,6 +292,8 @@ void DashJumpTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 	
 	*/
 
+	
+
 	for (auto &value : Destinations)
 	{
 		if (value.Hero->GetNetworkID() == sender->GetNetworkID())
@@ -316,11 +321,37 @@ void DashJumpTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
 
 			}
-			/*
+			else if (_stricmp(SpellCast->Spell.ScriptName, "LeblancW") == 0)
+			{
+
+				/*
+					DashJumpMenu("Leblanc", "LeblancW", "Leblanc W"), DashJumpMenu("Leblanc", "LeblancRW", "Leblanc RW"),
+
+					DashJumpMenu("Leblanc", "LeblancWReturn", "Leblanc W Return"), DashJumpMenu("Leblanc", "LeblancRWReturn", "Leblanc RW Return"),
+				*/
+				//SdkUiConsoleWrite("0Spell: %s", SpellCast->Spell.ScriptName);
+
+				Destinations[1].Casted = false;
+				Destinations[2].Casted = false;
+				Destinations[3].Casted = false;
+				//	value.StartPos = Destinations[index - 2].StartPos;
+				value.StartPos = SpellCast->StartPosition;
+				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
+
+			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "LeblancRW") == 0)
 			{
 
-				Destinations[index- 2].Casted = false;
+				/*
+					DashJumpMenu("Leblanc", "LeblancW", "Leblanc W"), DashJumpMenu("Leblanc", "LeblancRW", "Leblanc RW"),
+					
+					DashJumpMenu("Leblanc", "LeblancWReturn", "Leblanc W Return"), DashJumpMenu("Leblanc", "LeblancRWReturn", "Leblanc RW Return"),
+				*/
+				//SdkUiConsoleWrite("1Spell: %s", SpellCast->Spell.ScriptName);
+
+				Destinations[0].Casted = false;
+				Destinations[2].Casted = false;
+				Destinations[3].Casted = false;
 			//	value.StartPos = Destinations[index - 2].StartPos;
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
@@ -328,33 +359,25 @@ void DashJumpTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "LeblancWReturn") == 0)
 			{
-
-
-				Destinations[index - 1].Casted = false;
-				Destinations[index + 1].Casted = false;
-				Destinations[index + 2].Casted = false;
-
-
-
+				Destinations[0].Casted = false;
+				Destinations[1].Casted = false;
+				Destinations[2].Casted = false;
+				//SdkUiConsoleWrite("2Spell: %s", SpellCast->Spell.ScriptName);
 				value.StartPos = SpellCast->StartPosition;
-				value.EndPos = Destinations[index - 1].StartPos;
-
+				value.EndPos = Destinations[0].StartPos;
 			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "LeblancRWReturn") == 0)
 			{
 
-					Destinations[index - 3].Casted = false;
-					Destinations[index - 2].Casted = false;
-					Destinations[index - 1].Casted = false;
+				Destinations[0].Casted = false;
+				Destinations[1].Casted = false;
+				Destinations[2].Casted = false;
 				
-
-
-
+			
 				value.StartPos = SpellCast->StartPosition;
-				value.EndPos = Destinations[index - 1].StartPos;
+				value.EndPos = Destinations[2].StartPos;
 
 			}
-			*/
 			else if (_stricmp(SpellCast->Spell.ScriptName, "ZedW2") == 0 && _stricmp(SpellCast->Spell.ScriptName, "ZedW") != 0 && Menu::Get<bool>("Trackers.DashJumpTracker.List.ZedW"))
 			{
 				value.StartPos = SpellCast->StartPosition;

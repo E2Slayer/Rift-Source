@@ -61,7 +61,7 @@ void Activator::Tick(void * UserData)
 
 void Activator::DrawMenu(void * UserData)
 {
-	Menu::Tree("Activator", "Activator.", true, []()
+	Menu::Tree("Activator", "Activator.", false, []()
 	{
 		Summoners::MenuLoader();
 		Consumables::MenuLoader();

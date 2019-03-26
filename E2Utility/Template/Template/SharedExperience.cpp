@@ -66,50 +66,7 @@ void SharedExperience::InitLoader()
 
 	auto enemy1{ pSDK->EntityManager->GetEnemyHeroes() };
 
-	/*
-	if (enemy1.empty())
-	{
-		return;
-	}*/
 
-	/*
-	if (!ally1.empty())
-	{
-
-		//Drawings.GankAlerter.Ally.Jungler
-		for (auto &[netID, hero] : ally1)
-		{
-			if (hero != nullptr && hero != NULL)
-			{
-				//if (hero->GetNetworkID() != Player.GetNetworkID())
-				{
-					//SdkUiConsoleWrite("ad added %s", hero->GetCharName());
-					ChampionEXPObject temp;
-					temp.Hero = hero;
-					temp.Distance = 0;
-					temp.LastTrigger = 0;
-					temp.isAlly = false;
-					temp.PossibleInvalidNumber = false;
-					temp.LastExp = 0;
-					temp.LastExpTime = 0;
-
-					temp.SiegeExp = 0;
-					temp.RangedExp = 0;
-
-					temp.MeleeExp = 0;
-
-					temp.CurrentExp = 0;
-					temp.CurrentExpTime = 0;
-
-					temp.NearByHeroes = 0;
-					temp.UnsureNearByHeroes = 0;
-		
-					ChampionEXPObjects.emplace_back(temp);
-				}
-			}
-		}
-	}*/
-	//SummonerSmite - Smite
 	
 	if (!enemy1.empty())
 	{
@@ -138,18 +95,7 @@ void SharedExperience::InitLoader()
 					temp.CurrentExpTime = 0.0f;
 					temp.NearByHeroes = 0.;
 					temp.UnsureNearByHeroes = 0;
-					/*
-					unsigned char smite = hero->GetSpellSlotFromName("SummonerSmite");
-					if (smite == (unsigned char)SpellSlot::Summoner1 || smite == (unsigned char)SpellSlot::Summoner2)
-					{
-						//SdkUiConsoleWrite("rr smite added %s", hero->GetCharName());
-						temp.isJungler = true;
-					}
-					else
-					{
-						//SdkUiConsoleWrite("en none smite %s", hero->GetCharName());
-						temp.isJungler = false;
-					}*/
+
 					ChampionEXPObjects.emplace_back(temp);
 				}
 			}
@@ -726,22 +672,18 @@ void SharedExperience::TickLoader()
 		{
 			//&& heroValue.Hero->IsVisible()  deleted
 			//SdkUiConsoleWrite("emprt target %s %f", heroValue.Hero->GetCharName(), Player.Distance(heroPos));
-			//SdkUiConsoleWrite("deac %f", detectingRange);
+	
 			continue;
 		}
-		
-
-		if (heroValue.CurrentExp != heroValue.Hero->GetExperience())
+		else
 		{
-			heroValue.CurrentExp = heroValue.Hero->GetExperience();
-			heroValue.CurrentExpTime = Game::Time();
-		}
 
+			if (heroValue.CurrentExp != heroValue.Hero->GetExperience())
+			{
+				heroValue.CurrentExp = heroValue.Hero->GetExperience();
+				heroValue.CurrentExpTime = Game::Time();
+			}
 
-		//auto heroPos = heroValue.Hero->GetServerPosition();
-
-		if ( Menu::Get<bool>("Detector.SharedXP.All"))
-		{
 			if (heroPos.IsValid())
 			{
 				auto minion_ptr{ pSDK->EntityManager->GetAllyMinions(1450.0f, &heroPos) }; // 1450 is more accurate but wanna make it sure
@@ -1037,115 +979,120 @@ void SharedExperience::DrawLoader()
 
 			float detectingRange = (float)Menu::Get<int>("Detector.SharedXP.Range");
 
+
 			if (heroPos.IsValid() && Player.Distance(heroPos) > detectingRange && !Menu::Get<bool>("Detector.SharedXP.All"))
 			{
+				//&& heroValue.Hero->IsVisible()  deleted
+				//SdkUiConsoleWrite("emprt target %s %f", heroValue.Hero->GetCharName(), Player.Distance(heroPos));
+				//SdkUiConsoleWrite("deac2 %f", detectingRange);
 				continue;
 			}
-
-
-
-			//SdkUiConsoleWrite("here1");
-			//Vector3 pos{ drawHero.Hero->GetPosition() };
-			//Vector2 screenPos{ Renderer::WorldToScreen(pos) };
-			//for (auto const& value : currentItems)
-
-
-			Vector2 posHP{ drawHero.Hero->GetHealthBarScreenPos() };
-			posHP.x += (float)Menu::Get<int>("Detector.SharedXP.DrawingX");
-			posHP.y -= (float)Menu::Get<int>("Detector.SharedXP.DrawingY");
-
-			//Detector.SharedXP.DrawingX
-			if (posHP.IsValid() && drawHero.Hero->GetPosition().IsOnScreen() && drawHero.Hero->IsAlive() && drawHero.Hero->IsVisible())
+			else
 			{
 
 
-				//auto hi = Menu::Get<Hotkey>("Activator.Config.ComboKey");
+				//SdkUiConsoleWrite("sec %f", detectingRange);
+				//SdkUiConsoleWrite("here1");
+				//Vector3 pos{ drawHero.Hero->GetPosition() };
+				//Vector2 screenPos{ Renderer::WorldToScreen(pos) };
+				//for (auto const& value : currentItems)
 
 
-				//Detector.SharedXP.FontSize
-				int minimumEnemy = Menu::Get<int>("Detector.SharedXP.DetectNumber");
+				Vector2 posHP{ drawHero.Hero->GetHealthBarScreenPos() };
+				posHP.x += (float)Menu::Get<int>("Detector.SharedXP.DrawingX");
+				posHP.y -= (float)Menu::Get<int>("Detector.SharedXP.DrawingY");
 
-				int fontSize = Menu::Get<int>("Detector.SharedXP.FontSize");
-
-				if (minimumEnemy >= 0 && minimumEnemy < 5 && fontSize)
+				//Detector.SharedXP.DrawingX
+				if (posHP.IsValid() && drawHero.Hero->GetPosition().IsOnScreen() && drawHero.Hero->IsAlive() && drawHero.Hero->IsVisible())
 				{
+					
 
-					int detectNumber = Menu::Get<int>("Detector.SharedXP.WarningDetectNumber");
+					//auto hi = Menu::Get<Hotkey>("Activator.Config.ComboKey");
 
-					if (detectNumber >= 0 && detectNumber < 5)
+
+					//Detector.SharedXP.FontSize
+					int minimumEnemy = Menu::Get<int>("Detector.SharedXP.DetectNumber");
+
+					int fontSize = Menu::Get<int>("Detector.SharedXP.FontSize");
+
+					if (minimumEnemy >= 0 && minimumEnemy < 5 && fontSize)
 					{
-						//Draw::Text(NULL, &screenPos, "3", "Arial", &Color::Red, 28, 6);
-						//screenPos.y -= 160.0f;
-						//screenPos.x += 80.0f;
 
+						int detectNumber = Menu::Get<int>("Detector.SharedXP.WarningDetectNumber");
 
-						//screenPos.y -= 40.0f;
-						//Draw::Text(NULL, &screenPos, std::to_string(minimumEnemy), "Arial", &Color::Green, 28, 6); //1
-						//screenPos.y -= 40.0f;
-
-						float timePassed = Game::Time() - drawHero.LastExpTime;
-						//Draw::Text(NULL, &screenPos, std::to_string(timePassed), "Arial", &Color::Green, 28, 6); //0
-
-
-
-
-						if (minimumEnemy <= drawHero.NearByHeroes)
+						if (detectNumber >= 0 && detectNumber < 5)
 						{
-							//screenPos.x += 60.0f;
 
-							std::stringstream ss;
-							ss.precision(1); //for decimal
-							ss.setf(std::ios_base::fixed, std::ios_base::floatfield);
-
-							//int nearBy = drawHero.NearByHeroes;
-
-							//int visibleNear = drawHero.Hero->CountEnemiesInRange(1000.0f);
+							//Draw::Text(NULL, &screenPos, "3", "Arial", &Color::Red, 28, 6);
+							//screenPos.y -= 160.0f;
+							//screenPos.x += 80.0f;
 
 
+							//screenPos.y -= 40.0f;
+							//Draw::Text(NULL, &screenPos, std::to_string(minimumEnemy), "Arial", &Color::Green, 28, 6); //1
+							//screenPos.y -= 40.0f;
 
-							ss << "" << drawHero.NearByHeroes;
+							float timePassed = Game::Time() - drawHero.LastExpTime;
+							//Draw::Text(NULL, &screenPos, std::to_string(timePassed), "Arial", &Color::Green, 28, 6); //0
 
-							float maxTimer = (float)Menu::Get<int>("Detector.SharedXP.TimerMax");
-							if (timePassed <= maxTimer)
+
+						
+							if (minimumEnemy <= drawHero.NearByHeroes)
 							{
+								//screenPos.x += 60.0f;
 
+								std::stringstream ss;
+								ss.precision(1); //for decimal
+								ss.setf(std::ios_base::fixed, std::ios_base::floatfield);
 
+								//int nearBy = drawHero.NearByHeroes;
 
-								if (Menu::Get<bool>("Detector.SharedXP.Timer"))//Detector.SharedXP.Timer
+								//int visibleNear = drawHero.Hero->CountEnemiesInRange(1000.0f);
+
+								ss << "" << drawHero.NearByHeroes;
+
+								float maxTimer = (float)Menu::Get<int>("Detector.SharedXP.TimerMax");
+								if (timePassed <= maxTimer)
 								{
-									float minTimer = (float)Menu::Get<int>("Detector.SharedXP.TimerMin");
-									//Detector.SharedXP.TimerMin
 
-									if (timePassed >= minTimer)
+
+
+									if (Menu::Get<bool>("Detector.SharedXP.Timer"))//Detector.SharedXP.Timer
 									{
-										ss << " (" << timePassed << "s)";
+										float minTimer = (float)Menu::Get<int>("Detector.SharedXP.TimerMin");
+										//Detector.SharedXP.TimerMin
+
+										if (timePassed >= minTimer)
+										{
+											ss << " (" << timePassed << "s)";
+										}
+
 									}
 
-								}
 
+									if (detectNumber <= drawHero.NearByHeroes && Menu::Get<bool>("Detector.SharedXP.ChangeColor"))
+									{
 
-								if (detectNumber <= drawHero.NearByHeroes && Menu::Get<bool>("Detector.SharedXP.ChangeColor"))
-								{
+										Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.ColorWarning")), fontSize, 6);
+									}
+									else if (detectNumber > drawHero.NearByHeroes)
+									{
 
-									Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.ColorWarning")), fontSize, 6);
-								}
-								else if (detectNumber > drawHero.NearByHeroes)
-								{
-
-									Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
-								}
-								else
-								{
-									Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
+										Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
+									}
+									else
+									{
+	
+										Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
+									}
 								}
 							}
+
 						}
 
 					}
 
 				}
-
-
 			}
 		}
 	}

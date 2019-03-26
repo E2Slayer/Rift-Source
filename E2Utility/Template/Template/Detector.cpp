@@ -38,7 +38,7 @@ void Detector::Tick(void * UserData)
 
 void Detector::DrawMenu(void * UserData)
 {
-	Menu::Tree("Detector", "Detector.", true, []()
+	Menu::Tree("Detector", "Detector.", false, []()
 	{
 		/*
 		Summoners::MenuLoader();

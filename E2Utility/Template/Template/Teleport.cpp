@@ -188,10 +188,11 @@ void Teleport::DrawLoader()
 
 	if (Game::IsOverlayOpen())
 	{
-		SdkDrawSpriteFromResource(MAKEINTRESOURCEA(IDB_RECALLBAR), &barPos, false); //312x8
+		//SdkDrawSpriteFromResource(MAKEINTRESOURCEA(IDB_RECALLBAR), &barPos, false); //312x8
 
+		SdkDrawSpriteFromResource(MAKEINTRESOURCEA(102), &barPos, false); //312x8
 
-
+		//Resources\\RecallBar.bmp
 
 			//target.second.CurrentRecallType;
 			//Game::GetRecallName(target.second.CurrentRecallType);

@@ -22,7 +22,7 @@ void Drawings::Tick(void * UserData)
 
 void Drawings::DrawMenu(void * UserData)
 {
-	Menu::Tree("Drawings", "Drawings.", true, []()
+	Menu::Tree("Drawings", "Drawings.", false, []()
 	{
 		/*
 		Summoners::MenuLoader();

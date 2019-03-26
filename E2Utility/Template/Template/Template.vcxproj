@@ -185,6 +185,7 @@
     <ClInclude Include="Cleansers.h" />
     <ClInclude Include="CloneDetector.h" />
     <ClInclude Include="Consumables.h" />
+    <ClInclude Include="CooldownTracker.h" />
     <ClInclude Include="CustomRange.h" />
     <ClInclude Include="CustomRanges.h" />
     <ClInclude Include="DashJumpTracker.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="Cleansers.cpp" />
     <ClCompile Include="CloneDetector.cpp" />
     <ClCompile Include="Consumables.cpp" />
+    <ClCompile Include="CooldownTracker.cpp" />
     <ClCompile Include="CustomRange.cpp" />
     <ClCompile Include="CustomRanges.cpp" />
     <ClCompile Include="DashJumpTracker.cpp" />
@@ -245,6 +247,11 @@
     <ResourceCompile Include="E2Utility.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\CD\CD_Hud.png" />
+    <Image Include="Resources\CD\CD_HudSelf.png" />
+    <Image Include="Resources\CD\CD_HudSelf2.png" />
+    <Image Include="Resources\CD\hud1.png" />
+    <Image Include="Resources\RecallBar.bmp" />
     <Image Include="Resources\RecallBar.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
