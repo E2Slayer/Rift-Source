@@ -231,6 +231,9 @@
     <ClInclude Include="CooldownTracker.h">
       <Filter>My Script Files\Trackers\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="AutoEvents.h">
+      <Filter>My Script Files\Others\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -313,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="CooldownTracker.cpp">
       <Filter>My Script Files\Trackers</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoEvents.cpp">
+      <Filter>My Script Files\Others</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

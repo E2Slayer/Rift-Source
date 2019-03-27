@@ -296,7 +296,7 @@ void DashJumpTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 
 	for (auto &value : Destinations)
 	{
-		if (value.Hero->GetNetworkID() == sender->GetNetworkID())
+		if (value.Hero->GetNetworkID() == sender->GetNetworkID() && int(value.Slot) == int(SpellCast->Spell.Slot))
 		{
 			if (_stricmp(SpellCast->Spell.ScriptName, "VayneInquisition") == 0 && Menu::Get<bool>("Trackers.DashJumpTracker.List.VayneTumble"))
 			{

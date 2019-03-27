@@ -599,6 +599,8 @@ void Summoners::HealCheck()
 			return;
 		}
 
+		
+
 		//SdkUiConsoleWrite("here123");
 
 

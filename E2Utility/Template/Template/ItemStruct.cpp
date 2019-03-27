@@ -252,15 +252,16 @@ void ItemStruct::CastItem()
 		float myHealthPct = (float)Menu::Get<int>(menuIDInside0);
 		//Menu::SliderInt(name.c_str(), oss.str(), 40, 1, 100);
 
-		if (myHealthPct == 0)
+		if (myHealthPct == 0.0f)
 		{
 			return;
 		}
 
 		if (Player.GetHealthPercent() <= myHealthPct)
 		{
-			//SdkUiConsoleWrite("Cast1");
 			SpellCaster(this->spellType, this->spellRange);
+			
+
 		}
 
 	}
@@ -382,6 +383,7 @@ void ItemStruct::CastItem()
 
 	if (this->enumState & MenuTypes::EnemyNumber)
 	{
+
 		std::string menuIDInside0 = menuIDInside;
 		menuIDInside0 += "EnemyNumber";
 		int enemyNumbers = Menu::Get<int>(menuIDInside0);
@@ -391,6 +393,7 @@ void ItemStruct::CastItem()
 		{
 			SpellCaster(this->spellType, this->spellRange);
 		}
+		
 	}
 
 

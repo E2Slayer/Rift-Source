@@ -19,7 +19,8 @@ void AntiAFK::MenuLoader()
 	{
 		Menu::Checkbox("Use Anti-AFK", "Others.AntiAFK.Use", false);
 		Menu::HotkeyToggle("Anti-AFK Toggle", "Others.AntiAFK.Toggle", 73, false);
-
+		SdkUiText("Warning: This is not a dedicated function for actual afk'ing in a real match.");
+		SdkUiText("This is more like a feature for me to make sure I don't get kicked out from a custom game while I'm developing.");
 
 		Menu::Checkbox("Use Q", "Others.AntiAFK.UseQ", false);
 	});

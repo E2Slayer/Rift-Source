@@ -29,6 +29,7 @@ struct DashJumpObject
 	float ExtraTicks;
 	Vector3 StartPos;
 	float TimeCasted;
+	unsigned char Slot;
 
 	DashJumpObject(AIHeroClient* _Hero, PSDK_SPELL _Spell)
 		: Hero(_Hero)
@@ -47,7 +48,7 @@ struct DashJumpObject
 			{
 				this->SpellName = ss;
 				this->Range = _Spell->CastRange;
-
+				this->Slot = _Spell->Slot;
 			}
 		}	
 	}

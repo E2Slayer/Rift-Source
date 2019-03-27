@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Others.h"
 
+
 void Others::Init()
 {
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Others::Tick);
@@ -8,7 +9,7 @@ void Others::Init()
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, CustomRanges::Draw);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, CustomRanges::SpellCastStart);
 	//Others::Init();
-
+	AutoEvents::Init();
 }
 
 void Others::Tick(void * UserData)
@@ -16,6 +17,7 @@ void Others::Tick(void * UserData)
 	if (Menu::Get<bool>("Others.Config.Enable"))
 	{
 		AntiAFK::TickLoader();
+		AutoEvents::TickLoader();
 	}
 }
 
@@ -31,7 +33,7 @@ void Others::DrawMenu(void * UserData)
 		Cleansers::MenuLoader();
 		*/
 		AntiAFK::MenuLoader();
-
+		AutoEvents::MenuLoader();
 		Menu::Tree("Others Configs", "Others.Config", false, []()
 		{
 			Menu::Checkbox("Enable Others", "Others.Config.Enable", true);

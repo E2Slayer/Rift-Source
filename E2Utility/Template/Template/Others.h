@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Include/SDK Extensions.h"
 #include "AntiAFK.h"
-
+#include "AutoEvents.h"
 class Others
 {
 public:
