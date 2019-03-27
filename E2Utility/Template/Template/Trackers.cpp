@@ -3,7 +3,7 @@
 #include "AbilityTimer.h"
 #include "DashJumpTracker.h"
 //#include "CooldownTracker.h"
-
+#include "InhibitorTimer.h"
 
 void Trackers::Init()
 {
@@ -17,6 +17,8 @@ void Trackers::Init()
 	AbilityTimer::InitLoader();
 	DashJumpTracker::Init();
 	//CooldownTracker::Init();
+
+	InhibitorTimer::Init();
 }
 
 void Trackers::Update(void * UserData)
@@ -32,8 +34,9 @@ void Trackers::Tick(void * UserData)
 	{
 		return;
 	}
-
+	AbilityTimer::TickLoader();
 	DashJumpTracker::TickLoader();
+	InhibitorTimer::TickLoader();
 	//TurnAround::TickLoader();
 
 	//SharedExperience::TickLoader();
@@ -56,6 +59,8 @@ void Trackers::DrawMenu(void * UserData)
 		//Teleport::MenuLoader();
 		AbilityTimer::MenuLoader();
 		DashJumpTracker::MenuLoader();
+
+		InhibitorTimer::MenuLoader();
 		//CooldownTracker::MenuLoader();
 
 
@@ -77,7 +82,7 @@ void Trackers::Draw(_In_ void* UserData)
 	//Trackers.AbilityTimer.Use
 	DashJumpTracker::DrawLoader();
 	AbilityTimer::DrawLoader();
-
+	InhibitorTimer::DrawLoader();
 	//CooldownTracker::DrawLoader();
 
 

@@ -196,6 +196,7 @@
     <ClInclude Include="Drawings.h" />
     <ClInclude Include="DropLists.h" />
     <ClInclude Include="GankAlerter.h" />
+    <ClInclude Include="InhibitorTimer.h" />
     <ClInclude Include="ItemRetriever.h" />
     <ClInclude Include="ItemStruct.h" />
     <ClInclude Include="Offensives.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Drawings.cpp" />
     <ClCompile Include="GankAlerter.cpp" />
+    <ClCompile Include="InhibitorTimer.cpp" />
     <ClCompile Include="ItemRetriever.cpp" />
     <ClCompile Include="ItemStruct.cpp" />
     <ClCompile Include="Offensives.cpp" />

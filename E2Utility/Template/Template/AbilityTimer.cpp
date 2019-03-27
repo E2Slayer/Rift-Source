@@ -32,7 +32,12 @@ void AbilityTimer::InitLoader()
 	AbilitiesMenuMap.emplace("ItemZhonya_Base_stasis.troy", AbilityItem("Zhonya's Hourglass", "Misc", 2.5f, "Zhonya", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
 	AbilitiesMenuMap.emplace("LifeAura.troy", AbilityItem("Guardian Angel", "Misc", 4.0f, "GuardianAngel", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
 
+	AbilitiesMenuMap.emplace("SummonerTeleport", AbilityItem("Teleport (Caster)", "Misc", 4.0f, "Teleport1", AbilityType::OnBuffCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
+	AbilitiesMenuMap.emplace("global_ss_teleport_target_blue.troy", AbilityItem("Teleport (Ally Arrival Position)", "Misc", 4.0f, "Teleport2", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
+	AbilitiesMenuMap.emplace("global_ss_teleport_target_red.troy", AbilityItem("Teleport (Enemy Arrival Position)", "Misc", 4.0f, "Teleport3", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
 
+
+	AbilitiesMenuMap.emplace("aatroxrrevive", AbilityItem("Aatrox R (Revive)", "Aatrox", 3.25f, "AatroxR", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
 
 	AbilitiesMenuMap.emplace("Akali_Base_W_Cas", AbilityItem("Akali W", "Akali", 5.0f, "AkaliW", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
 	AbilitiesMenuMap.emplace("FerociousHowl", AbilityItem("Alistar R", "Alistar", 7.0f, "AlistarR", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
@@ -90,8 +95,32 @@ void AbilityTimer::InitLoader()
 
 	AbilitiesMenuMap.emplace("LeBlanc_Base_RW_return_indicator", AbilityItem("Leblanc RW", "Leblanc", 4.0f, "LeblancRW", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
 
+
+	AbilitiesMenuMap.emplace("malzaharrsound", AbilityItem("Malzahar R (Caster)", "Malzahar", 2.5f, "MalzaharR", AbilityType::OnBuffCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
+	AbilitiesMenuMap.emplace("MalzaharR", AbilityItem("Malzahar R (Target)", "Malzahar", 2.5f, "MalzaharR2", AbilityType::OnBuffCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
+
+
 	AbilitiesMenuMap.emplace("MorganaE", AbilityItem("Morgana E", "Morgana", 5.0f, "MorganaE", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::EarlyDelete));
 	AbilitiesMenuMap.emplace("MorganaR", AbilityItem("Morgana R", "Morgana", 3.0f, "MorganaR", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+
+	AbilitiesMenuMap.emplace("NeekoR", AbilityItem("Neeko R", "Neeko", 1.25f, "NeekoR", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+	AbilitiesMenuMap.emplace("neekor2", AbilityItem("Neeko R2", "Neeko", 1.25f, "NeekoR2", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+
+	AbilitiesMenuMap.emplace("NunuW", AbilityItem("Nunu W", "Nunu", 10.0f, "NunuW", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::EarlyDelete));
+//	AbilitiesMenuMap.emplace("Nunu_Base_R_indicator_blue", AbilityItem("Nunu R (Ally)", "Nunu", 3.0f, "NunuR", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
+//	AbilitiesMenuMap.emplace("Nunu_Base_R_indicator_red", AbilityItem("Nunu R (Enemy)", "Nunu", 3.0f, "NunuR2", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
+
+
+	AbilitiesMenuMap.emplace("Sadism", AbilityItem("DrMundo R", "DrMundo", 12.0f, "DrMundoR", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+
+
+	AbilitiesMenuMap.emplace("Taric_Base_R_Indicator", AbilityItem("Taric R (Self)", "Taric", 2.5f, "TaricR1", AbilityType::OnCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+
+	//AbilitiesMenuMap.emplace("taricrindicator", AbilityItem("Taric R (The Same Team)", "Taric", 2.5f, "TaricR2", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+	AbilitiesMenuMap.emplace("TaricR", AbilityItem("Taric R (Invulnerable)", "Taric", 2.5f, "TaricR3", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+
+
+	AbilitiesMenuMap.emplace("Thresh_Base_Lantern", AbilityItem("Thresh W", "Thresh", 6.0f, "ThreshW", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
 
 
 	AbilitiesMenuMap.emplace("OlafRagnarok", AbilityItem("Olaf R", "Olaf", 6.0f, "OlafR", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::EarlyDelete));
@@ -112,6 +141,14 @@ void AbilityTimer::InitLoader()
 	AbilitiesMenuMap.emplace("Ryze_Base_R_End_Enemy", AbilityItem("Ryze R (Enemy Arrival Position)", "Ryze", 3.0f, "RyzeR4", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
 
 	AbilitiesMenuMap.emplace("UndyingRage", AbilityItem("Tryndamere R", "Tryndamere", 5.0f, "TryndamereR", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+
+
+	AbilitiesMenuMap.emplace("Yasuo_Base_W_windwall1", AbilityItem("Yasuo W (Level1)", "Yasuo", 4.0f, "YasuoW1", AbilityType::OnCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+	AbilitiesMenuMap.emplace("Yasuo_Base_W_windwall2", AbilityItem("Yasuo W (Level2)", "Yasuo", 4.0f, "YasuoW2", AbilityType::OnCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+	AbilitiesMenuMap.emplace("Yasuo_Base_W_windwall3", AbilityItem("Yasuo W (Level3)", "Yasuo", 4.0f, "YasuoW3", AbilityType::OnCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+	AbilitiesMenuMap.emplace("Yasuo_Base_W_windwall4", AbilityItem("Yasuo W (Level4)", "Yasuo", 4.0f, "YasuoW4", AbilityType::OnCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+	AbilitiesMenuMap.emplace("Yasuo_Base_W_windwall5", AbilityItem("Yasuo W (Level5)", "Yasuo", 4.0f, "YasuoW5", AbilityType::OnCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+
 
 
 	AbilitiesMenuMap.emplace("Viktor_Catalyst_green", AbilityItem("Viktor W (Ally)", "Viktor", 4.0f, "ViktorW", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
@@ -218,8 +255,9 @@ void AbilityTimer::InitLoader()
 
 	for (auto const& value : AbilitiesMenuMap)
 	{
-		if (strcmp(value.second.ChampName, "Misc") == 0)
+		if (_stricmp(value.second.ChampName, "Misc") == 0)
 		{
+			//SdkUiConsoleWrite("added %s <- First (%d Type )  Menu %d", value.first, int(value.second.Type), Menu::Get<bool>("Trackers.AbilityTimer.AbilityList." + std::string(value.second.MenuID)));
 
 			AbilitiesMap.emplace(value.first, value.second);
 
@@ -291,7 +329,7 @@ void AbilityTimer::MenuLoader()
 		{
 			for (auto& element1 : ChampionMenuList) // access by reference to avoid copying
 			{
-				if (std::strcmp(element1, "Misc") != 0)
+				//if (std::strcmp(element1, "Misc") != 0)
 				{
 
 					Menu::Tree(element1, ("Trackers.AbilityTimer.AbilityList." + std::string(element1)), false, [element1]()
@@ -311,12 +349,16 @@ void AbilityTimer::MenuLoader()
 			}
 		});
 
-		Menu::Tree("Misc List", "Trackers.AbilityTimer.MiscList", true, []()
+		/*
+		Menu::Tree("Misc List", "Trackers.AbilityTimer.MiscList", false, []()
 		{
 			for (auto &element2 : AbilitiesMenuMap) // access by reference to avoid copying
 			{
 				if (std::strcmp("Misc", element2.second.ChampName) == 0)
 				{
+					//std::string tempStr = "Trackers.AbilityTimer.AbilityList." + std::string(element2.second.MenuID);
+					//SdkUiConsoleWrite("Added %s", tempStr);
+
 					std::string temp = "Trackers.AbilityTimer.AbilityList." + std::string(element2.second.MenuID);
 
 					temp += element2.second.MenuID;
@@ -325,7 +367,7 @@ void AbilityTimer::MenuLoader()
 				}
 			}
 		});
-
+		*/
 
 	});
 }
@@ -337,6 +379,10 @@ void AbilityTimer::TickLoader()
 
 		return;
 	}
+
+
+	bool menu = Menu::Get<bool>("Trackers.AbilityTimer.AbilityList.Zhonya");
+	//SdkUiConsoleWrite("neeeeeee %d", menu);
 
 	if (!AbilityDrawing.empty())
 	{
@@ -550,14 +596,20 @@ bool AbilityTimer::OnCreate(void* Object, unsigned int NetworkID, void* UserData
 	}
 
 	//SdkUiConsoleWrite("AbilityTimer Create %s", objectName);
-	//SdkUiConsoleWrite("AbilityTimer Create %s", objectName);
+	//SdkUiConsoleWrite("AbilityTimer Create %s", findSkin);
 
 	
 	
 	for (auto const& value : AbilitiesMap)
 	{
-		if (_stricmp(value.first, findSkin.c_str()) == 0 && value.second.Type != AbilityType::OnBuffCreate && Menu::Get<bool>("Trackers.AbilityTimer.AbilityList." + std::string(value.second.MenuID)))
+		
+		//std::string tempStr = "Trackers.AbilityTimer.AbilityList." + std::string(value.second.MenuID);
+		//SdkUiConsoleWrite("first %s", tempStr);
+		bool menu = Menu::Get<bool>("Trackers.AbilityTimer.AbilityList." + std::string(value.second.MenuID));
+
+		if (_stricmp(value.first, findSkin.c_str()) == 0 && int(value.second.Type) == int(AbilityType::OnCreate) && menu)
 		{
+			// && int(value.second.Type) == int(AbilityType::OnCreate) && Menu::Get<bool>("Trackers.AbilityTimer.AbilityList." + std::string(value.second.MenuID)))
 			bool isDynamic = false;
 			bool isEarlyDelete = false;
 
