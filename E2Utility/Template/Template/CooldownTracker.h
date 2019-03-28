@@ -33,9 +33,10 @@ struct ManualSpell
 	float Additional;
 	float Cooldown;
 	float CooldownExpires;
+	bool IsAlly;
 
-	ManualSpell(const char* _Champ, const char* _SpellName, SpellSlot _Slot, float(&_Coooldowns)[5], float _Additional)
-		: Champ(_Champ), SpellName(_SpellName), Slot(_Slot), Additional(_Additional)
+	ManualSpell(const char* _Champ, const char* _SpellName, SpellSlot _Slot, float(&_Coooldowns)[5], float _Additional, bool _IsAlly)
+		: Champ(_Champ), SpellName(_SpellName), Slot(_Slot), Additional(_Additional), IsAlly(_IsAlly)
 	{
 
 		for (int i = 0; i < 5; ++i) 
@@ -56,7 +57,8 @@ public:
 	static void MenuLoader();
 	static void TickLoader();
 	static void DrawLoader();
-
+	static void InsideDrawer(AIHeroClient* hero, bool isAlly);
 	static void __cdecl SpellCastStart(void* AI, PSDK_SPELL_CAST SpellCast, void* UserData);
+	static unsigned int GetSummonerSpells(const char* name, bool isReady);
 };
 

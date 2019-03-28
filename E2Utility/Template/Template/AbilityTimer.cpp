@@ -112,6 +112,8 @@ void AbilityTimer::InitLoader()
 
 
 	AbilitiesMenuMap.emplace("Sadism", AbilityItem("DrMundo R", "DrMundo", 12.0f, "DrMundoR", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+	
+	AbilitiesMenuMap.emplace("SivirE", AbilityItem("Sivir E", "Sivir", 1.5f, "SivirE", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::EarlyDelete));
 
 
 	AbilitiesMenuMap.emplace("Taric_Base_R_Indicator", AbilityItem("Taric R (Self)", "Taric", 2.5f, "TaricR1", AbilityType::OnCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));

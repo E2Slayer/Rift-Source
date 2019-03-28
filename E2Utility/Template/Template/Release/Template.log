@@ -1,9 +1,12 @@
 ﻿D:\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Release\) contains files shared from another project (Template.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  InhibitorTimer.cpp
-d:\rproject\e2utility\template\template\inhibitortimer.cpp(198): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  AbilityTimer.cpp
+  CooldownTracker.cpp
+d:\rproject\e2utility\template\template\cooldowntracker.cpp(393): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\rproject\e2utility\template\template\cooldowntracker.cpp(396): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\rproject\e2utility\template\template\cooldowntracker.cpp(466): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Generating code
-  0 of 5627 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+  2 of 5755 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Template.vcxproj -> D:\RProject\E2Utility\Template\Release\E2Utility.dll

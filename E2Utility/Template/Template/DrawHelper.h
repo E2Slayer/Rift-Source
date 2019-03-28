@@ -19,5 +19,19 @@ public:
 		Draw::Text(NULL, ScreenPos, Text, Face, Color, Height, Width, Weight, Italic);
 	}
 
+	void static DrawOutlineLineScreen(PSDKPOINT  StartPos, PSDKPOINT  EndPos, float Width = 3, PSDKCOLOR Color = &Color::White, PSDKCOLOR OutlineColor = &Color::Black)
+	{
+		float outlineWidth = 1.0f;
+		/*
+		Draw::LineScreen(&Vector2(StartPos->x - outlineWidth , StartPos->y - outlineWidth), &Vector2(EndPos->x - outlineWidth, EndPos->y - outlineWidth), Width, OutlineColor);
+		Draw::LineScreen(&Vector2(StartPos->x + outlineWidth, StartPos->y + outlineWidth), &Vector2(EndPos->x + outlineWidth, EndPos->y + outlineWidth), Width, OutlineColor);
+		Draw::LineScreen(&Vector2(StartPos->x - outlineWidth, StartPos->y), &Vector2(EndPos->x - outlineWidth, EndPos->y), Width, OutlineColor);
+		Draw::LineScreen(&Vector2(StartPos->x + outlineWidth, StartPos->y), &Vector2(EndPos->x + outlineWidth, EndPos->y), Width, OutlineColor);
+		*/
+		Draw::LineScreen(&Vector2(StartPos->x - outlineWidth, StartPos->y - outlineWidth), &Vector2(EndPos->x + outlineWidth, EndPos->y - outlineWidth), Width + outlineWidth, OutlineColor);
+
+		Draw::LineScreen(&Vector2(StartPos->x - outlineWidth, StartPos->y), &Vector2(EndPos->x + outlineWidth, EndPos->y), Width + outlineWidth, OutlineColor);
+		Draw::LineScreen(StartPos, EndPos, Width, Color);
+	}
 
 };

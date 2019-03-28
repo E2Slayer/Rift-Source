@@ -76,6 +76,13 @@ __declspec(selectany) std::map<unsigned char, bool> immobileBuffs{
 	{ (unsigned char)BUFF_TYPE_ASLEEP, true}
 };
 
+__declspec(selectany) std::vector<std::string> stasisBuffs{
+	"ChronoRevive",
+	"zhonyasringshield",
+	"bardrstasis",
+	"LissandraRSelf"
+};
+
 __declspec(selectany) std::map<std::string, bool> InvalidTargets{
 	{("JarvanIVStandard")			, true},
 	{("ZyraSeed")					, true},
@@ -83,6 +90,8 @@ __declspec(selectany) std::map<std::string, bool> InvalidTargets{
 	{("PreSeason_Turret_Shield")	, true},
 	{("SyndraSphere")				, true},
 };
+
+
 
 class GameObject {
 protected:
@@ -775,21 +784,23 @@ public:
 		return true;
 	}
 
-	bool IsImmobile(float TimeLeft = 0.f) {
-		float CurrentTime;	CHECKFAIL(SdkGetGameTime(&CurrentTime));
-
-		for (auto &[type, _] : immobileBuffs) {
-			auto buff{ GetBuffByType(type) };
-			if (buff.IsValid() && buff.EndTime > (CurrentTime + TimeLeft)) {
-				return true;
+	float GetStasisTimeLeft() {
+		for (auto &buffName : stasisBuffs) {
+			auto stasis{ GetBuff(buffName) };
+			if (stasis.IsValid()) {
+				float CurrentTime{ stasis.EndTime };
+				CHECKFAIL(SdkGetGameTime(&CurrentTime));
+				return stasis.EndTime - CurrentTime;
 			}
 		}
-
-		return false;
+		return 0.0f;
 	}
 
+	bool HasStasis(float TimeLeft = EPSILON) {
+		return GetStasisTimeLeft() > TimeLeft;
+	}	
+
 	float ImmobileTimeLeft() {
-		float CurrentTime;	CHECKFAIL(SdkGetGameTime(&CurrentTime));
 		float bestTime{ 0.0f };
 
 		for (auto &[type, _] : immobileBuffs) {
@@ -798,8 +809,15 @@ public:
 				bestTime = buff.EndTime;
 			}
 		}
+		
+		float CurrentTime{bestTime};	
+		CHECKFAIL(SdkGetGameTime(&CurrentTime));
 		return bestTime > EPSILON ? (bestTime - CurrentTime) : 0.0f;
 	}	
+
+	bool IsImmobile(float TimeLeft = EPSILON) {
+		return ImmobileTimeLeft() > TimeLeft;
+	}
 
 	bool IsMelee() {
 		int tmp{}; CHECKFAIL(SdkGetAICombatType(Object, &tmp));
@@ -928,22 +946,26 @@ public:
 	}
 
 	bool HasUndyingBuff(bool HealthCheck = false) {
+		auto Player{ pSDK->EntityManager->GetLocalPlayer() };
+
 		std::map<std::string, std::function<bool()>> selfImmortalLambdas{
-			{"Aatrox",     [&]() {return HasBuff("aatroxpassivedeath"); }},
+			{"Aatrox",     [&]() {return HasBuff("aatroxrrevive"); }},
 			{"Fiora" ,     [&]() {return HasBuff("FioraW"); }},
 			{"Tryndamere", [&]() {return HasBuff("UndyingRage") && (!HealthCheck || GetHealth().Current <= 70.0f); }},
 			{"Vladimir"  , [&]() {return HasBuff("VladimirSanguinePool"); }},
-		};
+			{"Karthus"   , [&]() {return HasBuff("KarthusDeathDefiedBuff"); }},
+			{"Kayn"      , [&]() {return HasBuff("KaynR"); }},
+			{"XinZhao"   , [&]() {return HasBuff("XinZhaoRRangedImmunity") && Distance(&Player) > 450.0f; }},
+			{"Lissandra" , [&]() {return HasBuff("LissandraRSelf"); }},
+		};			
 
 		std::map<std::string, std::function<bool()>> allyImmortalLambdas{
-			{"Kayle"  , [&]() {return  HasBuff("JudicatorIntervention"); }},
-			{"Kindred", [&]() {return  HasBuff("kindredrnodeathbuff") && (!HealthCheck || GetHealthPercent() <= 10.0f); }},
-			{"Zilean" , [&]() {return (HasBuff("ChronoShift") || HasBuff("chronorevive")) && (!HealthCheck || GetHealthPercent() <= 10.0f); }},			
+			{"Kayle"  , [&]() {return  HasBuff("KayleR"); }},
+			{"Kindred", [&]() {return  HasBuff("KindredRNoDeathBuff") && (!HealthCheck || GetHealthPercent() <= 10.0f); }},
+			{"Zilean" , [&]() {return  HasBuff("ChronoRevive") || (HasBuff("ChronoShift") && (!HealthCheck || GetHealthPercent() <= 10.0f)); }},
 		};
 		
-		auto charNamePtr{ GetCharName() };
-		std::string charName{ charNamePtr ? charNamePtr : "" };
-		
+		std::string charName{ GetCharName() };		
 		if (selfImmortalLambdas.count(charName) > 0) {			
 			if (selfImmortalLambdas.at(charName)()) { return true; }
 		}
@@ -963,6 +985,8 @@ public:
 		}		
 		return false;
 	}
+
+	
 
 	MAKE_GET(NeutralKills, int, SdkGetHeroNeutralKills);
 

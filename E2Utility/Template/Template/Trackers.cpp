@@ -2,8 +2,9 @@
 #include "Trackers.h"
 #include "AbilityTimer.h"
 #include "DashJumpTracker.h"
-//#include "CooldownTracker.h"
+#include "CooldownTracker.h"
 #include "InhibitorTimer.h"
+//#include "JungleTimer.h"
 
 void Trackers::Init()
 {
@@ -16,7 +17,7 @@ void Trackers::Init()
 	//SharedExperience::InitLoader();
 	AbilityTimer::InitLoader();
 	DashJumpTracker::Init();
-	//CooldownTracker::Init();
+	CooldownTracker::Init();
 
 	InhibitorTimer::Init();
 }
@@ -37,7 +38,7 @@ void Trackers::Tick(void * UserData)
 	AbilityTimer::TickLoader();
 	DashJumpTracker::TickLoader();
 	InhibitorTimer::TickLoader();
-	//TurnAround::TickLoader();
+	CooldownTracker::TickLoader();
 
 	//SharedExperience::TickLoader();
 	//SharedExperience::testing();
@@ -61,7 +62,7 @@ void Trackers::DrawMenu(void * UserData)
 		DashJumpTracker::MenuLoader();
 
 		InhibitorTimer::MenuLoader();
-		//CooldownTracker::MenuLoader();
+		CooldownTracker::MenuLoader();
 
 
 		Menu::Tree("Trackers Configs", "Trackers.Config", false, []()
@@ -83,7 +84,9 @@ void Trackers::Draw(_In_ void* UserData)
 	DashJumpTracker::DrawLoader();
 	AbilityTimer::DrawLoader();
 	InhibitorTimer::DrawLoader();
-	//CooldownTracker::DrawLoader();
+	CooldownTracker::DrawLoader();
+
+	//JungleTimer::DrawLoader();
 
 
 }
