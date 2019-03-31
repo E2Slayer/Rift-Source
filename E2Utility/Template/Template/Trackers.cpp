@@ -5,6 +5,7 @@
 #include "CooldownTracker.h"
 #include "InhibitorTimer.h"
 #include "JungleTimer.h"
+#include "SideBar.h"
 //#include "SpriteHelper.h"
 
 void Trackers::Init()
@@ -22,6 +23,7 @@ void Trackers::Init()
 
 	InhibitorTimer::Init();
 	JungleTimer::Init();
+	SideBar::Init();
 }
 
 void Trackers::Update(void * UserData)
@@ -64,7 +66,7 @@ void Trackers::DrawMenu(void * UserData)
 		InhibitorTimer::MenuLoader();
 		CooldownTracker::MenuLoader();
 		JungleTimer::MenuLoader();
-
+		SideBar::MenuLoader();
 		Menu::Tree("Trackers Configs", "Trackers.Config", false, []()
 		{
 			Menu::Checkbox("Enable Trackers", "Trackers.Config.Enable", true);
@@ -87,6 +89,6 @@ void Trackers::Draw(_In_ void* UserData)
 	CooldownTracker::DrawLoader();
 	
 	JungleTimer::DrawLoader();
-
+	SideBar::DrawLoader();
 
 }

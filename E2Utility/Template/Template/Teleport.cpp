@@ -3,11 +3,15 @@
 #include "DropLists.h"
 #include "DrawHelper.h"
 
+
+
 std::map<unsigned int, RecallInfo> EnemyTeleportList;
 
-std::map<unsigned int, TeleportStuct> TeleportStore;
+//std::map<unsigned int, TeleportStuct> TeleportStore;
 
 //TeleportStuct TeleportStore[];
+//std::map<unsigned int, TeleportStuct> TeleportDecode::TeleportStore;
+
 
 
 void Teleport::InitLoader()
@@ -15,9 +19,7 @@ void Teleport::InitLoader()
 
 	EnemyTeleportList.clear();
 
-	TeleportStore.clear();
-
-
+	//TeleportStore.clear();
 
 	
 
@@ -29,30 +31,14 @@ void Teleport::InitLoader()
 		{
 			if (hero != nullptr && hero != NULL)
 			{
-				RecallInfo recallInfo;
-
-				recallInfo.Hero = hero;
-				recallInfo.Active = false;
-				recallInfo.Begin = 0.0f;
-				recallInfo.Duration = 0.0f;
-				recallInfo.index = 0;
-				recallInfo.LastChange = 0.0f;
-				recallInfo.CurrentRecallType = RecallType::Unknown;
+				RecallInfo recallInfo(hero);
 				EnemyTeleportList.emplace(netID, recallInfo);
 			}
 		}
 	}
 
-	RecallInfo recallInfo1;
-
-	recallInfo1.Hero = &Player;
-	recallInfo1.Active = false;
-	recallInfo1.Begin = 0.0f;
-	recallInfo1.Duration = 0.0f;
-	recallInfo1.index = 0;
-	recallInfo1.LastChange = 0.0f;
-	recallInfo1.CurrentRecallType = RecallType::Unknown;
-	EnemyTeleportList.emplace(Player.GetNetworkID(),recallInfo1); //for player
+	RecallInfo tempPlayer(&Player);
+	EnemyTeleportList.emplace(Player.GetNetworkID(), tempPlayer); //for player
 
 
 
@@ -304,79 +290,6 @@ void Teleport::DrawLoader()
 }
 
 
-TeleportStuct Teleport::TeleportDecoderFunction(void* Unit, const char* Name, const char* Type)
-{
-	int errorGab = 90;
-	TeleportStuct result;
-
-	result.Status = TeleportTypes::Unknown;
-	result.Type = RecallType::Unknown;
-
-	auto sender = pSDK->EntityManager->GetObjectFromPTR(Unit);
-	if (Unit == nullptr || sender == nullptr || sender == NULL || !sender->IsHero() )
-	{
-		return result;
-	}
-	result.UnitNetworkId = sender->GetNetworkID();
-
-	
-	std::map<unsigned int, TeleportStuct>::iterator it = TeleportStore.find(result.UnitNetworkId);
-	if (it == TeleportStore.end())
-	{
-		TeleportStore.emplace(result.UnitNetworkId, result);
-
-		
-	}
-
-
-
-	if ((unsigned)strlen(Name) != 0)
-	{
-		RecallType recallType = Game::GetRecallType(Type);
-		auto duration = Game::GetRecallDuration(recallType);
-		auto time = GetTickCount();
-		
-		std::map<unsigned int, TeleportStuct>::iterator it2 = TeleportStore.find(result.UnitNetworkId);
-		if (it2 != TeleportStore.end())
-		{
-			it2->second.Duration = duration;
-
-			it2->second.Type = recallType;
-			
-			//SdkUiConsoleWrite("hi inisde2 %d %s", it2->second.Type, Type);
-			it2->second.Start = time;
-		}
-
-		result.Status = TeleportTypes::Start;
-		result.Duration = duration;
-		result.Start = time;
-
-
-	}
-	else
-	{
-		
-
-		std::map<unsigned int, TeleportStuct>::iterator it3 = TeleportStore.find(result.UnitNetworkId);
-		if (it3 != TeleportStore.end())
-		{
-
-			DWORD dw = (DWORD) it3->second.Duration * 1000.0f;
-			auto shorter = GetTickCount() - it3->second.Start < dw - errorGab;
-		//	SdkUiConsoleWrite("Abort %ld %ld", GetTickCount() - it3->second.Start, dw - 90);
-
-
-			result.Status = shorter ? TeleportTypes::Abort : TeleportTypes::Finished;
-
-			result.Duration = 0;
-			result.Start = 0;
-
-		}
-
-	}
-
-	return result;
-}
 
 
 DWORD startTime = 0.0;
@@ -430,7 +343,7 @@ void Teleport::RecallTrack(void* Unit, const char* Name, const char* Type, void*
 
 
 	
-	auto testStruct = TeleportDecoderFunction(Unit, Name, Type);
+	auto testStruct = TeleportDecode::TeleportDecoderFunction(Unit, Name, Type);
 
 
 	std::map<unsigned int, RecallInfo>::iterator it = EnemyTeleportList.find(netID);
@@ -459,10 +372,6 @@ void Teleport::RecallTrack(void* Unit, const char* Name, const char* Type, void*
 			//SdkUiConsoleWrite("Start %f", it->second.Hero->AsAIHeroClient()->GetHealthPercent());
 			if (Menu::Get<bool>("Detector.Teleport.ChatStart"))
 			{
-				//it->second.Hero->GetHealthPercent()
-				//PrintChat(sender->AsAIHeroClient()->GetCharName(), Type, "Started", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
-				//SdkUiConsoleWrite("Are you here? Inisde of Start");
-				//SdkUiConsoleWrite("Start %ld %f", testStruct.Start, testStruct.Duration);
 				InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Started", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 			}
 
@@ -491,19 +400,13 @@ void Teleport::RecallTrack(void* Unit, const char* Name, const char* Type, void*
 			}
 			//SdkUiConsoleWrite("Finished %ld %f", testStruct.Start, testStruct.Duration);
 		}
-		else if (testStruct.Status == TeleportTypes::Unknown)
+		else if (testStruct.Status == TeleportTypes::UnknownStatus)
 		{
 			it->second.Active = false;
 		}
 
-
-		//		Menu::Checkbox("Notify Start on the Chat", "Detector.Teleport.ChatStart", true);
-		//Menu::Checkbox("Notify Aborted on the Chatr", "Detector.Teleport.ChatAborted", true);
-		//Menu::Checkbox("Notify Finshed on the Chat", "Detector.Teleport.ChatFinshed", true);
 	}
-	//AIHeroClient* tempHero = (AIHeroClient*)pSDK->EntityManager->GetObjectFromPTR(Unit);
-
-
+	
 
 
 	/*
@@ -640,14 +543,6 @@ void Teleport::InPrintChat(const char* champName, const char* TeleportName, cons
 	sstream << std::hex << int(Color.B);
 	sstream << R"(">)";
 
-	//auto name = GetTeleportName(TeleportName);
-
-	/*
-	if (strcmp(name, "recall") == 0)
-	{
-		return;
-	}
-	*/
 	sstream << GetTeleportRealName(TeleportName) << R"(</font>)";
 	
 

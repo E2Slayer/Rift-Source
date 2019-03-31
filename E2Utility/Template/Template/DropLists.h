@@ -88,15 +88,11 @@ public:
 
 		//int list = Menu::Get<int>(getHitChance);
 
-		if (selectedCombo == NULL)
-		{
-			return PingType::Default; //just in case, the fucntion fails.
-		}
 
 		switch (selectedCombo)
 		{
 			case 0:
-				return PingType::Default;
+				return PingType::BigIcon;
 			case 1:
 				return PingType::Charge;
 			case 2:
@@ -113,9 +109,9 @@ public:
 				return PingType::Warded;
 
 			default:
-				return PingType::Default;
+				return PingType::BigIcon;
 		}
 
-		return PingType::Default;
+		return PingType::BigIcon;
 	}
 };
