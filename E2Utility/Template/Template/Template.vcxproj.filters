@@ -243,6 +243,12 @@
     <ClInclude Include="JungleTimer.h">
       <Filter>My Script Files\Trackers\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteHelper.h">
+      <Filter>My Script Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="TurretsRange.h">
+      <Filter>My Script Files\Drawings\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -334,6 +340,9 @@
     </ClCompile>
     <ClCompile Include="JungleTimer.cpp">
       <Filter>My Script Files\Trackers</Filter>
+    </ClCompile>
+    <ClCompile Include="TurretsRange.cpp">
+      <Filter>My Script Files\Drawings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

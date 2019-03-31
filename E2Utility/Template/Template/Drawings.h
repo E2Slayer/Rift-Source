@@ -2,6 +2,7 @@
 #include "../../Include/SDK Extensions.h"
 #include "GankAlerter.h"
 #include "CustomRange.h"
+#include "TurretsRange.h"
 
 class Drawings
 {

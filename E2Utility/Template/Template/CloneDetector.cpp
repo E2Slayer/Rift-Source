@@ -47,7 +47,7 @@ void CloneDetector::Init()
 
 void CloneDetector::MenuLoader()
 {
-	Menu::Tree("Clone Detector", "Detector.CloneDetector", true, []()
+	Menu::Tree("Clone Detector", "Detector.CloneDetector", false, []()
 	{
 		Menu::Checkbox("Use Clone Detector", "Detector.CloneDetector.Enable", true);
 		Menu::DropList("Clone Detector Style", "Detector.CloneDetector.Style", std::vector<std::string>{ "Circle", "Text", "Both" }, 0);

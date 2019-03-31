@@ -31,6 +31,8 @@ void AbilityTimer::InitLoader()
 
 	AbilitiesMenuMap.emplace("ItemZhonya_Base_stasis.troy", AbilityItem("Zhonya's Hourglass", "Misc", 2.5f, "Zhonya", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
 	AbilitiesMenuMap.emplace("LifeAura.troy", AbilityItem("Guardian Angel", "Misc", 4.0f, "GuardianAngel", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
+	AbilitiesMenuMap.emplace("Rift Herald Relic", AbilityItem("Rift Herald's Eye (Ground)", "Misc", 40.0f, "RiftHeraldEyes", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
+
 
 	AbilitiesMenuMap.emplace("SummonerTeleport", AbilityItem("Teleport (Caster)", "Misc", 4.0f, "Teleport1", AbilityType::OnBuffCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
 	AbilitiesMenuMap.emplace("global_ss_teleport_target_blue.troy", AbilityItem("Teleport (Ally Arrival Position)", "Misc", 4.0f, "Teleport2", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));

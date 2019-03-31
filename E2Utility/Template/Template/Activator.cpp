@@ -2,7 +2,6 @@
 #include "Activator.h"
 
 
-
 DWORD LastTimeTickCount = 0;
 
 void Activator::Init()

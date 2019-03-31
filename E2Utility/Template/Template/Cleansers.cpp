@@ -48,7 +48,7 @@ void Cleansers::MenuLoader()
 
 			Menu::Tree("Cleanse Config", "Activator.Cleansers.CleanseConfig", false, []()
 			{
-				Menu::Checkbox("Use Cleanse On Slow", "Activator.Cleansers.CleanseUseSlow", true); //
+				Menu::Checkbox("Use Cleanse On Slow", "Activator.Cleansers.CleanseUseSlow", false); //
 				Menu::SliderInt("^-> Cleanse Minimum Slow Duration (ms)", "Activator.Cleansers.CleanseUseSlowDuration", 1500, 500, 5000);
 				Menu::Checkbox("Use Cleanse On Stun", "Activator.Cleansers.CleanseUseStun", true); //
 				Menu::SliderInt("^-> Cleanse Minimum Stun Duration (ms)", "Activator.Cleansers.CleanseUseStunDuration", 1500, 500, 5000);
@@ -95,7 +95,7 @@ void Cleansers::MenuLoader()
 
 			Menu::Tree("QSS Config", "Activator.Cleansers.QSSConfig", false, []()
 			{
-				Menu::Checkbox("Use QSS On Slow", "Activator.Cleansers.QSSUseSlow", true);
+				Menu::Checkbox("Use QSS On Slow", "Activator.Cleansers.QSSUseSlow", false);
 				Menu::SliderInt("^-> QSS Minimum Slow Duration (ms)", "Activator.Cleansers.QSSUseSlowDuration", 1500, 500, 5000);
 
 				Menu::Checkbox("Use QSS On Stun", "Activator.Cleansers.QSSUseStun", true);
@@ -110,10 +110,10 @@ void Cleansers::MenuLoader()
 				Menu::Checkbox("Use QSS On Grounded", "Activator.Cleansers.QSSUseGrounded", true);
 				Menu::SliderInt("^-> QSS Minimum Grounded Duration (ms)", "Activator.Cleansers.QSSUseGroundedDuration", 1500, 500, 5000);
 
-				Menu::Checkbox("Use QSS On KnockUp", "Activator.Cleansers.QSSUseKnockUp", true);
+				Menu::Checkbox("Use QSS On KnockUp", "Activator.Cleansers.QSSUseKnockUp", false);
 				Menu::SliderInt("^-> QSS Minimum KnockUp Duration (ms)", "Activator.Cleansers.QSSUseKnockUpDuration", 1500, 500, 5000);
 
-				Menu::Checkbox("Use QSS On KnockBack", "Activator.Cleansers.QSSUseKnockBack", true);
+				Menu::Checkbox("Use QSS On KnockBack", "Activator.Cleansers.QSSUseKnockBack", false);
 				Menu::SliderInt("^-> QSS Minimum KnockBack Duration (ms)", "Activator.Cleansers.QSSUseKnockBackDuration", 1500, 500, 5000);
 
 				Menu::Checkbox("Use QSS On Taunt", "Activator.Cleansers.QSSUseTaunt", true);
@@ -183,7 +183,7 @@ void Cleansers::MenuLoader()
 
 			Menu::Tree("Mikael's Crucible Config For Ally", "Activator.Cleansers.MikaelsCrucibleConfigAlly", false, []()
 			{
-				Menu::Checkbox("Use Mikael's Crucible Ally On Slow", "Activator.Cleansers.MikaelsCrucibleAllyUseSlow", true);
+				Menu::Checkbox("Use Mikael's Crucible Ally On Slow", "Activator.Cleansers.MikaelsCrucibleAllyUseSlow", false);
 				Menu::SliderInt("^-> MikaelMinimum Slow Duration (ms)", "Activator.Cleansers.MikaelsCrucibleAllyUseSlowDuration", 1500, 500, 5000);
 				Menu::Checkbox("Use Mikael's Crucible Ally On Stun", "Activator.Cleansers.MikaelsCrucibleAllyUseStun", true);
 				Menu::SliderInt("^-> MikaelMinimum Stun Duration (ms)", "Activator.Cleansers.MikaelsCrucibleAllyUseStunDuration", 1500, 500, 5000);

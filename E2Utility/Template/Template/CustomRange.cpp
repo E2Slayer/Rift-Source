@@ -65,7 +65,7 @@ void CustomRange::MenuLoader()
 				Menu::SliderInt(StringCombine(display, " Range", "").c_str(), StringCombine("Drawings.CustomRange.", ".Range", temp), 1000, 100, 5000);
 				Menu::DropList(StringCombine(display, " Style", "").c_str(), StringCombine("Drawings.CustomRange.", ".Style", temp), std::vector<std::string>{ "Circle", "Line To Mouse" }, 0);
 				Menu::DropList(StringCombine(display, " Bind Spell", "").c_str(), StringCombine("Drawings.CustomRange.", ".BindSpell", temp), std::vector<std::string>{ "None", "Q", "W", "E", "R" }, 0);
-				Menu::DropList(StringCombine(display, " Color", "").c_str(), StringCombine("Drawings.CustomRange.", ".Color", temp), ColorMenuList, 0);
+				Menu::DropList(StringCombine(display, " Color", "").c_str(), StringCombine("Drawings.CustomRange.", ".Color", temp), ColorMenuList, 1);
 				Menu::SliderInt(StringCombine(display, " Line Width", "").c_str(), StringCombine("Drawings.CustomRange.", ".LineWidth", temp), 5, 1, 10);
 
 			});
@@ -80,11 +80,12 @@ void CustomRange::TickLoader()
 
 void CustomRange::DrawLoader()
 {
+	
 	if (!Menu::Get<bool>("Drawings.CustomRange.Enable"))
 	{
 		return;
 	}
-
+	
 	for (int i = 1; i < 6; i++)
 	{
 		std::string ChampName = champName;
@@ -177,16 +178,7 @@ void CustomRange::DrawLoader()
 
 
 
-		Menu::Tree(StringCombine(display, "", "").c_str(), StringCombine("Drawings.CustomRange.", "", temp), false, [temp, display, i]()
-		{
-			Menu::Checkbox(StringCombine(display, " Enable", "").c_str(), StringCombine("Drawings.CustomRange.", ".Enable", temp), false);
-			Menu::SliderInt(StringCombine(display, " Range", "").c_str(), StringCombine("Drawings.CustomRange.", ".Range", temp), 1000, 100, 5000);
-			Menu::DropList(StringCombine(display, " Style", "").c_str(), StringCombine("Drawings.CustomRange.", ".Style", temp), std::vector<std::string>{ "Circle", "Line To Mouse" }, 0);
-			Menu::DropList(StringCombine(display, " Bind Spell", "").c_str(), StringCombine("Drawings.CustomRange.", ".BindSpell", temp), std::vector<std::string>{ "None", "Q", "W", "E", "R" }, 0);
-			Menu::DropList(StringCombine(display, " Color", "").c_str(), StringCombine("Drawings.CustomRange.", ".Color", temp), ColorMenuList, i);
-			Menu::SliderInt(StringCombine(display, " Line Width", "").c_str(), StringCombine("Drawings.CustomRange.", ".LineWidth", temp), 5, 1, 10);
 
-		});
 	}
 
 

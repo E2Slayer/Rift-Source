@@ -40,13 +40,7 @@ void Detector::DrawMenu(void * UserData)
 {
 	Menu::Tree("Detector", "Detector.", false, []()
 	{
-		/*
-		Summoners::MenuLoader();
-		Consumables::MenuLoader();
-		Offensives::MenuLoader();
-		Defensives::MenuLoader();
-		Cleansers::MenuLoader();
-		*/
+
 		SharedExperience::MenuLoader();
 		Teleport::MenuLoader();
 		CloneDetector::MenuLoader();

@@ -5,6 +5,7 @@
 #include "DrawHelper.h"
 #include <iomanip>
 #include "DropLists.h"
+#include "SpriteHelper.h"
 
 //SdkDrawSpriteFromResource(MAKEINTRESOURCEA(102), &barPos, false); //312x8
 
@@ -299,6 +300,8 @@ void CooldownTracker::DrawLoader()
 	//auto temp = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_PNG2));
 
 	
+
+
 	//SdkDrawSpriteFromResource(temp, &screenPos, false);
 
 	//SdkUiConsoleWrite(" r: %d", temp);
@@ -402,6 +405,7 @@ void CooldownTracker::InsideDrawer(AIHeroClient* hero, bool isAlly)
 			ss1.str("");
 			if (int(spellInside.Slot) == int(SpellSlot::Summoner1) || int(spellInside.Slot) == int(SpellSlot::Summoner2))
 			{
+				//SdkUiConsoleWrite("name: %s", spellInside.ScriptName);
 				Vector2 SSPosition{ hero->GetHealthBarScreenPos() };
 				SSPosition.x += 63.0f;
 				SSPosition.y += -28.0f;
@@ -519,6 +523,8 @@ void CooldownTracker::InsideDrawer(AIHeroClient* hero, bool isAlly)
 		*/
 		SpellPosition.x += (float)Menu::Get<int>("Trackers.CooldownTracker.SCGap"); // gab between spells
 	}
+
+	//SpriteHelper::SpriteDraw();
 }
 
 
@@ -802,6 +808,31 @@ unsigned int CooldownTracker::GetSummonerSpells(const char* name, bool isReady)
 			return SummonerSmite_Cooldown;
 		}
 	}
+
+	if (_stricmp(name, "S5_SummonerSmitePlayerGanker") == 0)
+	{
+		if (isReady)
+		{
+			return SummonerSmite;
+		}
+		else
+		{
+			return SummonerSmite_Cooldown;
+		}
+	}
+
+	if (_stricmp(name, "S5_SummonerSmiteDuel") == 0)
+	{
+		if (isReady)
+		{
+			return SummonerSmite;
+		}
+		else
+		{
+			return SummonerSmite_Cooldown;
+		}
+	}
+
 	if (_stricmp(name, "SummonerSnowball") == 0)
 	{
 		if (isReady)

@@ -45,15 +45,15 @@ void InhibitorTimer::MenuLoader()
 		Menu::SliderInt("World Font Height", "Trackers.InhibitorTimer.World.FontSize", 28, 20, 40);
 		Menu::SliderInt("World Font Width", "Trackers.InhibitorTimer.World.FontSize2", 10, 4, 15);
 		Menu::DropList("^-> World Color", "Trackers.InhibitorTimer.World.Color", ColorMenuList, 11);
-		Menu::DropList("^-> World OutLine Color", "Trackers.AbilityTimer.World.OutLineColor", ColorMenuList, 0);
+		Menu::DropList("^-> World OutLine Color", "Trackers.InhibitorTimer.World.OutLineColor", ColorMenuList, 0);
 
 		Menu::Checkbox("Draw Timers on the Minimap", "Trackers.InhibitorTimer.Minimap", true);
 		Menu::SliderInt("Minimap Font Height", "Trackers.InhibitorTimer.Minimap.FontSize", 13, 10, 30);
 		Menu::SliderInt("Minimap Font Width", "Trackers.InhibitorTimer.Minimap.FontSize2", 4, 1, 10);
 		Menu::DropList("^-> Minimap Color", "Trackers.InhibitorTimer.Minimap.Color", ColorMenuList, 11);
-		Menu::DropList("^-> Minimap OutLine Color", "Trackers.AbilityTimer.Minimap.OutLineColor", ColorMenuList, 0);
-		Menu::SliderInt("Minimap Timer Position X-axis", "Trackers.AbilityTimer.Minimap.DrawingX", 0, -50, 50);
-		Menu::SliderInt("Minimap Timer Position Y-axis", "Trackers.AbilityTimer.Minimap.DrawingY", -0, -50, 50);
+		Menu::DropList("^-> Minimap OutLine Color", "Trackers.InhibitorTimer.Minimap.OutLineColor", ColorMenuList, 0);
+		Menu::SliderInt("Minimap Timer Position X-axis", "Trackers.InhibitorTimer.Minimap.DrawingX", 0, -50, 50);
+		Menu::SliderInt("Minimap Timer Position Y-axis", "Trackers.InhibitorTimer.Minimap.DrawingY", -0, -50, 50);
 
 
 
@@ -158,8 +158,8 @@ void InhibitorTimer::DrawLoader()
 			if (Menu::Get<bool>("Trackers.InhibitorTimer.Minimap"))
 			{
 				Vector2 screenPos2{ Renderer::WorldToMinimap(value->GetPosition()) };
-				screenPos2.x += (float)Menu::Get<int>("Trackers.AbilityTimer.Minimap.DrawingX") - 8.0f;
-				screenPos2.y += (float)Menu::Get<int>("Trackers.AbilityTimer.Minimap.DrawingY") - 7.0f;
+				screenPos2.x += (float)Menu::Get<int>("Trackers.InhibitorTimer.Minimap.DrawingX") - 8.0f;
+				screenPos2.y += (float)Menu::Get<int>("Trackers.InhibitorTimer.Minimap.DrawingY") - 7.0f;
 
 				DrawHelper::DrawOutlineText(NULL, &screenPos2, "00:00", "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.InhibitorTimer.Minimap.Color")), Menu::Get<int>("Trackers.InhibitorTimer.Minimap.FontSize"), Menu::Get<int>("Trackers.InhibitorTimer.Minimap.FontSize2"), 0,
 					&DropLists::GetColor(Menu::Get<int>("Trackers.InhibitorTimer.Minimap.OutLineColor")), false);
@@ -215,8 +215,8 @@ void InhibitorTimer::DrawLoader()
 					if (Menu::Get<bool>("Trackers.InhibitorTimer.Minimap"))
 					{
 						Vector2 screenPos2{ Renderer::WorldToMinimap(value.Object->GetPosition()) };
-						screenPos2.x += (float)Menu::Get<int>("Trackers.AbilityTimer.Minimap.DrawingX") - 8.0f;
-						screenPos2.y += (float)Menu::Get<int>("Trackers.AbilityTimer.Minimap.DrawingY") - 7.0f;
+						screenPos2.x += (float)Menu::Get<int>("Trackers.InhibitorTimer.Minimap.DrawingX") - 8.0f;
+						screenPos2.y += (float)Menu::Get<int>("Trackers.InhibitorTimer.Minimap.DrawingY") - 7.0f;
 
 						DrawHelper::DrawOutlineText(NULL, &screenPos2, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.InhibitorTimer.Minimap.Color")), Menu::Get<int>("Trackers.InhibitorTimer.Minimap.FontSize"), Menu::Get<int>("Trackers.InhibitorTimer.Minimap.FontSize2"), 0,
 							&DropLists::GetColor(Menu::Get<int>("Trackers.InhibitorTimer.Minimap.OutLineColor")), false);

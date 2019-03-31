@@ -43,14 +43,9 @@ public:
 	static void DrawLoader();
 
 
-	static void __cdecl Update(_In_ void* UserData);
-	static void	__cdecl	Tick(_In_ void* UserData);
-	static void __cdecl DrawMenu(_In_ void* UserData);
-	static void __cdecl Draw(_In_ void* UserData);
-
-	static TeleportStuct TeleportDecoder(void* Unit, const char* Name, const char* Type);
-	static void __cdecl Recall(void* Unit, const char* Name, const char* Type, void* UserData);
-	static const char* GetTeleportName(const char* Name);
-	static void PrintChat(const char* champName, const char* TeleportName, const char* recallStatus, float healthPCT, TeleportTypes tpType);
+	static TeleportStuct TeleportDecoderFunction(void* Unit, const char* Name, const char* Type);
+	static void __cdecl RecallTrack(void* Unit, const char* Name, const char* Type, void* UserData);
+	static const char* GetTeleportRealName(const char* Name);
+	static void InPrintChat(const char* champName, const char* TeleportName, const char* recallStatus, float healthPCT, TeleportTypes tpType);
 };
 

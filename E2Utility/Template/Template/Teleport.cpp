@@ -56,7 +56,7 @@ void Teleport::InitLoader()
 
 
 
-	pSDK->EventHandler->RegisterCallback(CallbackEnum::Recall, Teleport::Recall);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Recall, Teleport::RecallTrack);
 
 	
 	//SdkUiConsoleWrite("teteport loaded");
@@ -304,7 +304,7 @@ void Teleport::DrawLoader()
 }
 
 
-TeleportStuct Teleport::TeleportDecoder(void* Unit, const char* Name, const char* Type)
+TeleportStuct Teleport::TeleportDecoderFunction(void* Unit, const char* Name, const char* Type)
 {
 	int errorGab = 90;
 	TeleportStuct result;
@@ -381,8 +381,9 @@ TeleportStuct Teleport::TeleportDecoder(void* Unit, const char* Name, const char
 
 DWORD startTime = 0.0;
 
-void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* UserData)
+void Teleport::RecallTrack(void* Unit, const char* Name, const char* Type, void* UserData)
 {
+	
 	UNREFERENCED_PARAMETER(UserData);
 	if (!Menu::Get<bool>("Detector.Teleport.Use") || !Menu::Get<bool>("Detector.Config.Enable"))
 	{
@@ -413,16 +414,6 @@ void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* User
 	}
 
 
-	/*
-	
-			Menu::Checkbox("Track Recall", "Detector.Teleport.Recall", true);
-		Menu::Checkbox("Track Empowered Recall", "Detector.Teleport.EmpoweredRecall", true);
-		SdkUiText("^-> With Rift Herald's Eyes or Baron's Buff");
-		Menu::Checkbox("Track Teleport", "Detector.Teleport.Teleport", true);
-		Menu::Checkbox("Track Shen's R", "Detector.Teleport.ShenR", true);
-		Menu::Checkbox("Track Twisted Fate's R", "Detector.Teleport.TwisitedFateR", true);
-	*/
-
 	if ( (strcmp(Type, "recall") == 0 && !Menu::Get<bool>("Detector.Teleport.Recall")) || 
 		(strcmp(Type, "SuperRecall") == 0 && !Menu::Get<bool>("Detector.Teleport.EmpoweredRecall")) ||
 		(strcmp(Type, "SummonerTeleport") == 0 && !Menu::Get<bool>("Detector.Teleport.Teleport")) ||
@@ -438,8 +429,8 @@ void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* User
 
 
 
-
-	auto testStruct = TeleportDecoder(Unit, Name, Type);
+	
+	auto testStruct = TeleportDecoderFunction(Unit, Name, Type);
 
 
 	std::map<unsigned int, RecallInfo>::iterator it = EnemyTeleportList.find(netID);
@@ -457,18 +448,22 @@ void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* User
 		{
 
 
+			
 			it->second.Begin = Game::Time();
 			it->second.Duration = testStruct.Duration;
 			it->second.Active = true;
 			it->second.CurrentRecallType = Game::GetRecallType(Type);
-
+			
+			//SdkUiConsoleWrite("Are you here?");
 
 			//SdkUiConsoleWrite("Start %f", it->second.Hero->AsAIHeroClient()->GetHealthPercent());
 			if (Menu::Get<bool>("Detector.Teleport.ChatStart"))
 			{
 				//it->second.Hero->GetHealthPercent()
-				PrintChat(sender->AsAIHeroClient()->GetCharName(), Type, "Started", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
-
+				//PrintChat(sender->AsAIHeroClient()->GetCharName(), Type, "Started", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
+				//SdkUiConsoleWrite("Are you here? Inisde of Start");
+				//SdkUiConsoleWrite("Start %ld %f", testStruct.Start, testStruct.Duration);
+				InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Started", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 			}
 
 			//SdkUiConsoleWrite("Start %ld %f", testStruct.Start, testStruct.Duration);
@@ -480,7 +475,7 @@ void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* User
 			if (Menu::Get<bool>("Detector.Teleport.ChatAborted"))
 			{
 				//
-				PrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Aborted", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
+				InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Aborted", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 
 			}
 			//SdkUiConsoleWrite("Abort %ld %f", testStruct.Start, testStruct.Duration);
@@ -491,8 +486,7 @@ void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* User
 
 			if (Menu::Get<bool>("Detector.Teleport.ChatFinished"))
 			{
-
-				PrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Finished", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
+				InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Finished", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 
 			}
 			//SdkUiConsoleWrite("Finished %ld %f", testStruct.Start, testStruct.Duration);
@@ -549,7 +543,7 @@ void Teleport::Recall(void* Unit, const char* Name, const char* Type, void* User
 
 
 
-const char* Teleport::GetTeleportName(const char* Name)
+const char* Teleport::GetTeleportRealName(const char* Name)
 {
 	if (strcmp(Name, "recall") == 0)
 		return "Recall";
@@ -569,13 +563,15 @@ const char* Teleport::GetTeleportName(const char* Name)
 	return "Unknown";
 }
 
-void Teleport::PrintChat(const char* champName, const char* TeleportName, const char* recallStatusText, float healthPCT, TeleportTypes tpType)
+void Teleport::InPrintChat(const char* champName, const char* TeleportName, const char* recallStatusText, float healthPCT, TeleportTypes tpType)
 {
 	std::stringstream sstream;
 
+	sstream.str("");
+
 	if (Menu::Get<bool>("Detector.Teleport.Chat.Prefix") )
 	{
-		sstream << R"(<font color="#25dbad">[E2Utility] </font>)" <<"";
+		sstream << R"(<font color="#25dbad">[E2Utility] </font>)";
 	}
 
 	auto Color = Menu::Get<SDKCOLOR>("Detector.Teleport.Chat.ChampName");
@@ -644,7 +640,18 @@ void Teleport::PrintChat(const char* champName, const char* TeleportName, const 
 	sstream << std::hex << int(Color.B);
 	sstream << R"(">)";
 
-	sstream << GetTeleportName(TeleportName) << R"(</font>)";
+	//auto name = GetTeleportName(TeleportName);
+
+	/*
+	if (strcmp(name, "recall") == 0)
+	{
+		return;
+	}
+	*/
+	sstream << GetTeleportRealName(TeleportName) << R"(</font>)";
 	
+
+
+	//SdkUiConsoleWrite("game Print chat %s", sstream.str());
 	Game::PrintChat(sstream.str(), CHAT_FLAG_UNKNOWN1);
 }

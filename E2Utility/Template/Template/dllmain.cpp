@@ -2,7 +2,7 @@
 
 #include "../../Include/SDK Extensions.h"
 #include "Activator.h"
-#include "CustomRanges.h"
+//#include "CustomRanges.h"
 #include "Detector.h"
 #include "Drawings.h"
 #include "Trackers.h"
@@ -17,14 +17,13 @@ void __cdecl OnLoad(void* UserData)
 
 	if (Player.PTR() && pSDK && pCore) 
 	{
-		//MyTemplateClass::Init();
+		
 		Activator::Init();
 		Detector::Init();
 		Drawings::Init();
 		Trackers::Init();
-		//CustomRanges::Init();
 		Others::Init();
-	
+		
 		//Game::PrintChat(R"(<font color="#832232">test.</font>)");
 	}
 }

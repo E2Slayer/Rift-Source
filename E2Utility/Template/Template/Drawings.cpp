@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Drawings.h"
 
-
 void Drawings::Init()
 {
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Drawings::Tick);
@@ -10,6 +9,7 @@ void Drawings::Init()
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, CustomRanges::SpellCastStart);
 	GankAlerter::Init();
 	CustomRange::Init();
+	TurretsRange::Init();
 }
 
 void Drawings::Tick(void * UserData)
@@ -33,7 +33,7 @@ void Drawings::DrawMenu(void * UserData)
 		*/
 		GankAlerter::MenuLoader();
 		CustomRange::MenuLoader();
-
+		TurretsRange::MenuLoader();
 		Menu::Tree("Drawings Configs", "Drawings.Config", false, []()
 		{
 			Menu::Checkbox("Enable Drawings", "Drawings.Config.Enable", true);
@@ -44,9 +44,11 @@ void Drawings::DrawMenu(void * UserData)
 
 void Drawings::Draw(void * UserData)
 {
-
-	if (Menu::Get<bool>("Drawings.Config.Enable"))
+	if (!Menu::Get<bool>("Drawings.Config.Enable"))
 	{
-		CustomRange::DrawLoader();
+		return;
 	}
+
+	CustomRange::DrawLoader();
+	TurretsRange::DrawLoader();
 }

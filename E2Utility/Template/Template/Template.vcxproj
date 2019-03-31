@@ -204,11 +204,13 @@
     <ClInclude Include="Others.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SharedExperience.h" />
+    <ClInclude Include="SpriteHelper.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Summoners.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Teleport.h" />
     <ClInclude Include="Trackers.h" />
+    <ClInclude Include="TurretsRange.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\clipper.cpp">
@@ -248,6 +250,7 @@
     <ClCompile Include="Summoners.cpp" />
     <ClCompile Include="Teleport.cpp" />
     <ClCompile Include="Trackers.cpp" />
+    <ClCompile Include="TurretsRange.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="E2Utility.rc" />
