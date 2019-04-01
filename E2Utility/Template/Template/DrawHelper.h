@@ -34,4 +34,54 @@ public:
 		Draw::LineScreen(StartPos, EndPos, Width, Color);
 	}
 
+
+
+	void static DrawCircleMinimap(Vector3 center, float radius, PSDKCOLOR color, float thickness, int quality)
+	{
+		std::vector<Vector3> pointList;
+		pointList.clear();
+
+
+		for (int i = 0; i < quality; i++)
+		{
+			float angle = float(i * M_PI * 2.0f / quality);
+			Vector3 tempVector = Vector3(center.x + radius * (float(std::cos(angle))), center.y, center.z + (radius * float(std::sin(angle))));
+			pointList.emplace_back(tempVector);
+
+		}
+
+		for (int i = 0; i < pointList.size(); i++)
+		{
+			auto a = pointList[i];
+			auto b = pointList[i == pointList.size() - 1 ? 0 : i + 1];
+
+			Vector2 aonScreen = Renderer::WorldToMinimap(a);
+			Vector2 bonScreen = Renderer::WorldToMinimap(b);
+			Draw::LineScreen(&aonScreen, &bonScreen, thickness, color);
+		}
+	}
+
+	void static DrawCircleMap(Vector3 center, float radius, PSDKCOLOR color, float thickness, int quality)
+	{
+		std::vector<Vector3> pointList;
+		pointList.clear();
+
+
+		for (int i = 0; i < quality; i++)
+		{
+			float angle = float(i * M_PI * 2.0f / quality);
+			Vector3 tempVector = Vector3(center.x + radius * (float(std::cos(angle))), center.y, center.z + (radius * float(std::sin(angle))));
+			pointList.emplace_back(tempVector);
+
+		}
+
+		for (int i = 0; i < pointList.size(); i++)
+		{
+			auto a = pointList[i];
+			auto b = pointList[i == pointList.size() - 1 ? 0 : i + 1];
+
+			Draw::Line(&a, &b, thickness, color);
+		}
+	}
+
 };

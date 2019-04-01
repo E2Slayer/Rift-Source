@@ -297,6 +297,300 @@ const std::string ChampionNameList[]
 
 };
 
+
+const std::string LastPostionChampionNameList[]
+{
+	"Aatrox",
+
+	"Ahri",
+
+	"Akali",
+
+	"Alistar",
+
+	"Amumu",
+
+	"Anivia",
+
+	"Annie",
+
+	"Ashe",
+
+	"AurelionSol",
+
+	"Azir",
+
+	"Bard",
+
+	"Blitzcrank",
+
+	"Brand",
+
+	"Braum",
+
+	"Caitlyn",
+
+	"Camille",
+
+	"Cassiopeia",
+
+	"Chogath",
+
+	"Corki",
+
+	"Darius",
+
+	"Default",
+
+	"Diana",
+
+	"Draven",
+
+	"DrMundo",
+
+	"Ekko",
+
+	"Elise",
+
+	"Evelynn",
+
+	"Ezreal",
+
+	"FiddleSticks",
+
+	"Fiora",
+
+	"Fizz",
+
+	"Galio",
+
+	"Gangplank",
+
+	"Garen",
+
+	"Gnar",
+
+	"Gragas",
+
+	"Graves",
+
+	"Hecarim",
+
+	"Heimerdinger",
+
+	"Illaoi",
+
+	"Irelia",
+
+	"Ivern",
+
+	"Janna",
+
+	"JarvanIV",
+
+	"Jax",
+
+	"Jayce",
+
+	"Jhin",
+
+	"Jinx",
+
+	"Kaisa",
+
+	"Kalista",
+
+	"Karma",
+
+	"Karthus",
+
+	"Kassadin",
+
+	"Katarina",
+
+	"Kayle",
+
+	"Kayn",
+
+	"Kennen",
+
+	"Khazix",
+
+	"Kindred",
+
+	"Kled",
+
+	"KogMaw",
+
+	"Leblanc",
+
+	"LeeSin",
+
+	"Leona",
+
+	"Lissandra",
+
+	"Lucian",
+
+	"Lulu",
+
+	"Lux",
+
+	"Malphite",
+
+	"Malzahar",
+
+	"Maokai",
+
+	"MasterYi",
+
+	"MissFortune",
+
+	"MonkeyKing",
+
+	"Mordekaiser",
+
+	"Morgana",
+
+	"Nami",
+
+	"Nasus",
+
+	"Nautilus",
+
+	"Neeko",
+
+	"Nidalee",
+
+	"Nocturne",
+
+	"Nunu",
+
+	"Olaf",
+
+	"Orianna",
+
+	"Ornn",
+
+	"Pantheon",
+
+	"Poppy",
+
+	"Pyke",
+
+	"Quinn",
+
+	"Rakan",
+
+	"Rammus",
+
+	"RekSai",
+
+	"Renekton",
+
+	"Rengar",
+
+	"Riven",
+
+	"Rumble",
+
+	"Ryze",
+
+	"Sejuani",
+
+	"Shaco",
+
+	"Shen",
+
+	"Shyvana",
+
+	"Singed",
+
+	"Sion",
+
+	"Sivir",
+
+	"Skarner",
+
+	"Sona",
+
+	"Soraka",
+
+	"Swain",
+
+	"Sylas",
+
+	"Syndra",
+
+	"TahmKench",
+
+	"Taliyah",
+
+	"Talon",
+
+	"Taric",
+
+	"Teemo",
+
+	"Thresh",
+
+	"Tristana",
+
+	"Trundle",
+
+	"Tryndamere",
+
+	"TwistedFate",
+
+	"Twitch",
+
+	"Udyr",
+
+	"Urgot",
+
+	"Varus",
+
+	"Vayne",
+
+	"Veigar",
+
+	"Velkoz",
+
+	"Vi",
+
+	"Viktor",
+
+	"Vladimir",
+
+	"Volibear",
+
+	"Warwick",
+
+	"Xayah",
+
+	"Xerath",
+
+	"XinZhao",
+
+	"Yasuo",
+
+	"Yorick",
+
+	"Zac",
+
+	"Zed",
+
+	"Ziggs",
+
+	"Zilean",
+
+	"Zoe",
+
+	"Zyra"
+
+
+};
+
 const std::string SummonerSpellsList[9]
 {
 	"summonerbarrier",
@@ -355,6 +649,26 @@ public:
 		
 
 		return 304; //165 is default
+	}
+
+	static unsigned int GetLastPostionChampionIMG(const char* name, int start)
+	{
+		//SdkUiConsoleWrite("Size %d", sizeof(ChampionNameList)/sizeof(*ChampionNameList));
+		int ArraySize = sizeof(LastPostionChampionNameList) / sizeof(*LastPostionChampionNameList);
+		int temp = start;
+		for (int i = 0; i < ArraySize; i++)
+		{
+
+			//SdkUiConsoleWrite("inside check %s", ChampionNameList[i].c_str());
+			if (_stricmp(name, LastPostionChampionNameList[i].c_str()) == 0)
+			{
+				return temp;
+			}
+			temp++;
+		}
+
+
+		return 328; //165 is default
 	}
 
 };

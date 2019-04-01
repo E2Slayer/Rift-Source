@@ -88,6 +88,12 @@
     <Filter Include="Arquivos de Recurso\SideBar\SS">
       <UniqueIdentifier>{658de794-4229-4e1c-a9c6-9eb8aaa13883}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Arquivos de Recurso\LastPosition">
+      <UniqueIdentifier>{f18e9545-b08f-4505-a945-b5087109a6d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Arquivos de Recurso\LastPosition\Teleport">
+      <UniqueIdentifier>{dbea15a0-73e8-4670-8c68-8530cb5e4d1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -267,6 +273,9 @@
     <ClInclude Include="ChampionNames.h">
       <Filter>My Script Files\Data\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="LastPosition.h">
+      <Filter>My Script Files\Trackers\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -363,6 +372,9 @@
       <Filter>My Script Files\Drawings</Filter>
     </ClCompile>
     <ClCompile Include="SideBar.cpp">
+      <Filter>My Script Files\Trackers</Filter>
+    </ClCompile>
+    <ClCompile Include="LastPosition.cpp">
       <Filter>My Script Files\Trackers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -980,6 +992,444 @@
     </Image>
     <Image Include="Resources\CD\CD_HudSelf.png">
       <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="Resources\LP\Zyra.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Aatrox.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Ahri.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Akali.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Alistar.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Amumu.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Anivia.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Annie.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Ashe.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\AurelionSol.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Azir.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Bard.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Blitzcrank.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Brand.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Braum.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Caitlyn.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Camille.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Cassiopeia.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Chogath.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Corki.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Darius.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Default.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Diana.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Draven.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\DrMundo.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Ekko.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Elise.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Evelynn.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Ezreal.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Fiddlesticks.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Fiora.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Fizz.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Galio.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Gangplank.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Garen.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Gnar.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Gragas.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Graves.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Hecarim.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Heimerdinger.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Illaoi.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Irelia.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Ivern.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Janna.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\JarvanIV.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Jax.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Jayce.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Jhin.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Jinx.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Kaisa.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Kalista.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Karma.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Karthus.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Kassadin.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Katarina.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Kayle.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Kayn.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Kennen.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Khazix.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Kindred.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Kled.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\KogMaw.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Leblanc.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\LeeSin.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Leona.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Lissandra.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Lucian.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Lulu.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Lux.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Malphite.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Malzahar.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Maokai.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\MasterYi.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\MissFortune.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\MonkeyKing.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Mordekaiser.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Morgana.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Nami.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Nasus.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Nautilus.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Neeko.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Nidalee.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Nocturne.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Nunu.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Olaf.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Orianna.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Ornn.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Pantheon.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Poppy.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Pyke.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Quinn.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Rakan.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Rammus.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\RekSai.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Renekton.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Rengar.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Riven.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Rumble.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Ryze.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Sejuani.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Shaco.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Shen.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Shyvana.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Singed.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Sion.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Sivir.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Skarner.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Sona.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Soraka.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Swain.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Sylas.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Syndra.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\TahmKench.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Taliyah.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Talon.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Taric.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Teemo.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Thresh.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Tristana.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Trundle.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Tryndamere.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\TwistedFate.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Twitch.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Udyr.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Urgot.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Varus.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Vayne.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Veigar.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Velkoz.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Vi.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Viktor.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Vladimir.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Volibear.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Warwick.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Xayah.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Xerath.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\XinZhao.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Yasuo.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Yorick.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Zac.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Zed.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Ziggs.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Zilean.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\Zoe.png">
+      <Filter>Arquivos de Recurso\LastPosition</Filter>
+    </Image>
+    <Image Include="Resources\LP\TP\LP_Default.png">
+      <Filter>Arquivos de Recurso\LastPosition\Teleport</Filter>
+    </Image>
+    <Image Include="Resources\LP\TP\LP_Teleport.png">
+      <Filter>Arquivos de Recurso\LastPosition\Teleport</Filter>
     </Image>
   </ItemGroup>
 </Project>

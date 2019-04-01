@@ -41,22 +41,20 @@ private class EnemyObject
 struct EnemyObject
 {
 	TeleportTypes _teleportStatus;
-	SDK_SPELL RSpell;
+	//SDK_SPELL RSpell;
 	AIHeroClient* Unit;
 	float DeathEndTime;
 	float LastVisible;
 	Vector3 LastPosition;
 	float LastTeleportStatusTime;
 	int ChampIMG;
-	int SpellIMG1;
-	int SpellIMG2;
 
 	EnemyObject(AIHeroClient* _Unit)
 		: Unit(_Unit)
 	{
 
 		_teleportStatus = TeleportTypes::UnknownStatus;
-		RSpell = _Unit->GetSpell((unsigned char)SpellSlot::R);
+	//	RSpell = _Unit->GetSpell((unsigned char)SpellSlot::R);
 
 		LastVisible = Game::Time();
 		LastPosition = Vector3(0.0f, 0.0f, 0.0f);
@@ -65,20 +63,7 @@ struct EnemyObject
 		LastTeleportStatusTime = 0.0f;
 		//SdkUiConsoleWrite("img nmber1 %s", _Unit->GetCharName());
 		ChampIMG = ChampionNames::GetChampionIMG(_Unit->GetCharName(), 145);
-	//	SpellIMG1 = ChampionNames::GetSummonerSpellIMG(_Unit->GetSpell((unsigned char)SpellSlot::Summoner1).ScriptName, 297);
-		//SpellIMG2 = ChampionNames::GetSummonerSpellIMG(_Unit->GetSpell((unsigned char)SpellSlot::Summoner2).ScriptName, 297);
 
-
-
-	//	SdkUiConsoleWrite("img nmber %d", ChampIMG);
-		/*
-			TeleportStatus = Packet.S2C.Teleport.Status.Unknown;
-				Unit = unit;
-				Texture = texture;
-				RSpell = unit.GetSpell(SpellSlot.R);
-				LastVisible = Game.Time;
-				LastPosition = Vector3.Zero;
-		*/
 	}
 };
 
