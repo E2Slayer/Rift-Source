@@ -123,6 +123,8 @@ void AbilityTimer::InitLoader()
 	//AbilitiesMenuMap.emplace("taricrindicator", AbilityItem("Taric R (The Same Team)", "Taric", 2.5f, "TaricR2", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
 	AbilitiesMenuMap.emplace("TaricR", AbilityItem("Taric R (Invulnerable)", "Taric", 2.5f, "TaricR3", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
 
+	AbilitiesMenuMap.emplace("tristanaechargesound", AbilityItem("Tristana E (Target)", "Tristana", 4.0f, "TristanaE", AbilityType::OnBuffCreate, AbilityLocationType::Dynamic, DeleteCondition::OnTimeDelete));
+
 
 	AbilitiesMenuMap.emplace("Thresh_Base_Lantern", AbilityItem("Thresh W", "Thresh", 6.0f, "ThreshW", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
 

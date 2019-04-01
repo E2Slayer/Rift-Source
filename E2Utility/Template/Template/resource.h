@@ -4,10 +4,10 @@
 //
 #define IDB_PNG1                        101
 #define IDB_RECALLBAR                   102
-#define HUD1                            103
-#define HUD                             104
-#define HUDSELF                         105
-#define HUDSELF2                        106
+#define IDB_PNG12                       103
+#define IDB_PNG13                       104
+#define IDB_PNG14                       105
+#define IDB_PNG15                       106
 #define Summoner_Dash                   107
 #define Summoner_Dash_Cooldown          108
 #define Summoner_Empty                  109
@@ -207,13 +207,14 @@
 #define SB_summonerheal                 303
 #define SB_summonersmite                304
 #define SB_summonerteleport             305
-#define SB_SSInvisible                        306
+#define SB_SSInvisible                  306
+#define CD_HudSelf                        307
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        307
+#define _APS_NEXT_RESOURCE_VALUE        308
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101

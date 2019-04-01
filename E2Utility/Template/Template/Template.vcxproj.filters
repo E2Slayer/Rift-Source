@@ -255,9 +255,6 @@
     <ClInclude Include="JungleTimer.h">
       <Filter>My Script Files\Trackers\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteHelper.h">
-      <Filter>My Script Files\Helpers</Filter>
-    </ClInclude>
     <ClInclude Include="TurretsRange.h">
       <Filter>My Script Files\Drawings\Header</Filter>
     </ClInclude>
@@ -378,22 +375,7 @@
     <Image Include="Resources\RecallBar.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
-    <Image Include="Resources\CD\hud1.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
     <Image Include="Resources\RecallBar.bmp">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="Resources\CD\CD_Hud.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="Resources\CD\CD_HudSelf.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="Resources\CD\CD_HudSelf2.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="Resources\CD\CD_HudSelf_2px.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
     <Image Include="Resources\CD\SS\TeleportCancel_Cooldown.png">
@@ -995,6 +977,9 @@
     </Image>
     <Image Include="Resources\SB\SB_SSInvisible.png">
       <Filter>Arquivos de Recurso\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\CD\CD_HudSelf.png">
+      <Filter>Arquivos de Recurso</Filter>
     </Image>
   </ItemGroup>
 </Project>

@@ -89,7 +89,7 @@ public:
 
 				DWORD dw = (DWORD)it3->second.Duration * 1000.0f;
 				auto shorter = GetTickCount() - it3->second.Start < dw - errorGab;
-				SdkUiConsoleWrite("Abort %ld %ld", GetTickCount() - it3->second.Start, dw - 90);
+				//SdkUiConsoleWrite("Abort %ld %ld", GetTickCount() - it3->second.Start, dw - 90);
 
 
 				result.Status = shorter ? TeleportTypes::Abort : TeleportTypes::Finished;

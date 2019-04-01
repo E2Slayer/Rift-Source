@@ -5,7 +5,7 @@
 #include "DrawHelper.h"
 #include <iomanip>
 #include "DropLists.h"
-#include "SpriteHelper.h"
+
 
 //SdkDrawSpriteFromResource(MAKEINTRESOURCEA(102), &barPos, false); //312x8
 
@@ -126,6 +126,31 @@ void CooldownTracker::Init()
 	ManualSpellLists.emplace_back(ManualSpell("Riven", "RivenFengShuiEngine", SpellSlot::R, skillcds, 15.0f, false));
 	*/
 	//RengarW
+
+	skillcds[0] = 20.0f;
+	skillcds[1] = 18.0f;
+	skillcds[2] = 16.0f;
+	skillcds[3] = 14.0f;
+	skillcds[4] = 12.0f;
+	ManualSpellLists.emplace_back(ManualSpell("Thresh", "ThreshQInternal", SpellSlot::Q, skillcds, 0.0f, false));
+
+	skillcds[0] = 1.0f;
+	skillcds[1] = 1.0f;
+	skillcds[2] = 1.0f;
+	skillcds[3] = 1.0f;
+	skillcds[4] = 1.0f;
+	ManualSpellLists.emplace_back(ManualSpell("Karthus", "KarthusLayWasteA1", SpellSlot::Q, skillcds, 0.0f, false));
+
+	/*
+	skillcds[0] = 1.0f;
+	skillcds[1] = 1.0f;
+	skillcds[2] = 1.0f;
+	skillcds[3] = 1.0f;
+	skillcds[4] = 1.0f;
+	ManualSpellLists.emplace_back(ManualSpell("Veigar", "VeigarDarkMatterCastLockout", SpellSlot::W, skillcds, 0.0f, false));
+	*/
+
+
 
 
 	/*
@@ -252,7 +277,16 @@ void CooldownTracker::MenuLoader()
 
 		});
 
+		/*
+		Menu::Tree("HUD Settings", "Trackers.CooldownTracker.HUD", false, []()
+		{
+			Menu::Checkbox("Draw HUD", "Trackers.CooldownTracker.HUD.Use", true);
+			Menu::SliderInt("Summoner Spells Icon Position X-axis", "Trackers.CooldownTracker.HUD.DrawingX", 0, -200, 200);
+			Menu::SliderInt("Summoner Spells Icon Position Y-axis", "Trackers.CooldownTracker.HUD.DrawingY", 0, -200, 200);
 
+
+		});
+		*/
 	});
 
 
@@ -286,22 +320,18 @@ void CooldownTracker::DrawLoader()
 	{
 		return;
 	}
-	//Vector2 screenPos{ Player.GetHealthBarScreenPos() };
 
-	//screenPos.x += -69;
-	//screenPos.y += -25;
+	/*
+	if (Menu::Get<bool>("Trackers.CooldownTracker.HUD.Use"))
+	{
+		Vector2 screenPos{ Player.GetHealthBarScreenPos() };
+		screenPos.x += float(Menu::Get<int>("Trackers.CooldownTracker.HUD.DrawingX"));
+		screenPos.y += float(Menu::Get<int>("Trackers.CooldownTracker.HUD.DrawingY"));
 
-
-	//screenPos.x += (float)Menu::Get<int>("Trackers.CooldownTracker.DrawingX");
-	//screenPos.y += (float)Menu::Get<int>("Trackers.CooldownTracker.DrawingY");
-	//SdkDrawSpriteFromResource(MAKEINTRESOURCEA(HUDSELF2), &screenPos, true);
-	//auto resol = Renderer::GetResolution();
-
-	//auto temp = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_PNG2));
-
-	
-
-
+		SdkDrawSpriteFromResource(MAKEINTRESOURCEA(CD_HudSelf), &screenPos, true);
+	}
+	*/
+	//Trackers.CooldownTracker.HUD.Use
 	//SdkDrawSpriteFromResource(temp, &screenPos, false);
 
 	//SdkUiConsoleWrite(" r: %d", temp);
@@ -347,6 +377,11 @@ void CooldownTracker::DrawLoader()
 
 void CooldownTracker::InsideDrawer(AIHeroClient* hero, bool isAlly)
 {
+
+	if (hero->IsZombie())
+	{
+		return;
+	}
 
 	Vector2 SpellPosition{ hero->GetHealthBarScreenPos() };
 	SpellPosition.x += -43.0f;

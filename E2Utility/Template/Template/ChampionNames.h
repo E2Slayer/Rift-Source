@@ -318,7 +318,7 @@ private:
 public:
 	static unsigned int GetChampionIMG(const char* name, int start)
 	{
-		SdkUiConsoleWrite("Size %d", sizeof(ChampionNameList)/sizeof(*ChampionNameList));
+		//SdkUiConsoleWrite("Size %d", sizeof(ChampionNameList)/sizeof(*ChampionNameList));
 		int ArraySize = sizeof(ChampionNameList) / sizeof(*ChampionNameList);
 		int temp = start;
 		for (int i = 0; i < ArraySize; i++)

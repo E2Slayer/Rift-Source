@@ -206,7 +206,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="SharedExperience.h" />
     <ClInclude Include="SideBar.h" />
-    <ClInclude Include="SpriteHelper.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Summoners.h" />
     <ClInclude Include="targetver.h" />
@@ -260,11 +259,7 @@
     <ResourceCompile Include="E2Utility.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\CD\CD_Hud.png" />
     <Image Include="Resources\CD\CD_HudSelf.png" />
-    <Image Include="Resources\CD\CD_HudSelf2.png" />
-    <Image Include="Resources\CD\CD_HudSelf_2px.png" />
-    <Image Include="Resources\CD\hud1.png" />
     <Image Include="Resources\CD\SS\SummonerBarrier.png" />
     <Image Include="Resources\CD\SS\SummonerBarrier_Cooldown.png" />
     <Image Include="Resources\CD\SS\SummonerBoost.png" />
