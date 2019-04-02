@@ -1415,6 +1415,7 @@ typedef SDKSTATUS (__cdecl* SdkGetAIBaseArmor_t)(void* AI, float* BaseArmor, flo
 typedef SDKSTATUS (__cdecl* SdkGetAIBaseMagicResist_t)(void* AI, float* BaseMagicResist, float* MagicResistPerLevel);
 typedef SDKSTATUS (__cdecl* SdkGetAIBaseCrit_t)(void* AI, float* BaseCrit, float* CritPerLevel, float* CritDamageMultiplier);
 typedef SDKSTATUS (__cdecl* SdkGetAIBaseMovementSpeed_t)(void* AI, float* BaseMovementSpeed);
+typedef SDKSTATUS (__cdecl* SdkGetMissileMovements_t)(void* Missile, float* Acceleration, float* MinSpeed, float* MaxSpeed);
 
 //
 // The SDK context structure, which contains a reference to the 
@@ -1664,6 +1665,7 @@ typedef struct _SDK_CONTEXT
 	SdkGetAIBaseMagicResist_t _SdkGetAIBaseMagicResist;
 	SdkGetAIBaseCrit_t _SdkGetAIBaseCrit;
 	SdkGetAIBaseMovementSpeed_t _SdkGetAIBaseMovementSpeed;
+	SdkGetMissileMovements_t _SdkGetMissileMovements;
 } SDK_CONTEXT, *PSDK_CONTEXT;
 
 //
@@ -8463,3 +8465,35 @@ typedef struct _SDK_CONTEXT
 //
 //--
 #define SdkGetAIBaseMovementSpeed(AI, BaseMovementSpeed) SDK_CONTEXT_GLOBAL->_SdkGetAIBaseMovementSpeed(AI, BaseMovementSpeed)
+
+//++
+//
+// SDKSTATUS
+// SdkGetMissileMovements(
+//		_In_ void* Missile,
+//		_Out_opt_ float* Acceleration,
+//		_Out_opt_ float* MinSpeed,
+//		_Out_opt_ float* MaxSpeed
+// )
+//
+// Routine Description:
+//
+//		This function retrieves the acceleration, minimum speed, and 
+//		maximum speed of a missile object.
+//
+// Arguments:
+//
+//		Missile - The spell missile object.
+//
+//		Acceleration - Stores the acceleration of the missile on success.
+//
+//		MinSpeed - Stores the minimum speed of the missile on success.
+//
+//		MaxSpeed - Stores the maximum speed of the missile on success.
+//
+// Return Value:
+//
+//		An SDKSTATUS code.
+//
+//--
+#define SdkGetMissileMovements(Missile, Acceleration, MinSpeed, MaxSpeed) SDK_CONTEXT_GLOBAL->_SdkGetMissileMovements(Missile, Acceleration, MinSpeed, MaxSpeed)

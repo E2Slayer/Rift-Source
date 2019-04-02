@@ -308,8 +308,10 @@ public:
 	float AngleBetween(Vector2& b);
 	Vector3 Closest(std::vector<Vector3>& arr);
 	Vector2 Closest(std::vector<Vector2>& arr);
+	ProjectionInfo ProjectOn(Vector3 & segmentStart, Vector3 & segmentEnd);
 	float Distance(Vector3& b);
 	float Distance(Vector2& b);
+	float Distance(Vector3& segmentStart, Vector3& segmentEnd, bool onlyIfOnSegment = false);
 	float DistanceSqr(Vector3& b);
 	float DistanceSqr(Vector2& b);
 	Vector3 Extended(Vector3& b, float distance);
@@ -1102,11 +1104,28 @@ inline float Vector3::AngleBetween(Vector2 & b) {
 }
 
 inline Vector3 Vector3::Closest(std::vector<Vector3>& arr) {
-	return this->To2D().Closest(arr);
+	Vector3 result = Vector3{};
+	float distance = HUGE_VALF;
+
+	for (auto vector : arr) {
+		float tempDist = this->Distance(vector);
+		if (distance < tempDist) {
+			distance = tempDist;
+			result = vector;
+		}
+	}
+
+	return result;
 }
 
 inline Vector2 Vector3::Closest(std::vector<Vector2>& arr) {
 	return this->To2D().Closest(arr);
+}
+
+inline ProjectionInfo Vector3::ProjectOn(Vector3& segmentStart, Vector3& segmentEnd) {
+	Vector2 start{ segmentStart.To2D() };
+	Vector2 end{ segmentEnd.To2D() };
+	return this->To2D().ProjectOn(start, end);
 }
 
 inline float Vector3::Distance(Vector3 & b) {
@@ -1115,6 +1134,14 @@ inline float Vector3::Distance(Vector3 & b) {
 
 inline float Vector3::Distance(Vector2 & b) {
 	return this->To2D().Distance(b);
+}
+
+inline float Vector3::Distance(Vector3& segmentStart, Vector3& segmentEnd, bool onlyIfOnSegment) {
+	auto objects{ this->ProjectOn(segmentStart, segmentEnd) };
+
+	return (!onlyIfOnSegment || objects.IsOnSegment) ?	
+		(this->Distance(objects.SegmentPoint)) :
+		HUGE_VALF;
 }
 
 inline float Vector3::DistanceSqr(Vector3 & b) {

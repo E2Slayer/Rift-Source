@@ -24,8 +24,6 @@ void TurretsRange::Init()
 		{
 			if (turret->IsValid() && turret->IsTurret())
 			{
-				
-
 				if ( (strstr(turret->GetName(), "Turret_OrderTurretShrine_A") && turret->IsAlly()) || (strstr(turret->GetName(), "Turret_ChaosTurretShrine") && turret->IsAlly()))
 				{
 					FountainList.emplace_back(turret);
@@ -34,7 +32,6 @@ void TurretsRange::Init()
 				{
 					AllyTurretList.emplace(netId, turret);
 				}
-
 			}
 		}
 

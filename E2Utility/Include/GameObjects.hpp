@@ -123,6 +123,8 @@ public:
 	MAKE_RAW(IsVisible, bool, SdkIsUnitVisible);
 	MAKE_RAW(IsVisibleOnScreen, bool, SdkIsObjectVisibleOnScreen);
 	MAKE_GET(NetworkID, unsigned int, SdkGetObjectNetworkID);
+	MAKE_GET(Velocity, Vector3, SdkGetObjectVelocity);
+	MAKE_GET(Acceleration, Vector3, SdkGetObjectAcceleration);	
 
 	bool operator < (GameObject& b) {
 		return GetNetworkID() < b.GetNetworkID();
@@ -142,6 +144,9 @@ public:
 		return pSDK->EntityManager->GetObjectFromPTR(obj);
 	}
 
+	GameObject*	AsGameObject() {
+		return (GameObject*)this;
+	}
 	AttackableUnit*	AsAttackableUnit() {
 		return (IsAttackable()) ? (AttackableUnit*)this : NULL;
 	}
@@ -905,7 +910,7 @@ public:
 		unsigned int result{ 0 };
 		auto position { GetPosition() };
 		for (auto &[_, Enemy] : pSDK->EntityManager->GetEnemyHeroes(f, &position)) {
-			if (pCore->TS->IsValidTarget(Enemy)) {
+			if (Enemy->IsValidTarget(false)) {
 				++result;
 			}
 		}
@@ -916,8 +921,8 @@ public:
 	unsigned int CountAlliesInRange(float f) {
 		unsigned int result{ 0 };
 		auto position { GetPosition() };
-		for (auto &[_, Allyy] : pSDK->EntityManager->GetAllyHeroes(f, &position)) {
-			if (pCore->TS->IsValidTarget(Allyy)) {
+		for (auto &[_, Ally] : pSDK->EntityManager->GetAllyHeroes(f, &position)) {
+			if (Ally->IsValidTarget(false)) {
 				++result;
 			}
 		}
@@ -926,7 +931,10 @@ public:
 	}
 
 	float GetTrueAttackRange(AttackableUnit* Target = NULL) {
-		return pCore->Orbwalker->GetTrueAutoAttackRange(this, Target);
+		if (pCore && pCore->Orbwalker) 
+			return pCore->Orbwalker->GetTrueAutoAttackRange(this, Target);
+
+		return GetAttackRange() + GetBoundingRadius() + 35.0f;
 	}
 
 	bool IsRecalling() {
@@ -1064,7 +1072,7 @@ public:
 	MAKE_RAW(IsAutoAttack, bool, SdkIsMissileAutoAttack);
 	MAKE_GET(Spell, SDK_SPELL, SdkGetMissileSpell);
 	MAKE_GET(StartPos, Vector3, SdkGetMissileStartPosition);
-	MAKE_GET(MissileSpeed, float, SdkGetMissileSpeed);
+	MAKE_GET(MissileSpeed, float, SdkGetMissileSpeed);	
 	MAKE_RAW(HasReached, bool, SdkHasMissileCompleted);
 	MAKE_GET(StartTime, float, SdkGetMissileStartTime);
 	MAKE_GET(Width, float, SdkGetMissileWidth);
@@ -1093,6 +1101,24 @@ public:
 		return endPos;
 	}
 
+	float GetMissileAcceleration() {
+		float res{ 0.0f };
+		SdkGetMissileMovements(Object, &res, NULL, NULL);
+		return res;
+	}
+
+	float GetMissileMinSpeed() {
+		float res{ 0.0f };
+		SdkGetMissileMovements(Object, NULL, &res, NULL);
+		return res;
+	}
+
+	float GetMissileMaxSpeed() {
+		float res{ 0.0f };
+		SdkGetMissileMovements(Object, NULL, NULL, &res);
+		return res;
+	}
+
 	bool IsOutsideOfTheMap() {
 		auto pos{ GetPosition() };
 		return pos.x < 0.0f || pos.x > 14700.0f || pos.z < 0.0f || pos.z > 14700.0f;
@@ -1116,8 +1142,18 @@ inline bool GameObject::IsRealTarget() {
 			}
 		}
 
-		auto AI{ AsAIBaseClient() };
-		bool UntargetableValidTarget{ AI && AI->HasBuff("illaoiespirit") };
+		bool UntargetableValidTarget{ false };
+
+		auto AI{ AsAIBaseClient() };		
+		if (AI) {
+			if (AI->HasStasis() || AI->Obscured()) {
+				return false;
+			}
+			if (AI->HasBuff("illaoiespirit")) {
+				UntargetableValidTarget = true;
+			}			
+		}
+
 		if (!Attackable->IsTargetableToPlayer() && !UntargetableValidTarget) {
 			return false;
 		}				

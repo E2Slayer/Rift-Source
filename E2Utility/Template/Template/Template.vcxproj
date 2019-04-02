@@ -214,6 +214,7 @@
     <ClInclude Include="TeleportDecode.h" />
     <ClInclude Include="Trackers.h" />
     <ClInclude Include="TurretsRange.h" />
+    <ClInclude Include="WardsTraps.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\clipper.cpp">
@@ -256,6 +257,7 @@
     <ClCompile Include="Teleport.cpp" />
     <ClCompile Include="Trackers.cpp" />
     <ClCompile Include="TurretsRange.cpp" />
+    <ClCompile Include="WardsTraps.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="E2Utility.rc" />

@@ -34,6 +34,9 @@ public:
 	
 	virtual std::shared_ptr<ICollision::Output> GetCollisions(Vector2& from, Vector2& to, float width, float delay, float missileSpeed = HUGE_VALF, bool AllyCollision = false, CollisionFlags CollisionFlags = CollisionFlags::Default, bool isArc = false) = 0;
 	virtual std::shared_ptr<ICollision::Output> GetCollisions(Vector3& from, Vector3& to, float width, float delay, float missileSpeed = HUGE_VALF, bool AllyCollision = false, CollisionFlags CollisionFlags = CollisionFlags::Default, bool isArc = false) = 0;
+
+	virtual bool CheckYasuoWallCollisionEx(Vector2& from, Vector2& to, float width, float delay, float missileSpeed = HUGE_VALF, bool AllyCollision = false, bool isArc = false) = 0;
+	virtual bool CheckYasuoWallCollisionEx(Vector3& from, Vector3& to, float width, float delay, float missileSpeed = HUGE_VALF, bool AllyCollision = false, bool isArc = false) = 0;
 };
 
 inline CollisionFlags operator |(CollisionFlags lhs, CollisionFlags rhs) {

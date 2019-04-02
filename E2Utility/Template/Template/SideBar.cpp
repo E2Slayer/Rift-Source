@@ -52,7 +52,8 @@ void SideBar::MenuLoader()
 		Menu::Tree("Summoner Spells Settings", "Trackers.SideBar.SS", false, []()
 		{
 			Menu::Checkbox("Draw Summoner Spells on Side Bar", "Trackers.SideBar.SS.Use", true);
-
+			Menu::SliderInt("Summoner Spells Icon Position X-axis", "Trackers.SideBar.SS.Icon.DrawingX", 0, -200, 200);
+			Menu::SliderInt("Summoner Spells Icon Position Y-axis", "Trackers.SideBar.SS.Icon.DrawingY", 0, -200, 200);
 
 			Menu::Checkbox("Draw Summoner Spells Timer", "Trackers.SideBar.SS.Timer", true);
 			Menu::DropList("Summoner Spells Timer Format", "Trackers.SideBar.SS.Format", std::vector<std::string>{ "MM:SS", "SS"}, 0);
@@ -490,7 +491,7 @@ void SideBar::DrawLoader()
 
 			tempPos = MainFramePos;
 
-			if (int(spellInside.Slot) == 3 && spellInside.Learned && spellInside.Level > 0 && Menu::Get<bool>("Trackers.SideBar.Ultimate.Use"))
+			if (int(spellInside.Slot) == 3 && spellInside.Learned && spellInside.Level > 0)
 			{
 				tempPos = MainFramePos;
 
@@ -520,15 +521,16 @@ void SideBar::DrawLoader()
 					DrawHelper::DrawOutlineText(NULL, &tempPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.SideBar.Ultimate.Color")), Menu::Get<int>("Trackers.SideBar.Ultimate.FontSize"), Menu::Get<int>("Trackers.SideBar.Ultimate.FontSize2"), 0,
 						&DropLists::GetColor(Menu::Get<int>("Trackers.SideBar.Ultimate.OutlineColor")), false);
 				}
-				else if (time < 0.0f)
+				else if (time < 0.0f && Menu::Get<bool>("Trackers.SideBar.Ultimate.Use"))
 				{
 					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(SB_Ultimate), &tempPos, true);
 				}
 			}
-			else if ( (int(spellInside.Slot) == 4 || int(spellInside.Slot) == 5) && Menu::Get<bool>("Trackers.SideBar.Ultimate.Use"))
+			else if ( (int(spellInside.Slot) == 4 || int(spellInside.Slot) == 5) )
 			{
 				tempPos = MainFramePos;
-				tempPos.x += 30.0f; //30
+				tempPos.x += 30.0f + float(Menu::Get<int>("Trackers.SideBar.SS.Icon.DrawingX")); //30
+				tempPos.y += float(Menu::Get<int>("Trackers.SideBar.SS.Icon.DrawingY")); //30
 
 				if (int(spellInside.Slot) == 4)
 				{
@@ -539,12 +541,26 @@ void SideBar::DrawLoader()
 					tempPos.y += 4.0f; //-22
 				}
 
-				int spellImg = ChampionNames::GetSummonerSpellIMG(spellInside.ScriptName, 297);
 
-				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(spellImg), &tempPos, true); // Summoner Spell 1 Drawing
+
+				if (Menu::Get<bool>("Trackers.SideBar.SS.Use"))
+				{
+
+					int spellImg = ChampionNames::GetSummonerSpellIMG(spellInside.ScriptName, 297);
+
+					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(spellImg), &tempPos, true); // Summoner Spell 1 Drawing
+				}
+
 				if (time > 0.0f)
 				{
-					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(SB_SSInvisible), &tempPos, true); // when its CD
+					if (Menu::Get<bool>("Trackers.SideBar.SS.Use"))
+					{
+						SdkDrawSpriteFromResource(MAKEINTRESOURCEA(SB_SSInvisible), &tempPos, true); // when its CD
+					}
+
+					tempPos = MainFramePos;
+					tempPos.x += 30.0f; //30
+
 
 					if (Menu::Get<bool>("Trackers.SideBar.SS.Timer"))
 					{
@@ -560,8 +576,8 @@ void SideBar::DrawLoader()
 							ss1 << std::setfill('0') << std::setw(2) << onlySec;
 
 						}
-						tempPos.x += -10.0f;
-						tempPos.y += -11.0f;
+						tempPos.x += -10.0f + float(Menu::Get<int>("Trackers.SideBar.SS.DrawingX"));
+						tempPos.y += -11.0f + float(Menu::Get<int>("Trackers.SideBar.SS.DrawingY"));
 						DrawHelper::DrawOutlineText(NULL, &tempPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.SideBar.SS.Color")), Menu::Get<int>("Trackers.SideBar.SS.FontSize"), Menu::Get<int>("Trackers.SideBar.SS.FontSize2"), 0,
 							&DropLists::GetColor(Menu::Get<int>("Trackers.SideBar.SS.OutlineColor")), false);
 					}
