@@ -150,7 +150,42 @@ void CooldownTracker::Init()
 	ManualSpellLists.emplace_back(ManualSpell("Veigar", "VeigarDarkMatterCastLockout", SpellSlot::W, skillcds, 0.0f, false));
 	*/
 
+	/*
+	skillcds[0] = 16.0f;
+	skillcds[1] = 15.5f;
+	skillcds[2] = 15.0f;
+	skillcds[3] = 14.5f;
+	skillcds[4] = 14.0f;
+	ManualSpellLists.emplace_back(ManualSpell("Shaco", "Deceive", SpellSlot::Q, skillcds, 0.0f, false));
 
+	//Deceive 16 / 15.5 / 15 / 14.5 / 14
+	*/
+
+	skillcds[0] = 10.0f;
+	skillcds[1] = 9.0f;
+	skillcds[2] = 8.0f;
+	skillcds[3] = 7.0f;
+	skillcds[4] = 6.0f;
+	ManualSpellLists.emplace_back(ManualSpell("Kennen", "KennenLightningRush", SpellSlot::E, skillcds, 2.0f, false));
+
+	skillcds[0] = 10.0f;
+	skillcds[1] = 9.0f;
+	skillcds[2] = 8.0f;
+	skillcds[3] = 7.0f;
+	skillcds[4] = 6.0f;
+	ManualSpellLists.emplace_back(ManualSpell("Kennen", "KennenLRCancel", SpellSlot::E, skillcds, 0.0f, false));
+
+
+	skillcds[0] = 6.0f;
+	skillcds[1] = 6.0f;
+	skillcds[2] = 6.0f;
+	skillcds[3] = 6.0f;
+	skillcds[4] = 6.0f;
+	ManualSpellLists.emplace_back(ManualSpell("TwistedFate", "GoldCardPreAttack", SpellSlot::W, skillcds, 0.0f, false));
+
+	ManualSpellLists.emplace_back(ManualSpell("TwistedFate", "BlueCardPreAttack", SpellSlot::W, skillcds, 0.0f, false));
+
+	ManualSpellLists.emplace_back(ManualSpell("TwistedFate", "RedCardPreAttack", SpellSlot::W, skillcds, 0.0f, false));
 
 
 	/*
@@ -204,6 +239,7 @@ void CooldownTracker::Init()
 						{
 							manual.IsAlly = false;
 							ActualManualSpellLists.emplace_back(manual);
+							//SdkUiConsoleWrite("Champname: %s", hero->GetCharName());
 						}
 					}
 				}
@@ -396,10 +432,16 @@ void CooldownTracker::InsideDrawer(AIHeroClient* hero, bool isAlly)
 		{
 			for (auto &manual : ActualManualSpellLists)
 			{
-				if (_stricmp(manual.SpellName, spellInside.ScriptName) == 0 && _stricmp(manual.Champ, hero->GetCharName()) == 0 && manual.IsAlly == isAlly)
+				if ( (_stricmp(manual.SpellName, spellInside.ScriptName) == 0 || int(manual.Slot) == int(spellInside.Slot)) && _stricmp(manual.Champ, hero->GetCharName()) == 0 && manual.IsAlly == isAlly)
 				{
-					time = manual.CooldownExpires - Game::Time();
-					spellCD = manual.Cooldown;
+					//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
+					if (manual.CooldownExpires - Game::Time() > 0.0f)
+					{
+						time = manual.CooldownExpires - Game::Time();
+						spellCD = manual.Cooldown;
+					}
+					//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
+
 				}
 			}
 
@@ -610,7 +652,7 @@ void CooldownTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 	{
 		if (_stricmp(manual.SpellName, spellName) == 0)
 		{
-			if (SpellCast->Spell.CooldownExpires - Game::Time() < 0.5)
+			//if (SpellCast->Spell.CooldownExpires - Game::Time() < 0.5)
 			{
 				//SdkUiConsoleWrite("na2: %s", manual.Champ);
 				//float cooldown = manual.Cooldowns[SpellCast->Spell.Level - 1];
@@ -633,6 +675,7 @@ void CooldownTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 
 				manual.Cooldown = cooldown - ((cooldown / 100.0f) * cdr) + manual.Additional;
 				manual.CooldownExpires = Game::Time() + manual.Cooldown;
+				
 				//SdkUiConsoleWrite("Manual cd %f cdr %f result %f Final %f Game: %f", cooldown, cdr , manual.Cooldown, manual.CooldownExpires, Game::Time());
 			}
 		}

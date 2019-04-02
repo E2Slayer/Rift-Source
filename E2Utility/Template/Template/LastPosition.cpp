@@ -153,15 +153,19 @@ void LastPosition::DrawLoader()
 		{
 			lp.Teleported = false;
 			lp.LastSeen = Game::Time();
+
 		}
 		lp.LastPosition = lpPos;
 
 		if (lp.Unit->IsVisible())
 		{
 			lp.Teleported = false;
+			lp.AbortedTimeDifference = 0.0f;
+			lp.TeleportStartTime = 0.0f;
 			if (lp.Unit->IsAlive())
 			{
 				lp.LastSeen = Game::Time();
+
 			}
 		}
 
@@ -181,21 +185,45 @@ void LastPosition::DrawLoader()
 
 			Vector2 mPos = { Renderer::WorldToScreen(pos) };
 
-			if (lp.LastSeen != 0.0f && Game::Time() - lp.LastSeen > 3.0f)
+			if (lp.LastSeen != 0.0f && Game::Time() - lp.LastSeen > 3.0f )
 			{
-				auto radius = std::abs( (Game::Time() - lp.LastSeen - 1.0f)*lp.Unit->GetMovementSpeed()*0.9f);
 
-					if (pos.IsOnScreen(50.0f) && Menu::Get<bool>("Trackers.LastPosition.World.Expand.Use") && radius <= Menu::Get<int>("Trackers.LastPosition.World.Expand.MaxRange")) //map
+				float tempTime = Game::Time() - lp.AbortedTimeDifference;
+				float tempLastSeen = lp.LastSeen;
+
+				if (lp.isTeleporting)
+				{
+					if (lp.TeleportStartTime - lp.AbortedTimeDifference > 0.0f)
 					{
-						//Draw::Circle(&pos, radius, &Color::White, 0, &Vector3(100.0f,100.0f,100.0f));
-						DrawHelper::DrawCircleMap(pos, radius, &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.World.Expand.Color")), float(Menu::Get<int>("Trackers.LastPosition.World.Expand.Thickness")), Menu::Get<int>("Trackers.LastPosition.World.Expand.Quality"));
-
+						tempTime = lp.TeleportStartTime - lp.AbortedTimeDifference;
 					}
-
-					if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Expand.Use") && radius <= Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.MaxRange")) //minimap
+					else
 					{
-						DrawHelper::DrawCircleMinimap(pos, radius, &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Color")), float(Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Thickness")), Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Quality"));
+						tempTime = Game::Time();
 					}
+				}
+
+				if (tempTime < 0.0f)
+				{
+					tempTime = Game::Time();
+				}
+
+				//TeleportStartTime
+
+				//isTeleporting
+				auto radius = std::abs( (tempTime - tempLastSeen - 1.0f)*lp.Unit->GetMovementSpeed()*1.1f);
+
+				if (pos.IsOnScreen(float(Menu::Get<int>("Trackers.LastPosition.World.Expand.MaxRange"))) && Menu::Get<bool>("Trackers.LastPosition.World.Expand.Use") && radius <= Menu::Get<int>("Trackers.LastPosition.World.Expand.MaxRange")) //map
+				{
+					//Draw::Circle(&pos, radius, &Color::White, 0, &Vector3(100.0f,100.0f,100.0f));
+					DrawHelper::DrawCircleMap(pos, radius, &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.World.Expand.Color")), float(Menu::Get<int>("Trackers.LastPosition.World.Expand.Thickness")), Menu::Get<int>("Trackers.LastPosition.World.Expand.Quality"));
+
+				}
+
+				if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Expand.Use") && radius <= Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.MaxRange")) //minimap
+				{
+					DrawHelper::DrawCircleMinimap(pos, radius, &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Color")), float(Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Thickness")), Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Quality"));
+				}
 
 				
 			}
@@ -310,19 +338,33 @@ void __cdecl LastPosition::RecallTrack(void * Unit, const char * Name, const cha
 			if (testStruct.Status == TeleportTypes::Start)
 			{
 				value.isTeleporting = true;
-
+				value.TeleportStartTime = Game::Time() ;
+				//value.Aborted = false;
+				//value.AbortedTime = 0.0f;
 			}
 			else if (testStruct.Status == TeleportTypes::Abort)
 			{
 
 				value.isTeleporting = false;
 
+				//auto temp = value.AbortedTimeDifference;
+				
+				value.AbortedTimeDifference += (Game::Time() - value.TeleportStartTime);
+				
+				//value.AbortedTimeDifference = (Game::Time() - value.AbortedTimeDifference) - value.TeleportStartTime;
+				//value.Aborted = true;
+				//value.AbortedTime = Game::Time();
+				//value.LastSeen = Game::Time();
 			}
 			else if (testStruct.Status == TeleportTypes::Finished)
 			{
 				value.Teleported = true;
 				value.isTeleporting = false;
+				//value.Aborted = false;
 				value.LastSeen = Game::Time();
+				//value.AbortedTime = 0.0f;
+				value.AbortedTimeDifference = 0.0f;
+				value.TeleportStartTime = 0.0f;
 			}
 
 		}

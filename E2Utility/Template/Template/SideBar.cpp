@@ -199,11 +199,12 @@ void SideBar::TickLoader()
 
 void SideBar::DrawLoader()
 {
-	if (!Menu::Get<int>("Trackers.SideBar.Use"))
+	
+	if (!Menu::Get<bool>("Trackers.SideBar.Use"))
 	{
 		return;
 	}
-
+	
 
 	auto resol = Renderer::GetResolution();
 
