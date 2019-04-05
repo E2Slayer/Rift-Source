@@ -212,14 +212,14 @@ void JungleTimer::MenuLoader()
 		Menu::Checkbox("Draw Jungle Timer on the World", "Trackers.JungleTimer.World", true);
 		Menu::SliderInt("Jungle Timer World Font Height", "Trackers.JungleTimer.World.FontSize", 28, 20, 40);
 		Menu::SliderInt("Jungle Timer World Font Width", "Trackers.JungleTimer.World.FontSize2", 10, 4, 15);
-		Menu::DropList("^-> Jungle Timer World Color", "Trackers.JungleTimer.World.Color", ColorMenuList, 11);
-		Menu::DropList("^-> Jungle Timer World OutLine Color", "Trackers.JungleTimer.World.OutLineColor", ColorMenuList, 0);
+		//Menu::DropList("^-> Jungle Timer World Color", "Trackers.JungleTimer.World.Color", ColorMenuList, 11);
+		//Menu::DropList("^-> Jungle Timer World OutLine Color", "Trackers.JungleTimer.World.OutLineColor", ColorMenuList, 0);
 
 		Menu::Checkbox("Draw Jungle Timer on the Minimap", "Trackers.JungleTimer.Minimap", true);
 		Menu::SliderInt("Jungle Timer Minimap Font Height", "Trackers.JungleTimer.Minimap.FontSize", 13, 10, 30);
 		Menu::SliderInt("Jungle Timer Minimap Font Width", "Trackers.JungleTimer.Minimap.FontSize2", 4, 1, 10);
-		Menu::DropList("^-> Jungle Timer Minimap Color", "Trackers.JungleTimer.Minimap.Color", ColorMenuList, 11);
-		Menu::DropList("^-> Jungle Timer Minimap OutLine Color", "Trackers.JungleTimer.Minimap.OutLineColor", ColorMenuList, 0);
+		//Menu::DropList("^-> Jungle Timer Minimap Color", "Trackers.JungleTimer.Minimap.Color", ColorMenuList, 11);
+		//Menu::DropList("^-> Jungle Timer Minimap OutLine Color", "Trackers.JungleTimer.Minimap.OutLineColor", ColorMenuList, 0);
 		Menu::SliderInt("Jungle Timer Minimap Timer Position X-axis", "Trackers.JungleTimer.Minimap.DrawingX", 0, -50, 50);
 		Menu::SliderInt("Jungle Timer Minimap Timer Position Y-axis", "Trackers.JungleTimer.Minimap.DrawingY", -0, -50, 50);
 		
@@ -230,254 +230,17 @@ void JungleTimer::MenuLoader()
 
 void JungleTimer::TickLoader()
 {
-
+	//SdkUiConsoleWrite("333HER?");
 	if (!Menu::Get<bool>("Trackers.JungleTimer.Use"))
 	{
 
 		return;
 	}
-	
-
-
-	if (JunglerChecker + 800 > GetTickCount())
+	//SdkUiConsoleWrite("44444444444444?");
+	if (JunglerChecker + 100 > GetTickCount())
 	{
 		return;
 	}
-
-	JunglerChecker = GetTickCount();
-
-	int dragonstackTemp = 0;
-
-	auto getEnemy{ pSDK->EntityManager->GetEnemyHeroes() };
-
-	if (!getEnemy.empty())
-	{
-		for (auto[netID, enemy] : getEnemy)
-		{
-
-		}
-	}
-
-	//Player.GetBuffCount();
-
-	/*
-	if (_lastCheck + CheckInterval > Environment.TickCount)
-                {
-                    return;
-                }
-
-                _lastCheck = Environment.TickCount;
-
-                var dragonStacks = 0;
-                foreach (var enemy in GameObjects.EnemyHeroes)
-                {
-                    var buff =
-                        enemy.Buffs.FirstOrDefault(
-                            b => b.Name.Equals("s5test_dragonslayerbuff", StringComparison.OrdinalIgnoreCase));
-                    if (buff != null)
-                    {
-                        dragonStacks = buff.Count;
-                    }
-                }
-
-                if (dragonStacks > _dragonStacks || dragonStacks == 5)
-                {
-                    var dCamp = _camps.FirstOrDefault(c => c.Mobs.Any(m => m.Name.Contains("Dragon")));
-                    if (dCamp != null && !dCamp.Dead)
-                    {
-                        dCamp.Dead = true;
-                        dCamp.NextRespawnTime = (int) Game.Time + dCamp.RespawnTime;
-                    }
-                }
-
-                _dragonStacks = dragonStacks;
-
-                var bCamp = _camps.FirstOrDefault(c => c.Mobs.Any(m => m.Name.Contains("Baron")));
-                if (bCamp != null && !bCamp.Dead)
-                {
-                    var heroes = GameObjects.EnemyHeroes.Where(e => e.IsVisible);
-                    foreach (var hero in heroes)
-                    {
-                        var buff =
-                            hero.Buffs.FirstOrDefault(
-                                b => b.Name.Equals("exaltedwithbaronnashor", StringComparison.OrdinalIgnoreCase));
-                        if (buff != null)
-                        {
-                            bCamp.Dead = true;
-                            bCamp.NextRespawnTime = (int) buff.StartTime + bCamp.RespawnTime;
-                        }
-                    }
-                }
-	*/
-
-
-
-
-
-	/*
-	for (auto &camp : jungleCamp)
-	{
-
-		
-
-		if (camp.SpawnTime  > Game::Time())
-		{
-			continue;
-		}
-		
-
-		
-		auto jungle{ pSDK->EntityManager->GetJungleMonsters(1000.0f, &camp.Position) };
-
-
-		for (auto &minions : camp.Minions)
-		{
-			minions.DeadTick = true;
-		}
-	//	SdkUiConsoleWrite("size : %f enf %d", camp.RespawnTimer ,jungle.size());
-
-		int i = 0;
-		for (auto &currentJungle : jungle)
-		{
-			if (( strstr(currentJungle.second->GetName(), "SRU_") == 0 || strstr(currentJungle.second->GetName(), "Sru_") == 0)) // && currentJungle.second->IsVisible()
-			{
-			//	SdkUiConsoleWrite("11111111111111");
-				
-
-
-				for (auto &minions : camp.Minions)
-				{
-					
-					if (_stricmp(minions.Name, currentJungle.second->GetName()) == 0)
-					{
-						
-						if ( currentJungle.second->GetHealth().Current > 0.0f )
-						{
-							//SdkUiConsoleWrite("Areyou 3");
-							minions.DeadTick = false;
-							i++;
-						}
-					}
-				}
-
-			}
-
-		}
-		//SdkUiConsoleWrite("size : %f enf %d i %d", camp.RespawnTimer, jungle.size(), i);
-
-
-
-
-		if (i == 0 )
-		{
-			//SdkUiConsoleWrite("Areyou %d res %f", i , camp.SpawnTime);
-			for (auto &minions : camp.Minions)
-			{
-				minions.Dead = minions.DeadTick;
-			}
-
-			
-
-				camp.SpawnTime = Game::Time() + camp.RespawnTimer;
-			
-				//camp.SpawnTime = Game::Time() + camp.RespawnTimer;
-			
-		}
-
-	}*/
-
-}
-
-void JungleTimer::DrawLoader()
-{
-
-
-	if (!Menu::Get<bool>("Trackers.JungleTimer.Use"))
-	{
-
-		return;
-	}
-
-
-
-
-	/*
-	auto buffs
-	{
-		Player.GetBuffs()
-	};
-	Vector3 pos{ Player.GetPosition() };
-	Vector2 screenPos{ Renderer::WorldToScreen(pos) };
-	for (auto buffname : buffs)
-	{
-		if (pos.IsValid() && pos.IsOnScreen())
-		{
-			//We get the screen position and offset it a little so it doesnt draw over the above text
-			//Vector2 screenPos{ Renderer::WorldToScreen(pos) };
-
-		//	buffname.Count;
-
-			std::string temp = buffname.Name;
-
-			temp += " : ";
-
-			temp += std::to_string(buffname.Stacks);
-			temp += " : ";
-
-			temp += std::to_string(buffname.Count);
-			//temp += " : ";
-
-			//temp += std::to_string(buffname.Spell->CurrentAmmo);
-
-			screenPos.y -= 30.0f;
-			Draw::Text(NULL, &screenPos, temp, "Arial Narrow", &Color::White, 30, 10);
-
-		}
-	}
-	*/
-	//Player.GetBuff(dragonbuff_tooltipmanager, false).Spell.
-
-
-	/*
-	
-	dragonbufffire
-dragonbuffearth
-dragonbuffair
-dragonbuffwater
-*/
-
-	//dragonbuff_tooltipmanager
-	/*
-	int complete = Player.GetBuffStacks("dragonbuffwater", false) + Player.GetBuffStacks("dragonbuffair", false) + Player.GetBuffStacks("dragonbuffearth", false) + Player.GetBuffStacks("dragonbufffire", false);
-	screenPos.x -= 120.0f;
-	Draw::Text(NULL, &screenPos, std::to_string(complete), "Arial Narrow", &Color::Green, 30, 6);
-	*/
-
-	/*
-	 foreach (var camp in _camps.Where(c => c.Dead))
-                {
-                    if (camp.NextRespawnTime - Game.Time <= 0)
-                    {
-                        camp.Dead = false;
-                        continue;
-                    }
-
-                    if (mapEnabled && camp.Position.IsOnScreen())
-                    {
-                        _mapText.DrawTextCentered(
-                            (camp.NextRespawnTime - (int) Game.Time).FormatTime(mapTotalSeconds),
-                            Drawing.WorldToScreen(camp.Position), Color.White);
-                    }
-                    if (minimapEnabled)
-                    {
-                        _minimapText.DrawTextCentered(
-                            (camp.NextRespawnTime - (int) Game.Time).FormatTime(minimapTotalSeconds),
-                            camp.MinimapPosition, Color.White);
-                    }
-                }
-	*/
-
-	
 
 	for (auto &camp : jungleCamp)
 	{
@@ -488,11 +251,9 @@ dragonbuffwater
 		{
 			if (minions.Dead == false)
 			{
-				//SdkUiConsoleWrite("SP2 %s", minions.Name);
 				Alive = true;
 				break;
 			}
-	
 		}
 
 		if (Alive == true)
@@ -500,62 +261,41 @@ dragonbuffwater
 			continue;
 		}
 
-		auto timeLeft = camp.SpawnTime - Game::Time();
+		camp.TimeLeft = camp.SpawnTime - Game::Time();
 
 
-		if (timeLeft > 0.0f)
+		if (camp.TimeLeft > 0.0f)
 		{
-			//Trackers.InhibitorTimer.Ally
-		
 
 
-
-				std::stringstream ss1;
-				ss1.precision(1); //for decimal
-				ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
-
-
-				int sec = timeLeft;
-
-				int mins = sec / 60;
-				sec = sec % 60;
-
-				ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
-
-				//auto timeleft = value.NextRespawnTime - Game::Time();
-				if (camp.Position.IsOnScreen() && camp.Position.IsValid() && Menu::Get<bool>("Trackers.JungleTimer.World"))
-				{
-					Vector2 screenPos{ Renderer::WorldToScreen(camp.Position) };
-
-					DrawHelper::DrawOutlineText(NULL, &screenPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.JungleTimer.World.Color")), Menu::Get<int>("Trackers.JungleTimer.World.FontSize"), Menu::Get<int>("Trackers.JungleTimer.World.FontSize2"), 0,
-						&DropLists::GetColor(Menu::Get<int>("Trackers.JungleTimer.World.OutLineColor")), false);
-				}
+			//auto timeleft = value.NextRespawnTime - Game::Time();
+			if (camp.Position.IsOnScreen() && camp.Position.IsValid() && Menu::Get<bool>("Trackers.JungleTimer.World"))
+			{
+				camp.MapCheck = true;
+			}
+			else
+			{
+				camp.MapCheck = false;
+			}
 
 
-				if (Menu::Get<bool>("Trackers.InhibitorTimer.Minimap"))
-				{
-					Vector2 screenPos2{ Renderer::WorldToMinimap(camp.Position) };
-					screenPos2.x += (float)Menu::Get<int>("Trackers.JungleTimer.Minimap.DrawingX") - 8.0f;
-					screenPos2.y += (float)Menu::Get<int>("Trackers.JungleTimer.Minimap.DrawingY") - 7.0f;
+			if (Menu::Get<bool>("Trackers.JungleTimer.Minimap"))
+			{
 
-					DrawHelper::DrawOutlineText(NULL, &screenPos2, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.JungleTimer.Minimap.Color")), Menu::Get<int>("Trackers.JungleTimer.Minimap.FontSize"), Menu::Get<int>("Trackers.JungleTimer.Minimap.FontSize2"), 0,
-						&DropLists::GetColor(Menu::Get<int>("Trackers.JungleTimer.Minimap.OutLineColor")), false);
+				camp.MinimapCheck = true;
 
 
-				}
-			
+			}
+			else
+			{
+				camp.MinimapCheck = false;
+			}
+
 
 
 		}
 
 
-
-		/*
-		if (camp.Position.IsOnScreen() && camp.Position.IsValid() && timeLeft > 0.0f)
-		{
-			Draw::Text(&camp.Position, NULL, std::to_string(timeLeft), "Arial", &Color::Green, 30, 10, 0, false);
-		}
-		*/
 
 	}
 
@@ -565,120 +305,131 @@ dragonbuffwater
 	for (auto &camp : jungleExploit)
 	{
 
-		auto timeLeft = camp.SpawnTime - Game::Time();
+		camp.TimeLeft = camp.SpawnTime - Game::Time();
 
-		if (timeLeft > 0.0f)
+		if (camp.TimeLeft > 0.0f)
 		{
-			std::stringstream ss1;
-			ss1.precision(1); //for decimal
-			ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
+
+			//auto timeleft = value.NextRespawnTime - Game::Time();
+			if (camp.Position.IsOnScreen() && camp.Position.IsValid() && Menu::Get<bool>("Trackers.JungleTimer.World"))
+			{
+				camp.MapCheck = true;
+			}
+			else
+			{
+				camp.MapCheck = false;
+			}
 
 
-			int sec = timeLeft;
+			if (Menu::Get<bool>("Trackers.JungleTimer.Minimap"))
+			{
+				camp.MinimapCheck = true;
+			}
+			else
+			{
+				camp.MinimapCheck = false;
+			}
+
+		}
+	}
+
+
+
+}
+
+void JungleTimer::DrawLoader()
+{
+
+
+	if (!Menu::Get<bool>("Trackers.JungleTimer.Use"))
+	{
+		return;
+	}
+
+	std::stringstream ss1;
+	ss1.precision(1); //for decimal
+	ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
+	
+	for (auto &camp : jungleCamp)
+	{
+		
+
+		if (camp.TimeLeft > 0.0f)
+		{
+
+			ss1.str("");
+
+				int sec = camp.TimeLeft;
+
+				int mins = sec / 60;
+				sec = sec % 60;
+
+				ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
+
+				//auto timeleft = value.NextRespawnTime - Game::Time();
+				if (camp.MapCheck)
+				{
+					
+					DrawHelper::DrawOutlineText(NULL, &Renderer::WorldToScreen(camp.Position), ss1.str().c_str(), "Calibri Bold", &Color::White, Menu::Get<int>("Trackers.JungleTimer.World.FontSize"), Menu::Get<int>("Trackers.JungleTimer.World.FontSize2"), 0,
+						&Color::Black, false);
+				}
+				
+
+				if (camp.MinimapCheck)
+				{
+					Vector2 screenPos2{ Renderer::WorldToMinimap(camp.Position) };
+					screenPos2.x += (float)Menu::Get<int>("Trackers.JungleTimer.Minimap.DrawingX") - 8.0f;
+					screenPos2.y += (float)Menu::Get<int>("Trackers.JungleTimer.Minimap.DrawingY") - 7.0f;
+
+					DrawHelper::DrawOutlineText(NULL, &screenPos2, ss1.str().c_str(), "Calibri Bold", &Color::White, Menu::Get<int>("Trackers.JungleTimer.Minimap.FontSize"), Menu::Get<int>("Trackers.JungleTimer.Minimap.FontSize2"), 0,
+						&Color::Black, false);
+				}
+			
+		}
+
+	}
+
+
+
+
+	for (auto &camp : jungleExploit)
+	{
+
+
+		if (camp.TimeLeft > 0.0f)
+		{
+			ss1.str("");
+			int sec = camp.TimeLeft;
 
 			int mins = sec / 60;
 			sec = sec % 60;
 
 			ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
 
-			//auto timeleft = value.NextRespawnTime - Game::Time();
-			if (camp.Position.IsOnScreen() && camp.Position.IsValid() && Menu::Get<bool>("Trackers.JungleTimer.World"))
+			if (camp.MapCheck)
 			{
+
 				Vector2 screenPos{ Renderer::WorldToScreen(camp.Position) };
 
-				DrawHelper::DrawOutlineText(NULL, &screenPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.JungleTimer.World.Color")), Menu::Get<int>("Trackers.JungleTimer.World.FontSize"), Menu::Get<int>("Trackers.JungleTimer.World.FontSize2"), 0,
-					&DropLists::GetColor(Menu::Get<int>("Trackers.JungleTimer.World.OutLineColor")), false);
+				DrawHelper::DrawOutlineText(NULL, &screenPos, ss1.str().c_str(), "Calibri Bold", &Color::White, Menu::Get<int>("Trackers.JungleTimer.World.FontSize"), Menu::Get<int>("Trackers.JungleTimer.World.FontSize2"), 0,
+					&Color::Black, false);
 			}
 
 
-			if (Menu::Get<bool>("Trackers.InhibitorTimer.Minimap"))
+			if (camp.MinimapCheck)
 			{
 				Vector2 screenPos2{ Renderer::WorldToMinimap(camp.Position) };
 				screenPos2.x += (float)Menu::Get<int>("Trackers.JungleTimer.Minimap.DrawingX") - 8.0f;
 				screenPos2.y += (float)Menu::Get<int>("Trackers.JungleTimer.Minimap.DrawingY") - 7.0f;
 
-				DrawHelper::DrawOutlineText(NULL, &screenPos2, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.JungleTimer.Minimap.Color")), Menu::Get<int>("Trackers.JungleTimer.Minimap.FontSize"), Menu::Get<int>("Trackers.JungleTimer.Minimap.FontSize2"), 0,
-					&DropLists::GetColor(Menu::Get<int>("Trackers.JungleTimer.Minimap.OutLineColor")), false);
+				DrawHelper::DrawOutlineText(NULL, &screenPos2, ss1.str().c_str(), "Calibri Bold", &Color::White, Menu::Get<int>("Trackers.JungleTimer.Minimap.FontSize"), Menu::Get<int>("Trackers.JungleTimer.Minimap.FontSize2"), 0,
+					&Color::Black, false);
 
 
 			}
 		}
-
-
-		/*
-		if (camp.Position.IsOnScreen() && camp.Position.IsValid() && timeLeft > 0.0f)
-		{
-			Draw::Text(&camp.Position, NULL, std::to_string(timeLeft), "Arial", &Color::Grey, 30, 10, 0, false);
-		}
-		*/
-
-
 	}
 
-	/*
-	auto jungle{ pSDK->EntityManager->GetJungleMonsters(5500.0f, &Player.GetPosition()) };
-
-
-	Draw::Text(&Player.GetPosition(), NULL, std::to_string(Game::Time()), "Arial", &Color::Green, 30, 10, 0, false);
-
-	for (auto[netID, value] : jungle)
-	{
-
-		//if ( value->GetPosition().IsOnScreen() )
-		{
-			auto temp = value->GetPosition();
-			temp.y += 250.0f;
-			Draw::Text(&temp, NULL, value->GetName(), "Arial", &Color::White, 30, 10, 0, false);
-
-
-			temp.y += 50.0f;
-
-			Draw::Text(&temp, NULL, std::to_string(value->GetSpawnTime()), "Arial", &Color::Red, 30, 10, 0, false);
-
-			if (value->IsAlive())
-			{
-				temp.y += 50.0f;
-
-				Draw::Text(&temp, NULL, std::to_string(value->GetPosition().x), "Arial", &Color::Red, 30, 10, 0, false);
-				temp.y += 50.0f;
-
-				Draw::Text(&temp, NULL, std::to_string(value->GetPosition().y), "Arial", &Color::Green, 30, 10, 0, false);
-				temp.y += 50.0f;
-
-				Draw::Text(&temp, NULL, std::to_string(value->GetPosition().z), "Arial", &Color::Orange, 30, 10, 0, false);
-			}
-
-			if (value->IsAttacking())
-			{
-				temp.y += 50.0f;
-
-				Draw::Text(&temp, NULL, "Attacking !", "Arial", &Color::Green, 30, 10, 0, false);
-			}
-		}
-
-		//value->GetName();
-
-	}
-	*/
-
-	
-	/*
-	auto part{ pSDK->EntityManager->GetParticles(3000.0f, &Player.GetPosition()) };
-
-
-	for (auto[netID, value] : part)
-	{
-
-		if (value->GetPosition().IsOnScreen())
-		{
-			Draw::Text(&value->GetPosition(), NULL, value->GetName(), "Arial", &Color::Orange, 30, 10, 0, false);
-
-
-		}
-
-		//value->GetName();
-
-	}*/
 }
 
 

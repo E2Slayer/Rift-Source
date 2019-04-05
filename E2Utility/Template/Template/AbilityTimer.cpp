@@ -27,8 +27,6 @@ void AbilityTimer::InitLoader()
 	//AbilityItem(const char* _Name, const char* _ChampName, float _Time, const char* _MenuID)
 
 
-
-
 	AbilitiesMenuMap.emplace("ItemZhonya_Base_stasis.troy", AbilityItem("Zhonya's Hourglass", "Misc", 2.5f, "Zhonya", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
 	AbilitiesMenuMap.emplace("LifeAura.troy", AbilityItem("Guardian Angel", "Misc", 4.0f, "GuardianAngel", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::OnTimeDelete));
 	AbilitiesMenuMap.emplace("Rift Herald Relic", AbilityItem("Rift Herald's Eye (Ground)", "Misc", 40.0f, "RiftHeraldEyes", AbilityType::OnCreate, AbilityLocationType::Static, DeleteCondition::EarlyDelete));
@@ -411,6 +409,7 @@ void AbilityTimer::TickLoader()
 
 void AbilityTimer::DrawLoader()
 {
+	SdkUiConsoleWrite("Drawing22?");
 
 
 	if (!Menu::Get<bool>("Trackers.AbilityTimer.Use"))
@@ -418,6 +417,8 @@ void AbilityTimer::DrawLoader()
 
 		return;
 	}
+
+	SdkUiConsoleWrite("Drawing??");
 
 
 	if (Game::IsOverlayOpen())

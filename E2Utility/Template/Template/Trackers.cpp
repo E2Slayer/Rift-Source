@@ -7,8 +7,8 @@
 #include "JungleTimer.h"
 #include "SideBar.h"
 #include "LastPosition.h"
-//#include "WardsTraps.h"
-//#include "SpriteHelper.h"
+#include "WardsTraps.h"
+
 
 void Trackers::Init()
 {
@@ -19,6 +19,7 @@ void Trackers::Init()
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, CustomRanges::SpellCastStart);
 	//TurnAround::Init();
 	//SharedExperience::InitLoader();
+	
 	AbilityTimer::InitLoader();
 	DashJumpTracker::Init();
 	CooldownTracker::Init();
@@ -30,11 +31,6 @@ void Trackers::Init()
 	//WardsTraps::Init();
 }
 
-void Trackers::Update(void * UserData)
-{
-	//SharedExperience::TickLoader();
-	//Teleport::TickLoader();
-}
 
 void Trackers::Tick(void * UserData)
 {
@@ -47,7 +43,11 @@ void Trackers::Tick(void * UserData)
 	DashJumpTracker::TickLoader();
 	InhibitorTimer::TickLoader();
 	CooldownTracker::TickLoader();
-	//JungleTimer::TickLoader();
+
+	SideBar::TickLoader();
+	JungleTimer::TickLoader();
+
+	
 	//WardsTraps::TickLoader();
 }
 
@@ -73,6 +73,8 @@ void Trackers::DrawMenu(void * UserData)
 		SideBar::MenuLoader();
 		LastPosition::MenuLoader();
 		//WardsTraps::MenuLoader();
+
+
 		Menu::Tree("Trackers Configs", "Trackers.Config", false, []()
 		{
 			Menu::Checkbox("Enable Trackers", "Trackers.Config.Enable", true);

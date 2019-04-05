@@ -12,9 +12,9 @@ public:
 	{
 		float outlineWidth = 1.0f;
 		Draw::Text(NULL, &Vector2(ScreenPos->x - outlineWidth, ScreenPos->y - outlineWidth), Text, Face, OutlineColor, Height, Width, Weight, Italic);
-		Draw::Text(NULL, &Vector2(ScreenPos->x + outlineWidth, ScreenPos->y + outlineWidth), Text, Face, OutlineColor, Height, Width, Weight, Italic);
-		Draw::Text(NULL, &Vector2(ScreenPos->x - outlineWidth, ScreenPos->y), Text, Face, OutlineColor, Height, Width, Weight, Italic);
-		Draw::Text(NULL, &Vector2(ScreenPos->x + outlineWidth, ScreenPos->y), Text, Face, OutlineColor, Height, Width, Weight, Italic);
+		//Draw::Text(NULL, &Vector2(ScreenPos->x + outlineWidth, ScreenPos->y + outlineWidth), Text, Face, OutlineColor, Height, Width, Weight, Italic);
+		//Draw::Text(NULL, &Vector2(ScreenPos->x - outlineWidth, ScreenPos->y), Text, Face, OutlineColor, Height, Width, Weight, Italic);
+		//Draw::Text(NULL, &Vector2(ScreenPos->x + outlineWidth, ScreenPos->y), Text, Face, OutlineColor, Height, Width, Weight, Italic);
 
 		Draw::Text(NULL, ScreenPos, Text, Face, Color, Height, Width, Weight, Italic);
 	}
@@ -28,9 +28,9 @@ public:
 		Draw::LineScreen(&Vector2(StartPos->x - outlineWidth, StartPos->y), &Vector2(EndPos->x - outlineWidth, EndPos->y), Width, OutlineColor);
 		Draw::LineScreen(&Vector2(StartPos->x + outlineWidth, StartPos->y), &Vector2(EndPos->x + outlineWidth, EndPos->y), Width, OutlineColor);
 		*/
-		Draw::LineScreen(&Vector2(StartPos->x - outlineWidth, StartPos->y - outlineWidth), &Vector2(EndPos->x + outlineWidth, EndPos->y - outlineWidth), Width + outlineWidth, OutlineColor);
+		//Draw::LineScreen(&Vector2(StartPos->x - outlineWidth, StartPos->y - outlineWidth), &Vector2(EndPos->x + outlineWidth, EndPos->y - outlineWidth), Width + outlineWidth, OutlineColor);
 
-		Draw::LineScreen(&Vector2(StartPos->x - outlineWidth, StartPos->y), &Vector2(EndPos->x + outlineWidth, EndPos->y), Width + outlineWidth, OutlineColor);
+		//Draw::LineScreen(&Vector2(StartPos->x - outlineWidth, StartPos->y), &Vector2(EndPos->x + outlineWidth, EndPos->y), Width + outlineWidth, OutlineColor);
 		Draw::LineScreen(StartPos, EndPos, Width, Color);
 	}
 

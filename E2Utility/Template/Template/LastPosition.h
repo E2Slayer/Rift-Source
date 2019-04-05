@@ -31,8 +31,14 @@ struct LastPositionStruct
 	bool Teleported;
 	int ChampIMG;
 	float TeleportStartTime;
+	
+
 	//bool Aborted;
 	float AbortedTimeDifference;
+
+	float Radius;
+	Vector3 DrawPosition;
+	bool DrawCheck;
 
 	LastPositionStruct(AIHeroClient* _Unit, Vector3 _LastPosition)
 		: Unit(_Unit), LastPosition(_LastPosition)
@@ -47,6 +53,9 @@ struct LastPositionStruct
 		AbortedTimeDifference = 0.0f;
 		ChampIMG = ChampionNames::GetLastPostionChampionIMG(_Unit->GetCharName(), 308);
 		TeleportStartTime = 0.0f;
+		Radius = 0.0f;
+		DrawPosition = Vector3(0.0f, 0.0f, 0.0f);
+		DrawCheck = false;
 	}
 };
 

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 #include "../../Include/SDK Extensions.h"
+
+
 #include "Activator.h"
 //#include "CustomRanges.h"
 #include "Detector.h"

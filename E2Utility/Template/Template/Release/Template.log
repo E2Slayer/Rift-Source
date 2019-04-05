@@ -1,128 +1,16 @@
 ﻿D:\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Release\) contains files shared from another project (Template.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  stdafx.cpp
-  clipper.cpp
-  AbilityTimer.cpp
-d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-  Activator.cpp
-  AntiAFK.cpp
-d:\rproject\e2utility\template\template\antiafk.cpp(53): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-  AutoEvents.cpp
-d:\rproject\e2utility\template\template\autoevents.cpp(219): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\autoevents.cpp(238): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  Base.cpp
-  ChampionStuct.cpp
-  Cleansers.cpp
-  CloneDetector.cpp
-d:\rproject\e2utility\template\template\teleportdecode.h(90): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
-d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-  Consumables.cpp
-  CooldownTracker.cpp
-d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\cooldowntracker.cpp(473): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\cooldowntracker.cpp(476): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\cooldowntracker.cpp(547): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  CustomRange.cpp
-  CustomRanges.cpp
-  DashJumpTracker.cpp
-d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\dashjumptracker.cpp(164): warning C4244: '=': conversion from 'DWORD' to 'float', possible loss of data
-  Defensives.cpp
-  Detector.cpp
-d:\rproject\e2utility\template\template\teleportdecode.h(90): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
-  dllmain.cpp
-d:\rproject\e2utility\template\template\teleportdecode.h(90): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
-  Drawings.cpp
-  GankAlerter.cpp
-  InhibitorTimer.cpp
-d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\inhibitortimer.cpp(198): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-  ItemRetriever.cpp
-  Compiling...
-  ItemStruct.cpp
-d:\rproject\e2utility\template\template\itemstruct.cpp(353): warning C4018: '>=': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\itemstruct.cpp(392): warning C4018: '>=': signed/unsigned mismatch
   JungleTimer.cpp
 d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
 d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\jungletimer.cpp(518): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\jungletimer.cpp(577): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-  LastPosition.cpp
-d:\rproject\e2utility\template\template\teleportdecode.h(90): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
-d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\lastposition.cpp(152): warning C4804: '>': unsafe use of type 'bool' in operation
-d:\rproject\e2utility\template\template\lastposition.cpp(268): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\lastposition.cpp(271): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-  Offensives.cpp
-  Others.cpp
-  SharedExperience.cpp
-d:\rproject\e2utility\template\template\teleportdecode.h(90): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
-d:\rproject\e2utility\template\template\sharedexperience.cpp(96): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\sharedexperience.cpp(383): warning C4244: '=': conversion from '__int64' to 'float', possible loss of data
-d:\rproject\e2utility\template\template\sharedexperience.cpp(730): warning C4244: '=': conversion from '__int64' to 'float', possible loss of data
-  SideBar.cpp
-d:\rproject\e2utility\template\template\teleportdecode.h(90): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
-d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\sidebar.cpp(15): warning C4838: conversion from '__int64' to 'const int' requires a narrowing conversion
-d:\rproject\e2utility\template\template\sidebar.cpp(15): warning C4305: 'initializing': truncation from '__int64' to 'const int'
-d:\rproject\e2utility\template\template\sidebar.cpp(15): warning C4309: 'initializing': truncation of constant value
-d:\rproject\e2utility\template\template\sidebar.cpp(220): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\sidebar.cpp(325): warning C4244: 'initializing': conversion from 'const int' to 'float', possible loss of data
-d:\rproject\e2utility\template\template\sidebar.cpp(487): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\sidebar.cpp(490): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\sidebar.cpp(718): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  Summoners.cpp
-  Teleport.cpp
-d:\rproject\e2utility\template\template\teleportdecode.h(90): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
-d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\teleport.cpp(295): warning C4244: 'initializing': conversion from 'double' to 'DWORD', possible loss of data
+d:\rproject\e2utility\template\template\jungletimer.cpp(362): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\rproject\e2utility\template\template\jungletimer.cpp(402): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   Trackers.cpp
 d:\rproject\e2utility\template\template\teleportdecode.h(90): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
-  TurretsRange.cpp
-d:\rproject\e2utility\template\template\turretsrange.cpp(152): warning C4018: '>=': signed/unsigned mismatch
-  WardsTraps.cpp
-d:\rproject\e2utility\template\template\wardstraps.h(129): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\rproject\e2utility\template\template\wardstraps.h(153): warning C4244: 'argument': conversion from 'double' to 'const unsigned int', possible loss of data
-d:\rproject\e2utility\template\template\wardstraps.h(168): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xmemory0(881): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-          with
-          [
-              _Ty=int
-          ]
-  d:\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\vector(900): note: see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,int,int,const char(&)[10],const char(&)[10],WardType>(_Alloc &,_Objty *const ,int &&,int &&,const char (&)[10],const char (&)[10],WardType &&)' being compiled
-          with
-          [
-              _Alloc=std::allocator<WardStruct>,
-              _Ty=WardStruct,
-              _Objty=WardStruct
-          ]
-  d:\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\vector(902): note: see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,int,int,const char(&)[10],const char(&)[10],WardType>(_Alloc &,_Objty *const ,int &&,int &&,const char (&)[10],const char (&)[10],WardType &&)' being compiled
-          with
-          [
-              _Alloc=std::allocator<WardStruct>,
-              _Ty=WardStruct,
-              _Objty=WardStruct
-          ]
-  d:\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\vector(916): note: see reference to function template instantiation '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_back_with_unused_capacity<int,int,const char(&)[10],const char(&)[10],WardType>(int &&,int &&,const char (&)[10],const char (&)[10],WardType &&)' being compiled
-          with
-          [
-              _Ty=WardStruct
-          ]
-  d:\rproject\e2utility\template\template\wardstraps.cpp(24): note: see reference to function template instantiation '_Ty &std::vector<_Ty,std::allocator<_Ty>>::emplace_back<int,int,const char(&)[10],const char(&)[10],WardType>(int &&,int &&,const char (&)[10],const char (&)[10],WardType &&)' being compiled
-          with
-          [
-              _Ty=WardStruct
-          ]
+d:\rproject\e2utility\template\template\wardstraps.h(147): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\rproject\e2utility\template\template\wardstraps.h(171): warning C4244: 'argument': conversion from 'double' to 'const unsigned int', possible loss of data
   Generating code
-d:\rproject\e2utility\template\template\jungletimer.cpp(867): warning C4715: 'JungleTimer::OnDelete': not all control paths return a value
-d:\rproject\e2utility\template\template\abilitytimer.cpp(542): warning C4715: 'AbilityTimer::OnDelete': not all control paths return a value
-  All 7139 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  252 of 6843 functions ( 3.7%) were compiled, the rest were copied from previous compilation.
+    4 functions were new in current compilation
+    2 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Template.vcxproj -> D:\RProject\E2Utility\Template\Release\E2Utility.dll

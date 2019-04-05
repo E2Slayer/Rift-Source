@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Include/SDK Extensions.h"
 #include <string.h>
+#include "resource.h"
 
 const std::string ChampionNameList[]
 {
@@ -671,4 +672,270 @@ public:
 		return 328; //165 is default
 	}
 
+
+	static unsigned int GetSummonerSpells(const char* name, bool isReady)
+	{
+		if (_stricmp(name, "Summoner_Dash") == 0)
+		{
+			if (isReady)
+			{
+				return Summoner_Dash;
+			}
+			else
+			{
+				return Summoner_Dash_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "Summoner_Empty") == 0)
+		{
+			if (isReady)
+			{
+				return Summoner_Empty;
+			}
+			else
+			{
+				return Summoner_Empty_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "Summoner_flashPerksHextechFlashtraption") == 0)
+		{
+			if (isReady)
+			{
+				return Summoner_flashPerksHextechFlashtraption;
+			}
+			else
+			{
+				return Summoner_flashPerksHextechFlashtraption_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "Summoner_flashPerksHextechFlashtraptionBlue") == 0)
+		{
+			if (isReady)
+			{
+				return Summoner_flashPerksHextechFlashtraptionBlue;
+			}
+			else
+			{
+				return Summoner_flashPerksHextechFlashtraptionBlue_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "Summoner_Mark") == 0)
+		{
+			if (isReady)
+			{
+				return Summoner_Mark;
+			}
+			else
+			{
+				return Summoner_Mark_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerBarrier") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerBarrier;
+			}
+			else
+			{
+				return SummonerBarrier_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerBoost") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerBoost;
+			}
+			else
+			{
+				return SummonerBoost_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerClairvoyance") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerClairvoyance;
+			}
+			else
+			{
+				return SummonerClairvoyance_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerDot") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerDot;
+			}
+			else
+			{
+				return SummonerDot_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerExhaust") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerExhaust;
+			}
+			else
+			{
+				return SummonerExhaust_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerFlash") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerFlash;
+			}
+			else
+			{
+				return SummonerFlash_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerFlashPerksHextechFlashtraptionV2") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerFlashPerksHextechFlashtraptionV2;
+			}
+			else
+			{
+				return SummonerFlashPerksHextechFlashtraptionV2_Cooldown;
+			}
+		}
+		if (_stricmp(name, "SummonerHaste") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerHaste;
+			}
+			else
+			{
+				return SummonerHaste_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerHeal") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerHeal;
+			}
+			else
+			{
+				return SummonerHeal_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerMana") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerMana;
+			}
+			else
+			{
+				return SummonerMana_Cooldown;
+			}
+		}
+		if (_stricmp(name, "SummonerExhaust") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerExhaust;
+			}
+			else
+			{
+				return SummonerExhaust_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerSmite") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerSmite;
+			}
+			else
+			{
+				return SummonerSmite_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "S5_SummonerSmitePlayerGanker") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerSmite;
+			}
+			else
+			{
+				return SummonerSmite_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "S5_SummonerSmiteDuel") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerSmite;
+			}
+			else
+			{
+				return SummonerSmite_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerSnowball") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerSnowball;
+			}
+			else
+			{
+				return SummonerSnowball_Cooldown;
+			}
+		}
+
+		if (_stricmp(name, "SummonerTeleport") == 0)
+		{
+			if (isReady)
+			{
+				return SummonerTeleport;
+			}
+			else
+			{
+				return SummonerTeleport_Cooldown;
+			}
+		}
+		if (_stricmp(name, "TeleportCancel") == 0)
+		{
+			if (isReady)
+			{
+				return TeleportCancel;
+			}
+			else
+			{
+				return TeleportCancel_Cooldown;
+			}
+		}
+
+		return Summoner_Empty;
+	}
 };

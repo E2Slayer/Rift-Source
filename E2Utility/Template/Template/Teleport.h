@@ -43,6 +43,6 @@ public:
 	//static TeleportStuct TeleportDecoderFunction(void* Unit, const char* Name, const char* Type);
 	static void __cdecl RecallTrack(void* Unit, const char* Name, const char* Type, void* UserData);
 	static const char* GetTeleportRealName(const char* Name);
-	static void InPrintChat(const char* champName, const char* TeleportName, const char* recallStatus, float healthPCT, TeleportTypes tpType);
+	//static void InPrintChat(const char* champName, const char* TeleportName, const char* recallStatus, float healthPCT, TeleportTypes tpType);
 };
 

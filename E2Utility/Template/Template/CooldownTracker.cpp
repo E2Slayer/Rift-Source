@@ -6,7 +6,6 @@
 #include <iomanip>
 #include "DropLists.h"
 
-
 //SdkDrawSpriteFromResource(MAKEINTRESOURCEA(102), &barPos, false); //312x8
 
 /*
@@ -17,16 +16,27 @@
 	float Additional;
 */
 
-
-
-
 std::vector<ManualSpell> ManualSpellLists;
 
 std::vector<ManualSpell> ActualManualSpellLists;
 
+std::vector< CooldownChamp> CooldownChampList;
+
 std::map<unsigned int, AIHeroClient*> _spellDatas;
 
+unsigned int PlayerNetID;
 
+CooldownPositionList CooldownPos = CooldownPositionList(Vector3(0.0f, 0.0f, 0.0f));
+
+CooldownMenu CooldownMenuList;
+
+bool CDMySelf;
+bool CDAlly;
+bool CDEnemy;
+
+bool CDFirstRun = false;
+
+int SCTformat = 0;
 //std::map<unsigned int, std::vector<_SDK_SPELL>> _summonerDatas;
 
 //const SpellSlot _spellSlots[] { SpellSlot::Q, SpellSlot::W, SpellSlot::E, SpellSlot::R };
@@ -34,10 +44,17 @@ std::map<unsigned int, AIHeroClient*> _spellDatas;
 
 void CooldownTracker::Init()
 {
-
-
+	CDFirstRun = false;
+	PlayerNetID = Player.GetNetworkID();
 	_spellDatas.clear();
 	ManualSpellLists.clear();
+
+	/*
+	CDMySelf = Menu::Get<bool>("Trackers.CooldownTracker.Myself");
+	CDAlly = Menu::Get<bool>("Trackers.CooldownTracker.Ally");
+	CDEnemy = Menu::Get<bool>("Trackers.CooldownTracker.Enemy");
+	SCTformat = 0;
+	*/
 	//10 / 9.5 / 9 / 8.5 / 8
 	float skillcds[] = { 10.0f, 9.5f, 9.0f, 8.5f, 8.0f };
 	ManualSpellLists.emplace_back(ManualSpell("Lux", "LuxLightStrikeKugel", SpellSlot::E, skillcds, 0.0f, false));
@@ -50,14 +67,12 @@ void CooldownTracker::Init()
 
 	ManualSpellLists.emplace_back(ManualSpell("Gragas", "GragasQ", SpellSlot::Q, skillcds, 0.0f, false));
 
-
 	skillcds[0] = 16.0f;
 	skillcds[1] = 14.5f;
 	skillcds[2] = 13.0f;
 	skillcds[3] = 11.5f;
 	skillcds[4] = 11.0f;
 	ManualSpellLists.emplace_back(ManualSpell("Rengar", "RengarW", SpellSlot::W, skillcds, 0.0f, false));
-
 
 	skillcds[0] = 16.0f;
 	skillcds[1] = 15.0f;
@@ -66,15 +81,12 @@ void CooldownTracker::Init()
 	skillcds[4] = 12.0f;
 	ManualSpellLists.emplace_back(ManualSpell("Aatrox", "AatroxQ3", SpellSlot::Q, skillcds, 0.0f, false));
 
-
-
 	skillcds[0] = 160.0f;
 	skillcds[1] = 140.0f;
 	skillcds[2] = 120.0f;
 	skillcds[3] = 120.0f;
 	skillcds[4] = 120.0f;
 	ManualSpellLists.emplace_back(ManualSpell("Aatrox", "AatroxR", SpellSlot::R, skillcds, 10.0f, false));
-
 
 	/*
 	skillcds[0] = 6.0f;
@@ -117,15 +129,15 @@ void CooldownTracker::Init()
 	ManualSpellLists.emplace_back(ManualSpell("Riven", "RivenTriCleave", SpellSlot::Q, skillcds, 0.0f, false));
 */
 
-	/*
-	skillcds[0] = 120.0f;
-	skillcds[1] = 90.0f;
-	skillcds[2] = 60.0f;
-	skillcds[3] = 60.0f;
-	skillcds[4] = 60.0f;
-	ManualSpellLists.emplace_back(ManualSpell("Riven", "RivenFengShuiEngine", SpellSlot::R, skillcds, 15.0f, false));
-	*/
-	//RengarW
+/*
+skillcds[0] = 120.0f;
+skillcds[1] = 90.0f;
+skillcds[2] = 60.0f;
+skillcds[3] = 60.0f;
+skillcds[4] = 60.0f;
+ManualSpellLists.emplace_back(ManualSpell("Riven", "RivenFengShuiEngine", SpellSlot::R, skillcds, 15.0f, false));
+*/
+//RengarW
 
 	skillcds[0] = 20.0f;
 	skillcds[1] = 18.0f;
@@ -175,7 +187,6 @@ void CooldownTracker::Init()
 	skillcds[4] = 6.0f;
 	ManualSpellLists.emplace_back(ManualSpell("Kennen", "KennenLRCancel", SpellSlot::E, skillcds, 0.0f, false));
 
-
 	skillcds[0] = 6.0f;
 	skillcds[1] = 6.0f;
 	skillcds[2] = 6.0f;
@@ -186,7 +197,6 @@ void CooldownTracker::Init()
 	ManualSpellLists.emplace_back(ManualSpell("TwistedFate", "BlueCardPreAttack", SpellSlot::W, skillcds, 0.0f, false));
 
 	ManualSpellLists.emplace_back(ManualSpell("TwistedFate", "RedCardPreAttack", SpellSlot::W, skillcds, 0.0f, false));
-
 
 	/*
 	if (Menu::Get<bool>("Trackers.CooldownTracker.Myself"))
@@ -199,13 +209,14 @@ void CooldownTracker::Init()
 	auto ally1{ pSDK->EntityManager->GetAllyHeroes() };
 	if (!ally1.empty())
 	{
-
 		//Drawings.GankAlerter.Ally.Jungler
 		for (auto &[netID, hero] : ally1)
 		{
 			if (hero != nullptr && hero != NULL)
 			{
 				_spellDatas.try_emplace(netID, hero);
+
+				CooldownChampList.emplace_back(CooldownChamp(hero, netID));
 
 				for (auto &manual : ManualSpellLists)
 				{
@@ -218,10 +229,7 @@ void CooldownTracker::Init()
 			}
 		}
 	}
-	
 
-
-	
 	auto enemy1{ pSDK->EntityManager->GetEnemyHeroes() };
 
 	if (!enemy1.empty())
@@ -233,6 +241,8 @@ void CooldownTracker::Init()
 				if (netID != Player.GetNetworkID())
 				{
 					_spellDatas.try_emplace(netID, hero);
+					CooldownChampList.emplace_back(CooldownChamp(hero, netID));
+
 					for (auto &manual : ManualSpellLists)
 					{
 						if (_stricmp(manual.Champ, hero->GetCharName()) == 0)
@@ -246,14 +256,12 @@ void CooldownTracker::Init()
 			}
 		}
 	}
-	
 
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastStart, CooldownTracker::SpellCastStart);
 }
 
 void CooldownTracker::MenuLoader()
 {
-
 	Menu::Tree("Cooldown Tracker", "Trackers.CooldownTracker", false, []()
 	{
 		Menu::Checkbox("Use Cooldown Trackers", "Trackers.CooldownTracker.Use", true);
@@ -263,10 +271,11 @@ void CooldownTracker::MenuLoader()
 		Menu::Checkbox("Track Enemy", "Trackers.CooldownTracker.Enemy", true);
 		//SdkUiText("^-> If You Changed one of them, Reloading the Plugin is Recommended for Better Perfomances.");
 
-
 		Menu::Tree("Spells Cooldown", "Trackers.CooldownTracker.SC", false, []()
 		{
-			Menu::Checkbox("Draw Spells Cooldown Bar", "Trackers.CooldownTracker.SCBar", true);
+			//Menu::Checkbox("Draw Spells Cooldown Bar", "Trackers.CooldownTracker.SCBar", true);
+
+			/*
 			Menu::SliderInt("Spells Cooldown Bar Width", "Trackers.CooldownTracker.SCWidth", 3, 1, 10);
 			SdkUiText("^-> Default 3");
 			Menu::SliderInt("Spells Cooldown Bar Length", "Trackers.CooldownTracker.SCLength", 23, 15, 40);
@@ -276,338 +285,371 @@ void CooldownTracker::MenuLoader()
 
 			Menu::Checkbox("Fill out the Background of Spells Cooldown Bar", "Trackers.CooldownTracker.SCBarFillOut", true);
 			SdkUiText("^-> It will use - Spells Cooldown Bar NotLeanred Color - ");
+			*/
 
-			Menu::SliderInt("Spells Cooldown Bar Position X-axis", "Trackers.CooldownTracker.SCDrawingX", 0, -200, 200);
-			Menu::SliderInt("Spells Cooldown Bar Position Y-axis", "Trackers.CooldownTracker.SCDrawingY", 0, -200, 200);
-			Menu::DropList("^-> Spells Cooldown Bar Color", "Trackers.CooldownTracker.BarColor", ColorMenuList, 5);
-			Menu::DropList("^-> Spells Cooldown Bar OutLine Color", "Trackers.CooldownTracker.BarOutLineColor", ColorMenuList, 0);
-			Menu::DropList("^-> Spells Cooldown Bar NotLeanred Color", "Trackers.CooldownTracker.BarNotLearnColor", ColorMenuList, 6);
-			Menu::DropList("^-> Spells Cooldown Bar NotLeanred OutLine Color", "Trackers.CooldownTracker.BarNotLearnOutlineColor", ColorMenuList, 0);
+			//Menu::SliderInt("Spells Cooldown Bar Position X-axis", "Trackers.CooldownTracker.SCDrawingX", 0, -200, 200);
+			//Menu::SliderInt("Spells Cooldown Bar Position Y-axis", "Trackers.CooldownTracker.SCDrawingY", 0, -200, 200);
+			//Menu::DropList("^-> Spells Cooldown Bar Color", "Trackers.CooldownTracker.BarColor", ColorMenuList, 5);
+			//Menu::DropList("^-> Spells Cooldown Bar OutLine Color", "Trackers.CooldownTracker.BarOutLineColor", ColorMenuList, 0);
+			//Menu::DropList("^-> Spells Cooldown Bar NotLeanred Color", "Trackers.CooldownTracker.BarNotLearnColor", ColorMenuList, 6);
+			//Menu::DropList("^-> Spells Cooldown Bar NotLeanred OutLine Color", "Trackers.CooldownTracker.BarNotLearnOutlineColor", ColorMenuList, 0);
 
-			Menu::Checkbox("Draw Spells Cooldown Timer", "Trackers.CooldownTracker.SCTimer", true);
-			Menu::DropList("Spells Cooldown Timer Format", "Trackers.CooldownTracker.SCTFormat", std::vector<std::string>{ "MM:SS", "SS" , "SS But MM:SS on R"}, 1);
+			Menu::Checkbox("Track Spells", "Trackers.CooldownTracker.SCTUse", true);
+			Menu::DropList("Spells Cooldown Timer Format", "Trackers.CooldownTracker.SCTFormat", std::vector<std::string>{ "MM:SS", "SS", "SS But MM:SS on R"}, 1);
 			Menu::SliderInt("Spells Cooldown Timer Position X-axis", "Trackers.CooldownTracker.SCTDrawingX", 0, -200, 200);
 			Menu::SliderInt("Spells Cooldown Timer Position Y-axis", "Trackers.CooldownTracker.SCTDrawingY", 0, -200, 200);
 			Menu::SliderInt("Spells Cooldown Timer Font Height", "Trackers.CooldownTracker.SCTFontSize", 13, 10, 30);
 			Menu::SliderInt("Spells Cooldown Timer Font Width", "Trackers.CooldownTracker.SCTFontSize2", 4, 1, 10);
-			Menu::DropList("^-> Spells Cooldown Timer Color", "Trackers.CooldownTracker.SCTColor", ColorMenuList, 11);
-			Menu::DropList("^-> Spells Cooldown Timer OutLine Color", "Trackers.CooldownTracker.SCTOutLineColor", ColorMenuList, 0);
-
+			//Menu::DropList("^-> Spells Cooldown Timer Color", "Trackers.CooldownTracker.SCTColor", ColorMenuList, 11);
+			//Menu::DropList("^-> Spells Cooldown Timer OutLine Color", "Trackers.CooldownTracker.SCTOutLineColor", ColorMenuList, 0);
 		});
 
 		Menu::Tree("Summoner Spells Cooldown", "Trackers.CooldownTracker.SS", false, []()
 		{
-			Menu::Checkbox("Draw Summoner Spells Icons", "Trackers.CooldownTracker.SSIcon", true);
-			Menu::SliderInt("Summoner Spells Icon Position X-axis", "Trackers.CooldownTracker.SSDrawingX", 0, -200, 200);
-			Menu::SliderInt("Summoner Spells Icon Position Y-axis", "Trackers.CooldownTracker.SSDrawingY", 0, -200, 200);
+			//Menu::Checkbox("Draw Summoner Spells Icons", "Trackers.CooldownTracker.SSIcon", true);
+			//Menu::SliderInt("Summoner Spells Icon Position X-axis", "Trackers.CooldownTracker.SSDrawingX", 0, -200, 200);
+			//Menu::SliderInt("Summoner Spells Icon Position Y-axis", "Trackers.CooldownTracker.SSDrawingY", 0, -200, 200);
 
-			Menu::Checkbox("Draw Summoner Spells Cooldown Timer", "Trackers.CooldownTracker.SSTimer", true);
+			Menu::Checkbox("Track Summoner Spells", "Trackers.CooldownTracker.SSUse", true);
 			Menu::DropList("Summoner Spells Cooldown Timer Format", "Trackers.CooldownTracker.SSTFormat", std::vector<std::string>{ "MM:SS", "SS" }, 0);
-			Menu::SliderInt("Summoner Spells Cooldown Timer Position X-axis", "Trackers.CooldownTracker.SSTDrawingX", 20, -200, 200);
+			Menu::SliderInt("Summoner Spells Cooldown Timer Position X-axis", "Trackers.CooldownTracker.SSTDrawingX", 0, -200, 200);
 			Menu::SliderInt("Summoner Spells Cooldown Timer Position Y-axis", "Trackers.CooldownTracker.SSTDrawingY", 0, -200, 200);
 			Menu::SliderInt("Summoner Spells Cooldown Timer Font Height", "Trackers.CooldownTracker.SSTFontSize", 13, 10, 30);
 			Menu::SliderInt("Summoner Spells Cooldown Timer Font Width", "Trackers.CooldownTracker.SSTFontSize2", 4, 1, 10);
-			Menu::DropList("^-> Summoner Spells Cooldown Timer Color", "Trackers.CooldownTracker.SSTColor", ColorMenuList, 11);
-			Menu::DropList("^-> Summoner Spells Cooldown Timer OutLine Color", "Trackers.CooldownTracker.SSTOutLineColor", ColorMenuList, 0);
-
-
+			//Menu::DropList("^-> Summoner Spells Cooldown Timer Color", "Trackers.CooldownTracker.SSTColor", ColorMenuList, 11);
+			//Menu::DropList("^-> Summoner Spells Cooldown Timer OutLine Color", "Trackers.CooldownTracker.SSTOutLineColor", ColorMenuList, 0);
 		});
 
-		/*
 		Menu::Tree("HUD Settings", "Trackers.CooldownTracker.HUD", false, []()
 		{
 			Menu::Checkbox("Draw HUD", "Trackers.CooldownTracker.HUD.Use", true);
 			Menu::SliderInt("Summoner Spells Icon Position X-axis", "Trackers.CooldownTracker.HUD.DrawingX", 0, -200, 200);
 			Menu::SliderInt("Summoner Spells Icon Position Y-axis", "Trackers.CooldownTracker.HUD.DrawingY", 0, -200, 200);
-
-
 		});
-		*/
 	});
-
-
 }
 
 void CooldownTracker::TickLoader()
 {
 	/*
-	auto ally1{ pSDK->EntityManager->GetAllyHeroes() };
-
-	if (!ally1.empty())
-	{
-		for (auto &[netID, hero] : ally1)
-		{
-			if (hero != nullptr && hero != NULL)
-			{
-				//22
-			}
-		}
-	}
-	*/
-
-
-
-}
-
-void CooldownTracker::DrawLoader()
-{
-
-	if (!Menu::Get<bool>("Trackers.CooldownTracker.Use"))
-	{
-		return;
-	}
-
-	/*
-	if (Menu::Get<bool>("Trackers.CooldownTracker.HUD.Use"))
-	{
-		Vector2 screenPos{ Player.GetHealthBarScreenPos() };
-		screenPos.x += float(Menu::Get<int>("Trackers.CooldownTracker.HUD.DrawingX"));
-		screenPos.y += float(Menu::Get<int>("Trackers.CooldownTracker.HUD.DrawingY"));
-
-		SdkDrawSpriteFromResource(MAKEINTRESOURCEA(CD_HudSelf), &screenPos, true);
-	}
-	*/
-	//Trackers.CooldownTracker.HUD.Use
-	//SdkDrawSpriteFromResource(temp, &screenPos, false);
-
-	//SdkUiConsoleWrite(" r: %d", temp);
-
-	//::FindResource(NULL, "Resources\\CD\\CD_HudSelf_2px.png", RT_RCDATA);
-
-
 	if (!_spellDatas.empty())
 	{
 		for (auto &[netID, hero] : _spellDatas)
 		{
 			if (hero != nullptr && hero != NULL)
 			{
-
-				if (!hero->GetPosition().IsValid() || !hero->IsVisible() || !hero->GetHealthBarPos().IsValid() || !hero->GetPosition().IsOnScreen() || !hero->IsAlive() )
-				{
-					continue;
-				}
-
-
-				if (Menu::Get<bool>("Trackers.CooldownTracker.Myself") && hero->GetNetworkID() == Player.GetNetworkID())
-				{
-					InsideDrawer(hero, hero->IsAlly());
-				}
-				else if (Menu::Get<bool>("Trackers.CooldownTracker.Ally") && hero->IsAlly() && hero->GetNetworkID() != Player.GetNetworkID())
-				{
-					InsideDrawer(hero, hero->IsAlly());
-				}
-				else if (Menu::Get<bool>("Trackers.CooldownTracker.Enemy") && !hero->IsAlly())
-				{
-					InsideDrawer(hero, hero->IsAlly());
-				}
-
 			}
 		}
 	}
+	*/
+	if (Game::IsOverlayOpen() || CDFirstRun == false)
+	{
+		CDFirstRun = true;
+		//FirstRunChecker = true;
+		//int screenPosSelection = Menu::Get<int>("Trackers.SideBar.Location");
+		//arrayStyle = Menu::Get<int>("Trackers.SideBar.Style");
 
+		//int gabMainFrames = float(Menu::Get<int>("Trackers.SideBar.Main.Gap"));
 
-	
+		Vector2 MainFramePos;
 
+		CDMySelf = Menu::Get<bool>("Trackers.CooldownTracker.Myself");
+		CDAlly = Menu::Get<bool>("Trackers.CooldownTracker.Ally");
+		CDEnemy = Menu::Get<bool>("Trackers.CooldownTracker.Enemy");
 
+		SCTformat = Menu::Get<int>("Trackers.CooldownTracker.SCTFormat");
+
+		CooldownMenuList.CDMySelf = Menu::Get<bool>("Trackers.CooldownTracker.Myself");
+		CooldownMenuList.CDAlly = Menu::Get<bool>("Trackers.CooldownTracker.Ally");
+		CooldownMenuList.CDEnemy = Menu::Get<bool>("Trackers.CooldownTracker.Enemy");
+
+		CooldownMenuList.SpellEnable = Menu::Get<bool>("Trackers.CooldownTracker.SCTUse");
+		CooldownMenuList.SpellFormat = Menu::Get<int>("Trackers.CooldownTracker.SCTFormat");
+		CooldownMenuList.SpellFont1 = Menu::Get<int>("Trackers.CooldownTracker.SCTFontSize");
+		CooldownMenuList.SpellFont2 = Menu::Get<int>("Trackers.CooldownTracker.SCTFontSize2");
+		CooldownMenuList.SpellPosX = Menu::Get<int>("Trackers.CooldownTracker.SCTDrawingX");
+		CooldownMenuList.SpellPosY = Menu::Get<int>("Trackers.CooldownTracker.SCTDrawingY");
+
+		CooldownMenuList.SummmonerSpellEnable = Menu::Get<bool>("Trackers.CooldownTracker.SSUse");
+		CooldownMenuList.SummmonerSpellFormat = Menu::Get<int>("Trackers.CooldownTracker.SSTFormat");
+
+		CooldownMenuList.SummmonerSpellFont1 = Menu::Get<int>("Trackers.CooldownTracker.SSTFontSize");
+		CooldownMenuList.SummmonerSpellFont2 = Menu::Get<int>("Trackers.CooldownTracker.SSTFontSize2");
+		CooldownMenuList.SummmonerSpellPosX = Menu::Get<int>("Trackers.CooldownTracker.SSTDrawingX");
+		CooldownMenuList.SummmonerSpellPosY = Menu::Get<int>("Trackers.CooldownTracker.SSTDrawingY");
+
+		//Trackers.CooldownTracker.SCTDrawingX
+
+		/*
+		if (!CooldownChampList.empty())
+		{
+			int i = 0;
+
+			for (auto &value : CooldownChampList)
+			{
+				auto spells = value.Hero->GetSpells();
+				int i = 0;
+				for (auto &spellInside : spells)
+				{
+					value.CooldownSpells[i].Spell = spellInside;
+				}
+			}
+		}
+		*/
+
+		//SideBarMenuList[0].UpdateInsideFloats(); // Main Frame update
+
+		//float AdjustMainFrameX = float(Menu::Get<int>("Trackers.SideBar.Main.DrawingX"));
+		//float AdjustMainFrameY = float(Menu::Get<int>("Trackers.SideBar.Main.DrawingY"));
+
+		/*
+		tempPos.x += SideBarMenuList[0].DrawX;
+		tempPos.y += SideBarMenuList[0].DrawY;
+		MainFramePosition = tempPos;
+
+		if (!_enemyObject.empty())
+		{
+			for (auto& enemy : _enemyObject)
+			{
+				enemy.PositionList.HpBarPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[7].DrawX) + enemy.HPlength, tempPos.y + 20.0f + SideBarMenuList[7].DrawY);
+				enemy.PositionList.HpBarOrignalPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[7].DrawX), tempPos.y + 20.0f + SideBarMenuList[7].DrawY);
+
+				enemy.PositionList.MpBarPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[8].DrawX) + enemy.MPlength, tempPos.y + 26.0f + SideBarMenuList[8].DrawY);
+				enemy.PositionList.MpBarOrignalPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[8].DrawX), tempPos.y + 26.0f + SideBarMenuList[8].DrawY);
+
+				enemy.PositionList.ExpBarPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[9].DrawX) + enemy.EXPlength, tempPos.y + 32.0f + SideBarMenuList[9].DrawY);
+				enemy.PositionList.ExpBarOrignalPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[9].DrawX), tempPos.y + 32.0f + SideBarMenuList[9].DrawY);
+
+				enemy.PositionList.DeathTimerPos = Vector2(tempPos.x - 15.0f + SideBarMenuList[5].DrawX, tempPos.y - 25.0f + SideBarMenuList[5].DrawY);
+
+				enemy.PositionList.MissingTimerPos = Vector2(tempPos.x - 15.0f + SideBarMenuList[4].DrawX, tempPos.y - 25.0f + SideBarMenuList[4].DrawY);
+				enemy.PositionList.LevelPos = Vector2(tempPos.x + 3.0f + SideBarMenuList[6].DrawX, tempPos.y - 5.0f + SideBarMenuList[6].DrawY);
+
+				enemy.PositionList.UltimatePos = Vector2(tempPos.x - 34.0f + SideBarMenuList[3].DrawX, tempPos.y - 31.0f + SideBarMenuList[3].DrawY);
+
+				enemy.PositionList.SS1Pos = Vector2(tempPos.x + 30.0f + SideBarMenuList[1].DrawX, tempPos.y - 22.0f + SideBarMenuList[1].DrawY);
+				enemy.PositionList.SS1TimerPos = Vector2(tempPos.x + 30.0f + SideBarMenuList[2].DrawX, tempPos.y - 22.0f + SideBarMenuList[2].DrawY);
+
+				enemy.PositionList.SS2Pos = Vector2(tempPos.x + 30.0f + SideBarMenuList[1].DrawX, tempPos.y + 4.0f + SideBarMenuList[1].DrawY);
+
+				enemy.PositionList.SS2TimerPos = Vector2(tempPos.x + 30.0f + SideBarMenuList[2].DrawX, tempPos.y + 4.0f + SideBarMenuList[2].DrawY);
+
+				if (arrayStyle == 0) //vertical
+				{
+					tempPos.y += 100.0f;
+				}
+				else if (arrayStyle == 1) // horizontal
+				{
+					tempPos.x += 100.0f;
+				}
+			}
+		}*/
+	}
+
+	if (!CooldownChampList.empty())
+	{
+		for (auto &value : CooldownChampList)
+		{
+			value.UpdateCDChamp();
+
+			for (int i = 0; i < 6; i++)
+			{
+				float time = value.CooldownSpells[i].Spell.CooldownExpires - Game::Time();
+				//	SdkUiConsoleWrite(" %d Time :  %f ", i, time);
+				float spellCD = value.CooldownSpells[i].Spell.TotalCooldown;
+
+				if (!ActualManualSpellLists.empty() && i < 4)
+				{
+					for (auto &manual : ActualManualSpellLists)
+					{
+						if ((_stricmp(manual.SpellName, value.CooldownSpells[i].Spell.ScriptName) == 0 || int(manual.Slot) == int(value.CooldownSpells[i].Spell.Slot)) && _stricmp(manual.Champ, value.Hero->GetCharName()) == 0 && manual.IsAlly == value.Hero->IsAlly())
+						{
+							//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
+							if (manual.CooldownExpires - Game::Time() > 0.0f)
+							{
+								time = manual.CooldownExpires - Game::Time();
+								spellCD = manual.Cooldown;
+							}
+							//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
+						}
+					}
+				}
+
+				value.CooldownSpells[i].UpdateInfoManual(time, spellCD);
+			}
+		}
+	}
 }
 
-void CooldownTracker::InsideDrawer(AIHeroClient* hero, bool isAlly)
+void CooldownTracker::DrawLoader()
 {
-
-	if (hero->IsZombie())
+	if (!Menu::Get<bool>("Trackers.CooldownTracker.Use"))
 	{
 		return;
 	}
 
-	Vector2 SpellPosition{ hero->GetHealthBarScreenPos() };
-	SpellPosition.x += -43.0f;
+	std::stringstream ss1;
+	ss1.precision(1); //for decimal
+	ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
 
-	auto spells = hero->GetSpells();
-	for (auto &spellInside : spells)
+	if (!CooldownChampList.empty())
 	{
-		float time = spellInside.CooldownExpires - Game::Time();
-		float spellCD = spellInside.TotalCooldown;
+		int i = 0;
 
-		if (!ActualManualSpellLists.empty())
+		for (auto &value : CooldownChampList)
 		{
-			for (auto &manual : ActualManualSpellLists)
+			if (!value.Hero->GetPosition().IsValid() || !value.Hero->IsVisible() || !value.Hero->GetHealthBarPos().IsValid() || !value.Hero->GetPosition().IsOnScreen() || !value.Hero->IsAlive() || value.Hero->IsZombie())
 			{
-				if ( (_stricmp(manual.SpellName, spellInside.ScriptName) == 0 || int(manual.Slot) == int(spellInside.Slot)) && _stricmp(manual.Champ, hero->GetCharName()) == 0 && manual.IsAlly == isAlly)
-				{
-					//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
-					if (manual.CooldownExpires - Game::Time() > 0.0f)
-					{
-						time = manual.CooldownExpires - Game::Time();
-						spellCD = manual.Cooldown;
-					}
-					//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
-
-				}
+				continue;
 			}
 
-		}
-		auto percent = time > 0 && std::abs(spellCD) > FLT_EPSILON
-			? 1.0f - time / spellCD
-			: 1.0f;
-
-
-		/*
-		if (time > 0.0)
-		{
-			std::string temp = spellInside.ScriptName;
-			temp += " : ";
-			temp += std::to_string(time);
-			temp += " : ";
-			temp += std::to_string(percent);
-			//Draw::Text(NULL, &screenPos2, temp, "Arial", &Color::Green, 28, 10, 0, false);
-			//Draw::Text(&sPos, NULL, temp, "Arial", &Color::Green, 28, 10, 0, false);
-
-		}
-		*/
-
-
-		std::stringstream ss1;
-		ss1.precision(1); //for decimal
-		ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
-
-		int sec = time;
-		int mins = sec / 60;
-		sec = sec % 60;
-		int onlySec = time;
-
-	
-		//Menu::Get<int>("Trackers.CooldownTracker.SCTFormat")
-		if (spellInside.Level > 0)
-		{
-			ss1.str("");
-			if (int(spellInside.Slot) == int(SpellSlot::Summoner1) || int(spellInside.Slot) == int(SpellSlot::Summoner2))
+			if (CDMySelf && value.Hero->GetNetworkID() == Player.GetNetworkID() ||
+				CDAlly && value.Hero->IsAlly() && value.Hero->GetNetworkID() != Player.GetNetworkID() ||
+				CDEnemy && !value.Hero->IsAlly()
+				)
 			{
-				//SdkUiConsoleWrite("name: %s", spellInside.ScriptName);
-				Vector2 SSPosition{ hero->GetHealthBarScreenPos() };
-				SSPosition.x += 63.0f;
-				SSPosition.y += -28.0f;
+				Vector2 HUDPosition{ value.Hero->GetHealthBarScreenPos() };
 
-				SSPosition.x += (float)Menu::Get<int>("Trackers.CooldownTracker.SSDrawingX");
-				SSPosition.y += (float)Menu::Get<int>("Trackers.CooldownTracker.SSDrawingY");
-				if (int(spellInside.Slot) == int(SpellSlot::Summoner2))
+				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(CD_HudSelf), &Vector2(HUDPosition.x + 6.0f, HUDPosition.y - 8.0f), true);
+				auto SpellPosition = HUDPosition;
+				SpellPosition.x += -43.0f;
+				SpellPosition.y += -3.0f;
+
+				for (int i = 0; i < 6; i++)
 				{
-					SSPosition.y += 15.0f; // gap between 2 summoners spell
-				}
-
-				if (Menu::Get<bool>("Trackers.CooldownTracker.SSIcon"))
-				{
-					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(GetSummonerSpells(spellInside.ScriptName, Game::Time() > spellInside.CooldownExpires)), &SSPosition, false);
-
-				}
-
-
-				if (time > 0.0f && Menu::Get<bool>("Trackers.CooldownTracker.SSTimer"))
-				{
-					int format = Menu::Get<int>("Trackers.CooldownTracker.SSTFormat");
-
-					if (format == 0) // mm:ss
+					if (i == 4 || i == 5)
 					{
-						ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
-
-					}
-					else if (format == 1) // ss
-					{
-						ss1 << std::setfill('0') << std::setw(2) << onlySec;
-
-					}
-
-					DrawHelper::DrawOutlineText(NULL, &Vector2(SSPosition.x + (float)Menu::Get<int>("Trackers.CooldownTracker.SSTDrawingX") + 18.0f, SSPosition.y + (float)Menu::Get<int>("Trackers.CooldownTracker.SSTDrawingY")), ss1.str().c_str(), "Calibri Bold", &Color::White, 15, 4, 0,
-						&Color::Black, false);
-				}
-
-			}
-			else
-			{
-				
-				auto xPos = SpellPosition.x + percent * (float)Menu::Get<int>("Trackers.CooldownTracker.SCLength");
-				auto yPos = SpellPosition.y;
-				xPos += (float)Menu::Get<int>("Trackers.CooldownTracker.SCDrawingX");
-				yPos += (float)Menu::Get<int>("Trackers.CooldownTracker.SCDrawingY");
-
-		
-
-				if (spellInside.Learned)
-				{
-					if (Menu::Get<bool>("Trackers.CooldownTracker.SCBar"))
-					{
-						DrawHelper::DrawOutlineLineScreen(&Vector2(SpellPosition.x + (float)Menu::Get<int>("Trackers.CooldownTracker.SCDrawingX"), SpellPosition.y + (float)Menu::Get<int>("Trackers.CooldownTracker.SCDrawingY")), &Vector2(xPos, yPos), (float)Menu::Get<int>("Trackers.CooldownTracker.SCWidth"), &DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.BarColor")), &DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.BarOutLineColor")));
-						if (Menu::Get<bool>("Trackers.CooldownTracker.SCBarFillOut") && onlySec > 0)
+						if (CooldownMenuList.SummmonerSpellEnable)
 						{
-							//&Vector2(xPos, yPos)
+							Vector2 SSPosition = HUDPosition;
+							SSPosition.x += 63.0f;
+							SSPosition.y += -24.0f;
 
-							auto xPosFinished = SpellPosition.x + 1.0 * (float)Menu::Get<int>("Trackers.CooldownTracker.SCLength");
-							auto yPosFinished = SpellPosition.y;
-							xPosFinished += (float)Menu::Get<int>("Trackers.CooldownTracker.SCDrawingX");
-							yPosFinished += (float)Menu::Get<int>("Trackers.CooldownTracker.SCDrawingY");
-							DrawHelper::DrawOutlineLineScreen(&Vector2(xPos, yPos), &Vector2(xPosFinished, yPosFinished), (float)Menu::Get<int>("Trackers.CooldownTracker.SCWidth"), &DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.BarNotLearnColor")), &DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.BarNotLearnOutlineColor")));
-						}
-					}
+							//SSPosition.x += (float)Menu::Get<int>("Trackers.CooldownTracker.SSDrawingX");
+							//SSPosition.y += (float)Menu::Get<int>("Trackers.CooldownTracker.SSDrawingY");
 
-					if (time > 0.0f&& Menu::Get<bool>("Trackers.CooldownTracker.SCTimer"))
-					{
-						int format = Menu::Get<int>("Trackers.CooldownTracker.SCTFormat");
-
-						if (format == 0) // mm:ss
-						{
-							ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
-
-						}
-						else if (format == 1) // ss
-						{
-							ss1 << std::setfill('0') << std::setw(2) << onlySec;
-
-						}
-						else if (format == 2) // R only mm:ss
-						{
-							if (int(spellInside.Slot) == int(SpellSlot::R))
+							if (i == 5)
 							{
-								ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
-							}
-							else
-							{
-								ss1 << std::setfill('0') << std::setw(2) << onlySec;
+								SSPosition.y += 15.0f; // gap between 2 summoners spell
 							}
 
+							SdkDrawSpriteFromResource(MAKEINTRESOURCEA(value.CooldownSpells[i].SpellIMG), &SSPosition, false);
+							if (value.CooldownSpells[i].Cooldown > 0.0f)
+							{
+								ss1.str("");
+								//SdkUiConsoleWrite("Are we here");
+
+								int sec = value.CooldownSpells[i].Cooldown;
+								int mins = sec / 60;
+								sec = sec % 60;
+								int onlySec = value.CooldownSpells[i].Cooldown;
+
+								if (CooldownMenuList.SummmonerSpellFormat == 0) // mm:ss
+								{
+									ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
+								}
+								else if (CooldownMenuList.SummmonerSpellFormat == 1) // ss
+								{
+									ss1 << std::setfill('0') << std::setw(2) << onlySec;
+								}
+
+								DrawHelper::DrawOutlineText(NULL, &Vector2(SSPosition.x + float(CooldownMenuList.SummmonerSpellPosX) + 18.0f, SSPosition.y + 3.0f + float(CooldownMenuList.SummmonerSpellPosY)), ss1.str().c_str(), "Calibri Bold", &Color::White, CooldownMenuList.SummmonerSpellFont1, CooldownMenuList.SummmonerSpellFont2, 0,
+									&Color::Black, false);
+							}
 						}
-
-
-						DrawHelper::DrawOutlineText(NULL, &Vector2(SpellPosition.x + (float)Menu::Get<int>("Trackers.CooldownTracker.SCTDrawingX"), SpellPosition.y + (float)Menu::Get<int>("Trackers.CooldownTracker.SCTDrawingY") + 5.0f), ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.SCTColor")), 15, 4, 0,
-							&DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.SCTOutLineColor")), false);
-						//Trackers.CooldownTracker.SCBarFillOut
-						
 					}
-				}
-				else if (!spellInside.Learned)
-				{
-					if (Menu::Get<bool>("Trackers.CooldownTracker.SCBar"))
+					else
 					{
-						DrawHelper::DrawOutlineLineScreen(&Vector2(SpellPosition.x + (float)Menu::Get<int>("Trackers.CooldownTracker.SCDrawingX"), SpellPosition.y + (float)Menu::Get<int>("Trackers.CooldownTracker.SCDrawingY")), &Vector2(xPos, yPos), (float)Menu::Get<int>("Trackers.CooldownTracker.SCWidth"), &DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.BarNotLearnColor")), &DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.BarNotLearnOutlineColor")));
+						auto xPos = SpellPosition.x + value.CooldownSpells[i].Percent * 25.0f;
+						auto yPos = SpellPosition.y;
+
+						if (value.CooldownSpells[i].IsLearned && CooldownMenuList.SpellEnable)
+						{
+							//	Draw::LineScreen(&SpellPosition, &Vector2(xPos, yPos), 7.0f, &Color::Green);
+
+							//SdkUiConsoleWrite("PCT %f", value.CooldownSpells[i].Percent);
+
+							/*
+								if (value.CooldownSpells[i].Percent < 0.99f && value.CooldownSpells[i].Percent >= 0.60f)
+								{
+									Draw::LineScreen(&SpellPosition, &Vector2(SpellPosition.x + 25.0f, SpellPosition.y), 7.0f, &Color::Red);
+								}
+								else if (value.CooldownSpells[i].Percent < 0.60f && value.CooldownSpells[i].Percent > 0.00f)
+								{
+									Draw::LineScreen(&SpellPosition, &Vector2(SpellPosition.x + 25.0f, SpellPosition.y), 7.0f, &Color::Orange);
+								}
+								else if (value.CooldownSpells[i].Percent == 1.00f )
+								{
+									Draw::LineScreen(&SpellPosition, &Vector2(SpellPosition.x + 25.0f, SpellPosition.y), 7.0f, &Color::Green);
+								}
+								*/
+
+							if (value.CooldownSpells[i].Percent < 0.99f && value.CooldownSpells[i].Percent >= 0.50f)
+							{
+								Draw::LineScreen(&SpellPosition, &Vector2(xPos, yPos), 7.0f, &Color::Orange);
+							}
+							else if (value.CooldownSpells[i].Percent < 0.50f && value.CooldownSpells[i].Percent > 0.00f)
+							{
+								Draw::LineScreen(&SpellPosition, &Vector2(xPos, yPos), 7.0f, &Color::Red);
+							}
+							else if (value.CooldownSpells[i].Percent == 1.00f)
+							{
+								Draw::LineScreen(&SpellPosition, &Vector2(xPos, yPos), 7.0f, &Color::DarkGreen);
+							}
+
+							int sec = value.CooldownSpells[i].Cooldown;
+							int mins = sec / 60;
+							sec = sec % 60;
+							int onlySec = value.CooldownSpells[i].Cooldown;
+
+							if (value.CooldownSpells[i].Cooldown > 0.0f)
+							{
+								ss1.str("");
+								if (SCTformat == 0) // mm:ss
+								{
+									ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
+								}
+								else if (SCTformat == 1) // ss
+								{
+									ss1 << std::setfill('0') << std::setw(2) << onlySec;
+								}
+								else if (SCTformat == 2) // R only mm:ss
+								{
+									if (i == 3)
+									{
+										ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
+									}
+									else
+									{
+										ss1 << std::setfill('0') << std::setw(2) << onlySec;
+									}
+								}
+
+								//Draw::LineScreen
+
+								//SdkUiConsoleWrite(" First %f Second %f", CooldownMenuList.SpellPos.first, CooldownMenuList.SpellPos.second);
+								DrawHelper::DrawOutlineText(NULL, &Vector2(SpellPosition.x + float(CooldownMenuList.SpellPosX) + 2.0f, SpellPosition.y + 9.0f + float(CooldownMenuList.SpellPosY)), ss1.str().c_str(), "Calibri Bold", &Color::White, CooldownMenuList.SpellFont1, CooldownMenuList.SpellFont2, 0,
+									&Color::Black, false);
+								//Trackers.CooldownTracker.SCBarFillOut
+							}
+						}
+						/*
+						else if (!value.CooldownSpells[i].IsLearned)
+						{
+							//DrawHelper::DrawOutlineLineScreen(&Vector2(SpellPosition.x , SpellPosition.y), &Vector2(xPos, yPos), (float)Menu::Get<int>("Trackers.CooldownTracker.SCWidth"), &DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.BarNotLearnColor")), &DropLists::GetColor(Menu::Get<int>("Trackers.CooldownTracker.BarNotLearnOutlineColor")));
+						}*/
+
 					}
+
+					SpellPosition.x += 27.0f;
 				}
 			}
-
 		}
-
-		/*
-				Menu::SliderInt("Spells Cooldown Bar Width", "Trackers.CooldownTracker.SCWidth", 3, 1, 10);
-			Menu::SliderInt("Spells Cooldown Bar Length", "Trackers.CooldownTracker.SCLength", 23, 15, 40);
-			Menu::SliderInt("Spells Cooldown Gap Between Bars", "Trackers.CooldownTracker.SCGap", 25, 10, 40);
-		*/
-		SpellPosition.x += (float)Menu::Get<int>("Trackers.CooldownTracker.SCGap"); // gab between spells
 	}
-
-	//SpriteHelper::SpriteDraw();
 }
-
 
 void CooldownTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void * UserData)
 {
-	
 	UNREFERENCED_PARAMETER(UserData);
 
 	if (!Menu::Get<bool>("Trackers.CooldownTracker.Use"))
@@ -617,10 +659,8 @@ void CooldownTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 	/*
 	if (!Menu::Get<bool>("Trackers.DashJumpTracker.Use"))
 	{
-
 		return;
 	}
-
 
 	if (Destinations.empty())
 	{
@@ -643,9 +683,9 @@ void CooldownTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 	//SdkUiConsoleWrite("diff: %f", SpellCast->Spell.CooldownExpires - Game::Time());
 	//auto objectPos = sender->GetPosition();
 
-	if (spellName == NULL || spellName == nullptr )
+	if (spellName == NULL || spellName == nullptr)
 	{
-		return ;
+		return;
 	}
 
 	for (auto &manual : ActualManualSpellLists)
@@ -675,276 +715,7 @@ void CooldownTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 
 				manual.Cooldown = cooldown - ((cooldown / 100.0f) * cdr) + manual.Additional;
 				manual.CooldownExpires = Game::Time() + manual.Cooldown;
-				
-				//SdkUiConsoleWrite("Manual cd %f cdr %f result %f Final %f Game: %f", cooldown, cdr , manual.Cooldown, manual.CooldownExpires, Game::Time());
 			}
 		}
 	}
-}
-
-
-unsigned int CooldownTracker::GetSummonerSpells(const char* name, bool isReady)
-{
-	if (_stricmp(name, "Summoner_Dash") == 0)
-	{
-		if (isReady)
-		{
-			return Summoner_Dash;
-		}
-		else
-		{
-			return Summoner_Dash_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "Summoner_Empty") == 0)
-	{
-		if (isReady)
-		{
-			return Summoner_Empty;
-		}
-		else
-		{
-			return Summoner_Empty_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "Summoner_flashPerksHextechFlashtraption") == 0)
-	{
-		if (isReady)
-		{
-			return Summoner_flashPerksHextechFlashtraption;
-		}
-		else
-		{
-			return Summoner_flashPerksHextechFlashtraption_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "Summoner_flashPerksHextechFlashtraptionBlue") == 0)
-	{
-		if (isReady)
-		{
-			return Summoner_flashPerksHextechFlashtraptionBlue;
-		}
-		else
-		{
-			return Summoner_flashPerksHextechFlashtraptionBlue_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "Summoner_Mark") == 0)
-	{
-		if (isReady)
-		{
-			return Summoner_Mark;
-		}
-		else
-		{
-			return Summoner_Mark_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerBarrier") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerBarrier;
-		}
-		else
-		{
-			return SummonerBarrier_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerBoost") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerBoost;
-		}
-		else
-		{
-			return SummonerBoost_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerClairvoyance") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerClairvoyance;
-		}
-		else
-		{
-			return SummonerClairvoyance_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerDot") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerDot;
-		}
-		else
-		{
-			return SummonerDot_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerExhaust") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerExhaust;
-		}
-		else
-		{
-			return SummonerExhaust_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerFlash") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerFlash;
-		}
-		else
-		{
-			return SummonerFlash_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerFlashPerksHextechFlashtraptionV2") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerFlashPerksHextechFlashtraptionV2;
-		}
-		else
-		{
-			return SummonerFlashPerksHextechFlashtraptionV2_Cooldown;
-		}
-	}
-	if (_stricmp(name, "SummonerHaste") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerHaste;
-		}
-		else
-		{
-			return SummonerHaste_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerHeal") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerHeal;
-		}
-		else
-		{
-			return SummonerHeal_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerMana") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerMana;
-		}
-		else
-		{
-			return SummonerMana_Cooldown;
-		}
-	}
-	if (_stricmp(name, "SummonerExhaust") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerExhaust;
-		}
-		else
-		{
-			return SummonerExhaust_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerSmite") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerSmite;
-		}
-		else
-		{
-			return SummonerSmite_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "S5_SummonerSmitePlayerGanker") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerSmite;
-		}
-		else
-		{
-			return SummonerSmite_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "S5_SummonerSmiteDuel") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerSmite;
-		}
-		else
-		{
-			return SummonerSmite_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerSnowball") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerSnowball;
-		}
-		else
-		{
-			return SummonerSnowball_Cooldown;
-		}
-	}
-
-	if (_stricmp(name, "SummonerTeleport") == 0)
-	{
-		if (isReady)
-		{
-			return SummonerTeleport;
-		}
-		else
-		{
-			return SummonerTeleport_Cooldown;
-		}
-	}
-	if (_stricmp(name, "TeleportCancel") == 0)
-	{
-		if (isReady)
-		{
-			return TeleportCancel;
-		}
-		else
-		{
-			return TeleportCancel_Cooldown;
-		}
-	}
-
-	return Summoner_Empty;
 }

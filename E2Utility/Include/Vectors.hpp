@@ -162,6 +162,9 @@ public:
 	bool IsLeftOfLineSegment(Vector2& start, Vector2& end);
 	bool IsRightOfLineSegment(Vector2& start, Vector2& end);
 
+	Vector3 GetClosestWallPosition(float limitRange = 500.0f);
+	Vector3 GetClosestNonWallPosition(float limitRange = 500.0f);
+
 } SDKPOINT, *PSDKPOINT;
 
 D3DXINLINE Vector2 operator * (float f, CONST Vector2& v) {
@@ -336,6 +339,9 @@ public:
 	bool IsGrass();
 	bool IsOnScreen(float radius = 0.0f);
 	float GetTerrainHeight();
+
+	Vector3 GetClosestWallPosition(float limitRange = 500.0f);
+	Vector3 GetClosestNonWallPosition(float limitRange = 500.0f);
 
 	static Vector3 Zero;
 	static Vector3 DirectionVector;
@@ -1020,6 +1026,14 @@ inline bool Vector2::IsRightOfLineSegment(Vector2 & start, Vector2 & end) {
 	return !this->IsLeftOfLineSegment(start, end);
 }
 
+inline Vector3 Vector2::GetClosestWallPosition(float limitRange) {
+	return this->To3D().GetClosestWallPosition(limitRange);
+}
+
+inline Vector3 Vector2::GetClosestNonWallPosition(float limitRange){
+	return this->To3D().GetClosestNonWallPosition(limitRange);
+}
+
 inline float Vector2::Length() {
 	return (float)sqrt((x * x) + (y * y));
 }
@@ -1223,6 +1237,42 @@ inline float Vector3::GetTerrainHeight() {
 	bool valid{ false };
 	SdkGetTerrainHeight(this, &h, &valid);
 	return valid ? h : 0.0f;
+}
+inline Vector3 Vector3::GetClosestWallPosition(float limitRange) {
+	constexpr size_t maxPosToCheck{300};
+	constexpr float  stepRadius{ 40.0f };
+	constexpr float  wholeCircle{ static_cast<float>((2.0f * M_PI)) };
+
+	size_t posChecked { 0 };
+	size_t indexRadius{ 0 };
+	while (posChecked < maxPosToCheck) {
+
+		indexRadius++;
+		float curRadius{ indexRadius * stepRadius };
+		if (curRadius > limitRange) {
+			break;
+		}
+
+		int curCircleChecks{ (int)std::ceil((wholeCircle * curRadius) / stepRadius) };
+		for (int i = 1; i < curCircleChecks; i++) {
+
+			posChecked++;
+			auto rotationAngle{ (wholeCircle / (curCircleChecks - 1)) * i };
+
+			Vector3 pos{ (this->x + curRadius * std::cos(rotationAngle)), 0.0f, (this->z + curRadius * std::sin(rotationAngle)) };			
+			if (pos.IsWall()) {
+				return pos;
+			}
+		}
+	}
+	return Vector3();
+}
+inline Vector3 Vector3::GetClosestNonWallPosition(float limitRange) {
+	Vector3 endPath{};
+	if (SDKSTATUS_SUCCESS(SdkCreateAIPath(g_LocalPlayer, this, true, NULL, &endPath, NULL, NULL)) && this->Distance(endPath) <= limitRange) {
+		return endPath;		
+	}
+	return Vector3();
 }
 #pragma endregion
 

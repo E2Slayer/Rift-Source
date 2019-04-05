@@ -129,6 +129,110 @@ void LastPosition::MenuLoader()
 
 void LastPosition::TickLoader()
 {
+	if (!Menu::Get<bool>("Trackers.LastPosition.Use"))
+	{
+
+		return;
+	}
+
+
+
+	float currentTime = Game::Time();
+
+
+	for (auto &lp : lastPositions)
+	{
+
+		auto lpPos = lp.Unit->GetPosition();
+		if (lp.Unit->IsAlive() && !lp.LastPosition.Distance(zeroVector) > 100.0f && lp.LastPosition.Distance(lpPos) > 500.0f)
+		{
+			lp.Teleported = false;
+			lp.LastSeen = currentTime;
+
+		}
+		lp.LastPosition = lpPos;
+
+		if (lp.Unit->IsVisible())
+		{
+			lp.Teleported = false;
+			lp.AbortedTimeDifference = 0.0f;
+			lp.TeleportStartTime = 0.0f;
+			if (lp.Unit->IsAlive())
+			{
+				lp.LastSeen = currentTime;
+
+			}
+		}
+
+		if (!lp.Unit->IsAlive())
+		{
+			lp.LastSeen = lp.Unit->GetDeathDuration() + currentTime + 1.0f;
+		}
+
+		if (!lp.Unit->IsVisible() && lp.Unit->IsAlive())
+		{
+			//Vector3 pos = Vector3(0.0f, 0.0f, 0.0f);
+			if (lp.Teleported)
+			{
+				lp.DrawPosition = EnemyFountainLocation;
+			}
+			else if (!lp.Teleported)
+			{
+				lp.DrawPosition = lp.LastPosition;
+			}
+
+			
+
+			//Vector2 mpPos = { Renderer::WorldToMinimap(pos) };
+
+			//Vector2 mPos = { Renderer::WorldToScreen(pos) };
+
+			if (lp.LastSeen != 0.0f && currentTime - lp.LastSeen > 3.0f)
+			{
+				lp.DrawCheck = true;
+
+
+				float tempTime = (currentTime) - lp.AbortedTimeDifference;
+				float tempLastSeen = lp.LastSeen;
+
+				if (lp.isTeleporting)
+				{
+					if (lp.TeleportStartTime - lp.AbortedTimeDifference > 0.0f)
+					{
+						tempTime = lp.TeleportStartTime - lp.AbortedTimeDifference;
+					}
+					else
+					{
+						tempTime = currentTime;
+					}
+				}
+
+				if (tempTime < 0.0f)
+				{
+					tempTime = currentTime;
+				}
+
+
+
+				//TeleportStartTime
+
+				//isTeleporting
+				lp.Radius = std::abs((tempTime - tempLastSeen - 1.0f)*lp.Unit->GetMovementSpeed()*1.1f);
+
+				
+
+			}
+			else
+			{
+				lp.DrawCheck = false;
+
+			}
+
+			
+
+		}
+
+	}
 
 }
 
@@ -146,150 +250,85 @@ void LastPosition::DrawLoader()
 	//DrawCircleMap(Player.GetPosition(), 1000.0f, &Color::Red, 3.0f, 100);
 
 
+
+	Vector2 mpPos;
+	Vector2 mPos;
+	float currentTime = Game::Time();
 	for (auto &lp : lastPositions)
 	{
-		auto lpPos = lp.Unit->GetPosition();
-		if (lp.Unit->IsAlive() && !lp.LastPosition.Distance(zeroVector) > 100.0f && lp.LastPosition.Distance(lpPos) > 500.0f)
+		mpPos = { Renderer::WorldToMinimap(lp.DrawPosition) };
+
+		mPos = { Renderer::WorldToScreen(lp.DrawPosition) };
+
+		if (lp.DrawCheck)
 		{
-			lp.Teleported = false;
-			lp.LastSeen = Game::Time();
-
-		}
-		lp.LastPosition = lpPos;
-
-		if (lp.Unit->IsVisible())
-		{
-			lp.Teleported = false;
-			lp.AbortedTimeDifference = 0.0f;
-			lp.TeleportStartTime = 0.0f;
-			if (lp.Unit->IsAlive())
+			if (lp.DrawPosition.IsOnScreen(float(Menu::Get<int>("Trackers.LastPosition.World.Expand.MaxRange"))) && Menu::Get<bool>("Trackers.LastPosition.World.Expand.Use") && lp.Radius <= Menu::Get<int>("Trackers.LastPosition.World.Expand.MaxRange")) //map
 			{
-				lp.LastSeen = Game::Time();
-
-			}
-		}
-
-		if (!lp.Unit->IsVisible() && lp.Unit->IsAlive())
-		{
-			Vector3 pos = Vector3(0.0f, 0.0f, 0.0f);
-			if (lp.Teleported)
-			{
-				pos = EnemyFountainLocation;
-			}
-			else if(!lp.Teleported)
-			{
-				pos = lp.LastPosition;
-			}
-
-			Vector2 mpPos = {Renderer::WorldToMinimap( pos) };
-
-			Vector2 mPos = { Renderer::WorldToScreen(pos) };
-
-			if (lp.LastSeen != 0.0f && Game::Time() - lp.LastSeen > 3.0f )
-			{
-
-				float tempTime = Game::Time() - lp.AbortedTimeDifference;
-				float tempLastSeen = lp.LastSeen;
-
-				if (lp.isTeleporting)
-				{
-					if (lp.TeleportStartTime - lp.AbortedTimeDifference > 0.0f)
-					{
-						tempTime = lp.TeleportStartTime - lp.AbortedTimeDifference;
-					}
-					else
-					{
-						tempTime = Game::Time();
-					}
-				}
-
-				if (tempTime < 0.0f)
-				{
-					tempTime = Game::Time();
-				}
-
-				//TeleportStartTime
-
-				//isTeleporting
-				auto radius = std::abs( (tempTime - tempLastSeen - 1.0f)*lp.Unit->GetMovementSpeed()*1.1f);
-
-				if (pos.IsOnScreen(float(Menu::Get<int>("Trackers.LastPosition.World.Expand.MaxRange"))) && Menu::Get<bool>("Trackers.LastPosition.World.Expand.Use") && radius <= Menu::Get<int>("Trackers.LastPosition.World.Expand.MaxRange")) //map
-				{
-					//Draw::Circle(&pos, radius, &Color::White, 0, &Vector3(100.0f,100.0f,100.0f));
-					DrawHelper::DrawCircleMap(pos, radius, &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.World.Expand.Color")), float(Menu::Get<int>("Trackers.LastPosition.World.Expand.Thickness")), Menu::Get<int>("Trackers.LastPosition.World.Expand.Quality"));
-
-				}
-
-				if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Expand.Use") && radius <= Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.MaxRange")) //minimap
-				{
-					DrawHelper::DrawCircleMinimap(pos, radius, &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Color")), float(Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Thickness")), Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Quality"));
-				}
-
-				
-			}
-
-			if (pos.IsOnScreen(50.0f) && Menu::Get<bool>("Trackers.LastPosition.World.Icon")) //map
-			{
-
-				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(lp.ChampIMG), &mPos, true);
+				//Draw::Circle(&pos, radius, &Color::White, 0, &Vector3(100.0f,100.0f,100.0f));
+				DrawHelper::DrawCircleMap(lp.DrawPosition, lp.Radius, &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.World.Expand.Color")), float(Menu::Get<int>("Trackers.LastPosition.World.Expand.Thickness")), Menu::Get<int>("Trackers.LastPosition.World.Expand.Quality"));
 
 			}
 
-			if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Icon")) //minimap
+			if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Expand.Use") && lp.Radius <= Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.MaxRange")) //minimap
 			{
-				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(lp.ChampIMG), &mpPos, true);
+				DrawHelper::DrawCircleMinimap(lp.DrawPosition, lp.Radius, &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Color")), float(Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Thickness")), Menu::Get<int>("Trackers.LastPosition.Minimap.Expand.Quality"));
 			}
 
-			if (lp.isTeleporting)
+
+			auto time = currentTime - lp.LastSeen;
+			std::stringstream ss1;
+			ss1.precision(1); //for decimal
+			ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
+
+			int sec = time;
+			int mins = sec / 60;
+			sec = sec % 60;
+			int onlySec = time;
+			ss1 << std::setfill('0') << std::setw(2) << onlySec;
+			if (lp.DrawPosition.IsOnScreen(50.0f) & Menu::Get<bool>("Trackers.LastPosition.World.Timer"))
 			{
-				if (pos.IsOnScreen(50.0f) && Menu::Get<bool>("Trackers.LastPosition.World.Recall")) //map
-				{
-
-					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(LP_Teleport), &mPos, true);
-					/*
-					DrawHelper::DrawOutlineText(NULL, &mPos, ss1.str().c_str(), "Calibri Bold", &Color::White, 15, 4, 0,
-						&Color::Black, false);
-						*/
-				}
-
-				if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Recall")) //minimap
-				{
-					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(LP_Teleport), &mpPos, true);
-				}
+				Vector2 tempPos = mPos;
+				tempPos.x += -4.0f + float(Menu::Get<int>("Trackers.LastPosition.World.DrawingX"));
+				tempPos.y += 5.0f + float(Menu::Get<int>("Trackers.LastPosition.World.DrawingY"));
+				DrawHelper::DrawOutlineText(NULL, &tempPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.World.Color")), Menu::Get<int>("Trackers.LastPosition.World.FontSize"), Menu::Get<int>("Trackers.LastPosition.World.FontSize2"), 0,
+					&DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.World.OutLineColor")), false);
 			}
 
-			if (lp.LastSeen != 0.0f && Game::Time() - lp.LastSeen > 3.0f)
+			if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Timer"))
 			{
-				auto time = Game::Time() - lp.LastSeen;
-				std::stringstream ss1;
-				ss1.precision(1); //for decimal
-				ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
-
-				int sec = time;
-				int mins = sec / 60;
-				sec = sec % 60;
-				int onlySec = time;
-				ss1 << std::setfill('0') << std::setw(2) << onlySec;
-				if (pos.IsOnScreen(50.0f) & Menu::Get<bool>("Trackers.LastPosition.World.Timer"))
-				{
-					Vector2 tempPos = mPos;
-					tempPos.x += -4.0f + float(Menu::Get<int>("Trackers.LastPosition.World.DrawingX"));
-					tempPos.y += 5.0f + float(Menu::Get<int>("Trackers.LastPosition.World.DrawingY"));
-					DrawHelper::DrawOutlineText(NULL, &tempPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.World.Color")), Menu::Get<int>("Trackers.LastPosition.World.FontSize"), Menu::Get<int>("Trackers.LastPosition.World.FontSize2"), 0,
-						&DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.World.OutLineColor")), false);
-				}
-
-				if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Timer"))
-				{
-					Vector2 tempPos = mpPos;
-					tempPos.x += -3.0f + float(Menu::Get<int>("Trackers.LastPosition.Minimap.DrawingX"));
-					tempPos.y += 15.0f +float(Menu::Get<int>("Trackers.LastPosition.Minimap.DrawingY"));
-					DrawHelper::DrawOutlineText(NULL, &tempPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.Color")), Menu::Get<int>("Trackers.LastPosition.Minimap.FontSize"), Menu::Get<int>("Trackers.LastPosition.Minimap.FontSize2"), 0,
-						&DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.OutLineColor")), false);
-				}
+				Vector2 tempPos = mpPos;
+				tempPos.x += -3.0f + float(Menu::Get<int>("Trackers.LastPosition.Minimap.DrawingX"));
+				tempPos.y += 15.0f + float(Menu::Get<int>("Trackers.LastPosition.Minimap.DrawingY"));
+				DrawHelper::DrawOutlineText(NULL, &tempPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.Color")), Menu::Get<int>("Trackers.LastPosition.Minimap.FontSize"), Menu::Get<int>("Trackers.LastPosition.Minimap.FontSize2"), 0,
+					&DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.OutLineColor")), false);
 			}
 		}
+		
+		if (lp.DrawPosition.IsOnScreen(50.0f) && Menu::Get<bool>("Trackers.LastPosition.World.Icon")) //map
+		{
 
+			SdkDrawSpriteFromResource(MAKEINTRESOURCEA(lp.ChampIMG), &mPos, true);
+
+		}
+
+		if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Icon")) //minimap
+		{
+			SdkDrawSpriteFromResource(MAKEINTRESOURCEA(lp.ChampIMG), &mpPos, true);
+		}
+
+		if (lp.isTeleporting)
+		{
+			if (lp.DrawPosition.IsOnScreen(50.0f) && Menu::Get<bool>("Trackers.LastPosition.World.Recall")) //map
+			{
+
+				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(LP_Teleport), &mPos, true);
+			}
+
+			if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Recall")) //minimap
+			{
+				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(LP_Teleport), &mpPos, true);
+			}
+		}
 	}
 
 }

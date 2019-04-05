@@ -71,8 +71,13 @@ void Teleport::MenuLoader()
 		Menu::Checkbox("Track Twisted Fate's R", "Detector.Teleport.TwisitedFateR", true);
 
 
+		
 		Menu::Tree("Chat Notification Settings", "Detector.Teleport.ChatSettings", false, []()
 		{
+			SdkUiText("Notice) Chat Notification is Deleted Due to No longer Supported by Rift APIs");
+			SdkUiText("I will find another way to notify the player.");
+
+			/*
 			Menu::Checkbox("Notify Start on the Chat", "Detector.Teleport.ChatStart", true);
 			Menu::Checkbox("Notify Aborted on the Chat", "Detector.Teleport.ChatAborted", true);
 			Menu::Checkbox("Notify Finshed on the Chat", "Detector.Teleport.ChatFinished", true);
@@ -110,12 +115,12 @@ void Teleport::MenuLoader()
 			{
 				Menu::ColorPicker("Teleport Type Color Picker", "Detector.Teleport.Chat.Teleport", SDKVECTOR(25, 150, 235));
 			});
-
+			*/
 			//Menu::Checkbox("Use [E2Utility] Prefix on the Beginning", "Detector.Teleport.Chat.Prefix", true);
 
 		});
 
-
+		
 
 		Menu::Tree("Teleport Tracker Drawing Settings", "Detector.Teleport.Drawings", false, []()
 		{
@@ -372,7 +377,7 @@ void Teleport::RecallTrack(void* Unit, const char* Name, const char* Type, void*
 			//SdkUiConsoleWrite("Start %f", it->second.Hero->AsAIHeroClient()->GetHealthPercent());
 			if (Menu::Get<bool>("Detector.Teleport.ChatStart"))
 			{
-				InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Started", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
+				//InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Started", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 			}
 
 			//SdkUiConsoleWrite("Start %ld %f", testStruct.Start, testStruct.Duration);
@@ -384,7 +389,7 @@ void Teleport::RecallTrack(void* Unit, const char* Name, const char* Type, void*
 			if (Menu::Get<bool>("Detector.Teleport.ChatAborted"))
 			{
 				//
-				InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Aborted", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
+				//InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Aborted", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 
 			}
 			//SdkUiConsoleWrite("Abort %ld %f", testStruct.Start, testStruct.Duration);
@@ -395,7 +400,7 @@ void Teleport::RecallTrack(void* Unit, const char* Name, const char* Type, void*
 
 			if (Menu::Get<bool>("Detector.Teleport.ChatFinished"))
 			{
-				InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Finished", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
+				//InPrintChat(sender->AsAIHeroClient()->GetCharName(), Game::GetRecallName(it->second.CurrentRecallType).c_str(), "Finished", it->second.Hero->AsAIHeroClient()->GetHealthPercent(), testStruct.Status);
 
 			}
 			//SdkUiConsoleWrite("Finished %ld %f", testStruct.Start, testStruct.Duration);
@@ -466,6 +471,7 @@ const char* Teleport::GetTeleportRealName(const char* Name)
 	return "Unknown";
 }
 
+/*
 void Teleport::InPrintChat(const char* champName, const char* TeleportName, const char* recallStatusText, float healthPCT, TeleportTypes tpType)
 {
 	std::stringstream sstream;
@@ -548,5 +554,5 @@ void Teleport::InPrintChat(const char* champName, const char* TeleportName, cons
 
 
 	//SdkUiConsoleWrite("game Print chat %s", sstream.str());
-	Game::PrintChat(sstream.str(), CHAT_FLAG_UNKNOWN1);
-}
+	//Game::PrintChat(sstream.str(), CHAT_FLAG_UNKNOWN1);
+}*/

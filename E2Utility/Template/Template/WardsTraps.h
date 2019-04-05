@@ -26,24 +26,17 @@ struct HeroWard
 
 
 
-const enum WardType {Green, Pink, Trap};
+const enum WardType {Green, Pink, Trap, Trinket, Blue};
 
 struct WardStruct
 {
 	float Duration;
-	const char* ObjectBaseSkinName;
 	float Range;
+	//float VisionRange;
+	const char* ObjectBaseSkinName;
 	const char* SpellName;
 	WardType Type;
 
-
-	/*
-	            public readonly int Duration;
-            public readonly string ObjectBaseSkinName;
-            public readonly int Range;
-            public readonly string SpellName;
-            public readonly WardType Type;
-	*/
 
 	WardStruct(float _Duration, float _Range, const char* _ObjectBaseSkinName, const char* _SpellName, WardType _Type)
 		: Duration(_Duration), Range(_Range), ObjectBaseSkinName(_ObjectBaseSkinName), SpellName(_SpellName), Type(_Type)
@@ -65,18 +58,19 @@ struct WardObject
 	Vector3 StartPosition;
 	float StartT;
 	Vector3 Position;
-	bool IsFromMissile;
+	//bool IsFromMissile;
 	float OverrideDuration;
 	WardStruct Data;
+	//WardType CurrentWardType;
 
 
-	WardObject(WardStruct data, Vector3 position, float startT, AIBaseClient* wardObject,
-		bool isFromMissile, Vector3 startPosition, AIBaseClient* spellCaster)
-		: Data(data)
+	WardObject(WardStruct data, Vector3 position, float startT, AIBaseClient* wardObject, float _OverrideDuration) //bool isFromMissile, Vector3 startPosition, AIBaseClient* spellCaster
+		: Data(data), OverrideDuration(_OverrideDuration)
 	{
 		Vector3 pos = position;
 		StartT = startT;
 
+		/*
 		
 		if (isFromMissile)
 		{
@@ -95,22 +89,46 @@ struct WardObject
 
 		}
 		
-		IsFromMissile = isFromMissile;
+		*/
+
+
+		//IsFromMissile = isFromMissile;
+
 		Data = data;
 
 		Position = RealPosition(pos);
 
-		
+		//float(wardObject->GetResource().Max - wardObject->GetResource().Current)
 
-		EndPosition = (Position == position || Corrected) ? position : RealPosition(position);
 		MinimapPosition = Renderer::WorldToMinimap(Position).To3D();
 
+		/*
 		StartPosition = (startPosition == Vector3(0.0f, 0.0f, 0.0f) || Corrected) ? startPosition : RealPosition(startPosition);
+		EndPosition = (Position == position || Corrected) ? position : RealPosition(position);
+		*/
+
+		//StartPosition = RealPosition(startPosition);
+		EndPosition = RealPosition(position);
+
+
 		Object = wardObject;
-		OverrideDuration = 0.0f;
+
+		
+		//OverrideDuration = 0.0f;
 		
 
 
+	}
+
+	float EndTime()
+	{
+		if (OverrideDuration > 0.0f)
+		{
+
+			return this->StartT + OverrideDuration;
+		}
+
+		return this->StartT + this->Data.Duration;
 	}
 
 	int sign(int x)
@@ -163,40 +181,37 @@ struct WardObject
 	{
 		if (end.IsWall())
 		{
+			return end.GetClosestNonWallPosition(500.0f);
+
+			/*
 			for (int i = 0; i < 500; i = i + 5)
 			{
-				auto circleVector = Geometry::Circle(end, i, 20).Points;
+				std::vector<Vector2> circleVector = Geometry::Circle(end, i, 20).Points;
 
-
-				float Closest = 5000.0f;
-				Vector2 ClosetPos;
-				for (auto& circle : circleVector)
+				if (!circleVector.empty())
 				{
-					if (circle.Distance(end) <= Closest && !ClosetPos.IsWall())
+					float Closest = 500.0f;
+					Vector2 ClosetPos = Vector2(0.0f, 0.0f, 0.0f);
+					for (auto& circle : circleVector)
 					{
-						Closest = circle.Distance(end);
-						ClosetPos = circle;
+						if (circle.Distance(end) <= Closest)
+						{
+							Closest = circle.Distance(end);
+							ClosetPos = circle;
+						
+						}
 					}
 
-					//tempStruct.emplace_back(circle, circle.Distance(end));
+					if (!ClosetPos.IsWall())
+					{
+						return Vector3(ClosetPos.x, ClosetPos.GetTerrainHeight(), ClosetPos.y);
+					}
 				}
-
-				return Vector3(ClosetPos.x, ClosetPos.GetTerrainHeight(), ClosetPos.y);
-
-				/*
-				std::sort(tempStruct.begin(), tempStruct.end(), cmd);
-
-
-				for (auto& circle : tempStruct)
-				{
-					if (!circle.Position.IsWall())
-					{
-						return circle.Position;
-					}
-				}*/
 
 
 			}
+
+		*/
 		}
 
 		return end;

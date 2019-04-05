@@ -31,14 +31,18 @@ struct JungleCamp
 	JungleCampState State;
 	
 	float ClearTick;
-
-
+	float TimeLeft;
+	bool MapCheck;
+	bool MinimapCheck;
 
 	JungleCamp(float _SpawnTime, float _RespawnTimer, Vector3 _Position, std::vector< JungleMinion> _Minions) //, JungleCampState _State, float _ClearTick
 		: SpawnTime(_SpawnTime), RespawnTimer(_RespawnTimer), Position(_Position), Minions(_Minions) // State(_State), ClearTick(_ClearTick
 	{
 		State = JungleCampState::Unknown;
 		ClearTick = 0.0f;
+		TimeLeft = 0.0f;
+		MapCheck = false;
+		MinimapCheck = false;
 	}
 };
 
@@ -52,12 +56,17 @@ struct JungleCampExploit
 	Vector3 Position;
 	const char* Name;
 	bool Created;
-
+	float TimeLeft;
+	bool MapCheck;
+	bool MinimapCheck;
 
 	JungleCampExploit(float _SpawnTime, float _RespawnTimer, Vector3 _Position, const char* _Name) //, JungleCampState _State, float _ClearTick
 		: SpawnTime(_SpawnTime), RespawnTimer(_RespawnTimer), Position(_Position), Name(_Name) // State(_State), ClearTick(_ClearTick
 	{
 		Created = false;
+		TimeLeft = 0.0f;
+		MapCheck = false;
+		MinimapCheck = false;
 	}
 };
 
