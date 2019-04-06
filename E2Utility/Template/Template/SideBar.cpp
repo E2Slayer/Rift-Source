@@ -345,10 +345,10 @@ void SideBar::TickLoader()
 				enemy.PositionList.MissingTimerPos = Vector2(tempPos.x - 15.0f + SideBarMenuList[4].DrawX, tempPos.y - 25.0f + SideBarMenuList[4].DrawY);
 				enemy.PositionList.LevelPos = Vector2(tempPos.x + 3.0f + SideBarMenuList[6].DrawX, tempPos.y - 5.0f + SideBarMenuList[6].DrawY);
 
-				enemy.PositionList.UltimatePos = Vector2(tempPos.x - 34.0f + SideBarMenuList[3].DrawX, tempPos.y - 29.0f + SideBarMenuList[3].DrawY);
+				enemy.PositionList.UltimatePos = Vector2(tempPos.x - 34.0f + SideBarMenuList[3].DrawX, tempPos.y - 31.0f + SideBarMenuList[3].DrawY);
 
 				enemy.PositionList.SS1Pos = Vector2(tempPos.x + 30.0f + SideBarMenuList[1].DrawX, tempPos.y - 22.0f + SideBarMenuList[1].DrawY);
-				enemy.PositionList.SS1TimerPos = Vector2(tempPos.x + 10.0f + SideBarMenuList[2].DrawX, tempPos.y - 26.0f + SideBarMenuList[2].DrawY);
+				enemy.PositionList.SS1TimerPos = Vector2(tempPos.x + 20.0f + SideBarMenuList[2].DrawX, tempPos.y - 30.0f + SideBarMenuList[2].DrawY);
 
 				enemy.PositionList.SS2Pos = Vector2(tempPos.x + 30.0f + SideBarMenuList[1].DrawX, tempPos.y + 4.0f + SideBarMenuList[1].DrawY);
 
@@ -696,7 +696,7 @@ void SideBar::DrawLoader()
 
 			ss1 << enemy.SpellRCD;
 
-			DrawHelper::DrawOutlineText(NULL, &Vector2(enemy.PositionList.UltimatePos.x - 3.0f, enemy.PositionList.UltimatePos.y - 10.0f), ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(SideBarMenuList[3].FontColor), SideBarMenuList[3].FontSize1, SideBarMenuList[3].FontSize2, 0,
+			DrawHelper::DrawOutlineText(NULL, &Vector2(enemy.PositionList.UltimatePos.x - 4.0f, enemy.PositionList.UltimatePos.y - 8.0f), ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(SideBarMenuList[3].FontColor), SideBarMenuList[3].FontSize1, SideBarMenuList[3].FontSize2, 0,
 				&DropLists::GetColor(SideBarMenuList[3].OutlineFontColor), false);
 		}
 		else if (enemy.SpellRCD < 0.0f && enemy.SpellR.Learned && enemy.SpellR.Level > 0 && Menu::Get<bool>("Trackers.SideBar.Ultimate.Use")) //ready

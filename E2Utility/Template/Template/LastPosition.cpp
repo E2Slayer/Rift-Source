@@ -110,7 +110,7 @@ void LastPosition::MenuLoader()
 			Menu::DropList("^-> Minimap Missing Timer Color", "Trackers.LastPosition.Minimap.Color", ColorMenuList, 11);
 			Menu::DropList("^-> Minimap Missing Timer OutLine Color", "Trackers.LastPosition.Minimap.OutLineColor", ColorMenuList, 0);
 			Menu::SliderInt("Minimap Missing Timer Position X-axis", "Trackers.LastPosition.Minimap.DrawingX", 0, -50, 50);
-			Menu::SliderInt("Minimap Missing Timer Position Y-axis", "Trackers.LastPosition.Minimap.DrawingY", -0, -50, 50);
+			Menu::SliderInt("Minimap Missing Timer Position Y-axis", "Trackers.LastPosition.Minimap.DrawingY", 0, -50, 50);
 
 			Menu::Checkbox("Draw Expanding Circle on the World", "Trackers.LastPosition.Minimap.Expand.Use", true);
 			Menu::SliderInt("World Expanding Circle Maximum Range", "Trackers.LastPosition.Minimap.Expand.MaxRange", 5000, 1000, 8000);
@@ -288,8 +288,8 @@ void LastPosition::DrawLoader()
 			if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Timer"))
 			{
 				Vector2 tempPos = mpPos;
-				tempPos.x += -3.0f + float(Menu::Get<int>("Trackers.LastPosition.Minimap.DrawingX"));
-				tempPos.y += 15.0f + float(Menu::Get<int>("Trackers.LastPosition.Minimap.DrawingY"));
+				tempPos.x += -4.0f + float(Menu::Get<int>("Trackers.LastPosition.Minimap.DrawingX"));
+				tempPos.y += 8.0f + float(Menu::Get<int>("Trackers.LastPosition.Minimap.DrawingY"));
 				DrawHelper::DrawOutlineText(NULL, &tempPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.Color")), Menu::Get<int>("Trackers.LastPosition.Minimap.FontSize"), Menu::Get<int>("Trackers.LastPosition.Minimap.FontSize2"), 0,
 					&DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.OutLineColor")), false);
 			}

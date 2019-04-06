@@ -237,7 +237,7 @@ void JungleTimer::TickLoader()
 		return;
 	}
 	//SdkUiConsoleWrite("44444444444444?");
-	if (JunglerChecker + 100 > GetTickCount())
+	if (JunglerChecker + 300 > GetTickCount())
 	{
 		return;
 	}
