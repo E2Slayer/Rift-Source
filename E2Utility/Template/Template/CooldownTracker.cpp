@@ -37,6 +37,8 @@ bool CDEnemy;
 bool CDFirstRun = false;
 
 int SCTformat = 0;
+
+DWORD CooldownTrackerTick = 0;
 //std::map<unsigned int, std::vector<_SDK_SPELL>> _summonerDatas;
 
 //const SpellSlot _spellSlots[] { SpellSlot::Q, SpellSlot::W, SpellSlot::E, SpellSlot::R };
@@ -48,7 +50,7 @@ void CooldownTracker::Init()
 	PlayerNetID = Player.GetNetworkID();
 	_spellDatas.clear();
 	ManualSpellLists.clear();
-
+	CooldownTrackerTick = 0;
 	/*
 	CDMySelf = Menu::Get<bool>("Trackers.CooldownTracker.Myself");
 	CDAlly = Menu::Get<bool>("Trackers.CooldownTracker.Ally");
@@ -446,6 +448,14 @@ void CooldownTracker::TickLoader()
 		}*/
 	}
 
+	if (CooldownTrackerTick + 300 > GetTickCount())
+	{
+		return;
+	}
+	CooldownTrackerTick = GetTickCount();
+
+
+
 	if (!CooldownChampList.empty())
 	{
 		for (auto &value : CooldownChampList)
@@ -514,7 +524,7 @@ void CooldownTracker::DrawLoader()
 				auto SpellPosition = HUDPosition;
 				SpellPosition.x += -43.0f;
 				SpellPosition.y += -3.0f;
-
+				Draw::LineScreen(&SpellPosition, &Vector2(SpellPosition.x + 105.0f, SpellPosition.y), 7.0f, &Color::Grey);
 				for (int i = 0; i < 6; i++)
 				{
 					if (i == 4 || i == 5)
@@ -553,36 +563,19 @@ void CooldownTracker::DrawLoader()
 									ss1 << std::setfill('0') << std::setw(2) << onlySec;
 								}
 
-								DrawHelper::DrawOutlineText(NULL, &Vector2(SSPosition.x + float(CooldownMenuList.SummmonerSpellPosX) + 18.0f, SSPosition.y + 3.0f + float(CooldownMenuList.SummmonerSpellPosY)), ss1.str().c_str(), "Calibri Bold", &Color::White, CooldownMenuList.SummmonerSpellFont1, CooldownMenuList.SummmonerSpellFont2, 0,
+								DrawHelper::DrawOutlineText(NULL, &Vector2(SSPosition.x + float(CooldownMenuList.SummmonerSpellPosX) + 18.0f, SSPosition.y  + float(CooldownMenuList.SummmonerSpellPosY)), ss1.str().c_str(), "Calibri Bold", &Color::White, CooldownMenuList.SummmonerSpellFont1, CooldownMenuList.SummmonerSpellFont2, 0,
 									&Color::Black, false);
 							}
 						}
 					}
 					else
 					{
+
 						auto xPos = SpellPosition.x + value.CooldownSpells[i].Percent * 25.0f;
 						auto yPos = SpellPosition.y;
 
 						if (value.CooldownSpells[i].IsLearned && CooldownMenuList.SpellEnable)
 						{
-							//	Draw::LineScreen(&SpellPosition, &Vector2(xPos, yPos), 7.0f, &Color::Green);
-
-							//SdkUiConsoleWrite("PCT %f", value.CooldownSpells[i].Percent);
-
-							/*
-								if (value.CooldownSpells[i].Percent < 0.99f && value.CooldownSpells[i].Percent >= 0.60f)
-								{
-									Draw::LineScreen(&SpellPosition, &Vector2(SpellPosition.x + 25.0f, SpellPosition.y), 7.0f, &Color::Red);
-								}
-								else if (value.CooldownSpells[i].Percent < 0.60f && value.CooldownSpells[i].Percent > 0.00f)
-								{
-									Draw::LineScreen(&SpellPosition, &Vector2(SpellPosition.x + 25.0f, SpellPosition.y), 7.0f, &Color::Orange);
-								}
-								else if (value.CooldownSpells[i].Percent == 1.00f )
-								{
-									Draw::LineScreen(&SpellPosition, &Vector2(SpellPosition.x + 25.0f, SpellPosition.y), 7.0f, &Color::Green);
-								}
-								*/
 
 							if (value.CooldownSpells[i].Percent < 0.99f && value.CooldownSpells[i].Percent >= 0.50f)
 							{

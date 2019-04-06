@@ -201,6 +201,39 @@ struct EnemyObject
 
 		}
 	}
+
+
+	void EnemyUpdate()
+	{
+		auto spells = Unit->GetSpells();
+		for (auto &spellInside : spells)
+		{
+			float time = spellInside.CooldownExpires - Game::Time();
+			if (int(spellInside.Slot) == 3)
+			{
+				SpellR = spellInside;
+				SpellRCD = time;
+			}
+			else if (int(spellInside.Slot) == 4)
+			{
+				SummonerSpells1 = spellInside;
+				SummonerSpells1CD = time;
+
+				SummonerSpells1IMG = ChampionNames::GetSummonerSpellIMG(spellInside.ScriptName, 297);
+			}
+			else if (int(spellInside.Slot) == 5)
+			{
+				SummonerSpells2 = spellInside;
+				SummonerSpells2CD = time;
+				SummonerSpells2IMG = ChampionNames::GetSummonerSpellIMG(spellInside.ScriptName, 297);
+			}
+			else
+			{
+				continue;
+			}
+
+		}
+	}
 };
 
 

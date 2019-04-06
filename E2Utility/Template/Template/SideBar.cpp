@@ -25,6 +25,8 @@ const float length = 0.73f;
 int arrayStyle = 0;
 int SidebarGab = 100;
 
+DWORD SidebarTick;
+
 /*
 Vector2 HpBarPos;
 Vector2 MpBarPos;
@@ -50,6 +52,7 @@ void SideBar::Init()
 	FirstRunChecker = false;
 	arrayStyle = 0;
 	SidebarGab = 100;
+	SidebarTick = 0;
 	//MissingTimerBool = false;
 
 	auto enemyList{ pSDK->EntityManager->GetEnemyHeroes() };
@@ -129,9 +132,9 @@ void SideBar::MenuLoader()
 
 			Menu::Checkbox("Draw Summoner Spells Timer", "Trackers.SideBar.SS.Use", true);
 			//Menu::DropList("Summoner Spells Timer Format", "Trackers.SideBar.SS.Format", std::vector<std::string>{ "MM:SS", "SS"}, 0);
-			Menu::SliderInt("Summoner Spells Timer Position X-axis", "Trackers.SideBar.SS.DrawingX", -10, -200, 200);
-			Menu::SliderInt("Summoner Spells Timer Position Y-axis", "Trackers.SideBar.SS.DrawingY", -10, -200, 200);
-			Menu::SliderInt("Summoner Spells Timer Font Height", "Trackers.SideBar.SS.FontSize", 20, 10, 30);
+			Menu::SliderInt("Summoner Spells Timer Position X-axis", "Trackers.SideBar.SS.DrawingX", 0, -200, 200);
+			Menu::SliderInt("Summoner Spells Timer Position Y-axis", "Trackers.SideBar.SS.DrawingY", 0, -200, 200);
+			Menu::SliderInt("Summoner Spells Timer Font Height", "Trackers.SideBar.SS.FontSize", 16, 10, 30);
 			Menu::SliderInt("Summoner Spells Timer Font Width", "Trackers.SideBar.SS.FontSize2", 4, 1, 10);
 			Menu::DropList("^-> Summoner Spells Timer Color", "Trackers.SideBar.SS.Color", ColorMenuList, 11);
 			Menu::DropList("^-> Summoner Spells Timer OutLine Color", "Trackers.SideBar.SS.OutLineColor", ColorMenuList, 0);
@@ -148,7 +151,7 @@ void SideBar::MenuLoader()
 			//Menu::DropList("Ultimate Timer Format", "Trackers.SideBar.Ultimate.Format", std::vector<std::string>{ "MM:SS", "SS"}, 0);
 			Menu::SliderInt("Ultimate Timer Position X-axis", "Trackers.SideBar.Ultimate.DrawingX", 0, -200, 200);
 			Menu::SliderInt("Ultimate Timer Position Y-axis", "Trackers.SideBar.Ultimate.DrawingY", 0, -200, 200);
-			Menu::SliderInt("Ultimate Timer Font Height", "Trackers.SideBar.Ultimate.FontSize", 20, 10, 30);
+			Menu::SliderInt("Ultimate Timer Font Height", "Trackers.SideBar.Ultimate.FontSize", 16, 10, 30);
 			Menu::SliderInt("Ultimate Timer Font Width", "Trackers.SideBar.Ultimate.FontSize2", 4, 1, 10);
 			Menu::DropList("^-> Summoner Ultimate Timer Color", "Trackers.SideBar.Ultimate.Color", ColorMenuList, 11);
 			Menu::DropList("^-> Summoner Ultimate Timer OutLine Color", "Trackers.SideBar.Ultimate.OutLineColor", ColorMenuList, 0);
@@ -270,6 +273,8 @@ void SideBar::TickLoader()
 		return;
 	}
 
+
+
 	if (Game::IsOverlayOpen() || FirstRunChecker == false)
 	{
 		FirstRunChecker = true;
@@ -340,14 +345,14 @@ void SideBar::TickLoader()
 				enemy.PositionList.MissingTimerPos = Vector2(tempPos.x - 15.0f + SideBarMenuList[4].DrawX, tempPos.y - 25.0f + SideBarMenuList[4].DrawY);
 				enemy.PositionList.LevelPos = Vector2(tempPos.x + 3.0f + SideBarMenuList[6].DrawX, tempPos.y - 5.0f + SideBarMenuList[6].DrawY);
 
-				enemy.PositionList.UltimatePos = Vector2(tempPos.x - 34.0f + SideBarMenuList[3].DrawX, tempPos.y - 31.0f + SideBarMenuList[3].DrawY);
+				enemy.PositionList.UltimatePos = Vector2(tempPos.x - 34.0f + SideBarMenuList[3].DrawX, tempPos.y - 29.0f + SideBarMenuList[3].DrawY);
 
 				enemy.PositionList.SS1Pos = Vector2(tempPos.x + 30.0f + SideBarMenuList[1].DrawX, tempPos.y - 22.0f + SideBarMenuList[1].DrawY);
-				enemy.PositionList.SS1TimerPos = Vector2(tempPos.x + 30.0f + SideBarMenuList[2].DrawX, tempPos.y - 22.0f + SideBarMenuList[2].DrawY);
+				enemy.PositionList.SS1TimerPos = Vector2(tempPos.x + 10.0f + SideBarMenuList[2].DrawX, tempPos.y - 26.0f + SideBarMenuList[2].DrawY);
 
 				enemy.PositionList.SS2Pos = Vector2(tempPos.x + 30.0f + SideBarMenuList[1].DrawX, tempPos.y + 4.0f + SideBarMenuList[1].DrawY);
 
-				enemy.PositionList.SS2TimerPos = Vector2(tempPos.x + 30.0f + SideBarMenuList[2].DrawX, tempPos.y + 4.0f + SideBarMenuList[2].DrawY);
+				enemy.PositionList.SS2TimerPos = Vector2(tempPos.x + 20.0f + SideBarMenuList[2].DrawX, tempPos.y - 4.0f + SideBarMenuList[2].DrawY);
 
 
 
@@ -366,9 +371,17 @@ void SideBar::TickLoader()
 
 	}
 
+
+	if (SidebarTick + 500 > GetTickCount())
+	{
+		return;
+	}
+	SidebarTick = GetTickCount();
+
+
 	for (auto& enemy : _enemyObject)
 	{
-
+		enemy.EnemyUpdate();
 
 		float currentTime = Game::Time();
 
@@ -396,19 +409,22 @@ void SideBar::TickLoader()
 			//HpBarPos = Vector2((MainFramePosition.x - 34.0f) + hp * length, MainFramePosition.y + 20.0f);
 
 		
-			float mp = enemy.Unit->GetManaPercent();
+		//	float mp = enemy.Unit->GetManaPercent();
 
 			//MpBarPos = Vector2((MainFramePosition.x - 34.0f) + mp * length, MainFramePosition.y + 26.0f);
 
-			float exp = enemy.Unit->GetExperience();
+			//float exp = enemy.Unit->GetExperience();
 
-			float neededExp = RequiredExp[enemy.Unit->GetLevel()];
-
-			float percent = (100.0f / (neededExp - RequiredExp[enemy.Unit->GetLevel() - 1]) * (exp - RequiredExp[enemy.Unit->GetLevel() - 1]));
+			float percent = 0.0f;
 			if (enemy.Unit->GetLevel() == 18)
 			{
 				percent = 100.0f;
 			}
+			else
+			{
+				percent = (100.0f / (RequiredExp[enemy.Unit->GetLevel()] - RequiredExp[enemy.Unit->GetLevel() - 1]) * (enemy.Unit->GetExperience() - RequiredExp[enemy.Unit->GetLevel() - 1]));
+			}
+
 			enemy.EXPlength = percent * length;
 
 

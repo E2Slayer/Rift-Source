@@ -133,7 +133,7 @@ struct CooldownInisdeStruct
 	void UpdateInfoManual(float newTime, float totalCD)
 	{
 
-		this->Cooldown = Spell.CooldownExpires - Game::Time();
+		this->Cooldown = newTime;
 		if (!this->IsLearned)
 		{
 			this->IsLearned = Spell.Learned;
@@ -221,7 +221,9 @@ struct CooldownChamp
 			}
 			float time = spellInside.CooldownExpires - Game::Time();
 
-			CooldownSpells.emplace_back(CooldownInisdeStruct(spellInside, time, spellInside.Learned, ChampionNames::GetSummonerSpells(spellInside.ScriptName, true)));
+			
+
+			CooldownSpells.emplace_back(CooldownInisdeStruct(spellInside, time, spellInside.Learned, ChampionNames::GetSummonerSpells(spellInside.ScriptName, time < 0.0f ? true : false)));
 
 		}
 	}
