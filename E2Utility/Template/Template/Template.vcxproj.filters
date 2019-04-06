@@ -1437,5 +1437,11 @@
     <Image Include="Resources\LP\TP\LP_Teleport.png">
       <Filter>Arquivos de Recurso\LastPosition\Teleport</Filter>
     </Image>
+    <Image Include="Resources\WT\WT_Green.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="Resources\WT\WT_Pink.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -409,7 +409,7 @@ void AbilityTimer::TickLoader()
 
 void AbilityTimer::DrawLoader()
 {
-	SdkUiConsoleWrite("Drawing22?");
+	//SdkUiConsoleWrite("Drawing22?");
 
 
 	if (!Menu::Get<bool>("Trackers.AbilityTimer.Use"))
@@ -418,7 +418,7 @@ void AbilityTimer::DrawLoader()
 		return;
 	}
 
-	SdkUiConsoleWrite("Drawing??");
+	//SdkUiConsoleWrite("Drawing??");
 
 
 	if (Game::IsOverlayOpen())

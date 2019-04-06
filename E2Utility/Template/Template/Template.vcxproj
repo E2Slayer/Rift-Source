@@ -615,6 +615,8 @@
     <Image Include="Resources\SB\SB_summonersmite.png" />
     <Image Include="Resources\SB\SB_summonerteleport.png" />
     <Image Include="Resources\SB\SB_Ultimate.png" />
+    <Image Include="Resources\WT\WT_Green.png" />
+    <Image Include="Resources\WT\WT_Pink.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

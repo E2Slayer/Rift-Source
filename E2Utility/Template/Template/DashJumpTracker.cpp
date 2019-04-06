@@ -314,11 +314,15 @@ void DashJumpTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 				}
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
+				value.Casted = true;
+				value.TimeCasted = Game::Time();
 			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "KatarinaE") == 0 && Menu::Get<bool>("Trackers.DashJumpTracker.List.KatarinaEWrapper"))//KatarinaEWrapper
 			{
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
+				value.Casted = true;
+				value.TimeCasted = Game::Time();
 
 			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "LeblancW") == 0)
@@ -337,6 +341,8 @@ void DashJumpTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 				//	value.StartPos = Destinations[index - 2].StartPos;
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
+				value.Casted = true;
+				value.TimeCasted = Game::Time();
 
 			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "LeblancRW") == 0)
@@ -355,6 +361,8 @@ void DashJumpTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 			//	value.StartPos = Destinations[index - 2].StartPos;
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
+				value.Casted = true;
+				value.TimeCasted = Game::Time();
 
 			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "LeblancWReturn") == 0)
@@ -365,6 +373,8 @@ void DashJumpTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 				//SdkUiConsoleWrite("2Spell: %s", SpellCast->Spell.ScriptName);
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = Destinations[0].StartPos;
+				value.Casted = true;
+				value.TimeCasted = Game::Time();
 			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "LeblancRWReturn") == 0)
 			{
@@ -376,31 +386,47 @@ void DashJumpTracker::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void 
 			
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = Destinations[2].StartPos;
+				value.Casted = true;
+				value.TimeCasted = Game::Time();
 
 			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "ZedW2") == 0 && _stricmp(SpellCast->Spell.ScriptName, "ZedW") != 0 && Menu::Get<bool>("Trackers.DashJumpTracker.List.ZedW"))
 			{
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
+				value.Casted = true;
+				value.TimeCasted = Game::Time();
 
 			}
 			else if (_stricmp(SpellCast->Spell.ScriptName, "ZedR2") == 0 && _stricmp(SpellCast->Spell.ScriptName, "ZedR") != 0 && Menu::Get<bool>("Trackers.DashJumpTracker.List.ZedR"))
 			{
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
-			
+				value.Casted = true;
+				value.TimeCasted = Game::Time();
+				
 
 			}
-			else if (_stricmp(SpellCast->Spell.ScriptName, value.SpellName) == 0 && _stricmp(SpellCast->Spell.ScriptName, "ZedW") != 0 && _stricmp(SpellCast->Spell.ScriptName, "ZedR") != 0 )
+			else if (_stricmp(SpellCast->Spell.ScriptName, "BlindMonkWOne") == 0 && Menu::Get<bool>("Trackers.DashJumpTracker.List.BlindMonkWOne"))
+			{
+				if (SpellCast->StartPosition.Distance(SpellCast->EndPosition) > 50.0f)
+				{
+					//SdkUiConsoleWrite("1Noramal: %s", SpellCast->Spell.ScriptName);
+					value.StartPos = SpellCast->StartPosition;
+					value.EndPos = SpellCast->EndPosition;
+					value.Casted = true;
+					value.TimeCasted = Game::Time();
+				}
+
+			}
+			else if (_stricmp(SpellCast->Spell.ScriptName, value.SpellName) == 0 && _stricmp(SpellCast->Spell.ScriptName, "ZedW") != 0 && _stricmp(SpellCast->Spell.ScriptName, "ZedR") != 0)
 			{
 				value.StartPos = SpellCast->StartPosition;
 				value.EndPos = CalculateEndPos(SpellCast->StartPosition, SpellCast->EndPosition, value.Range);
-
-				//SdkUiConsoleWrite("Noramal: %s", SpellCast->Spell.ScriptName);
-				
+				value.Casted = true;
+				value.TimeCasted = Game::Time();
 			}
-			value.Casted = true;
-			value.TimeCasted = Game::Time();
+
 		}
 		
 

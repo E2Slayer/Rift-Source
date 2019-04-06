@@ -32,14 +32,15 @@ struct WardStruct
 {
 	float Duration;
 	float Range;
-	//float VisionRange;
+	float VisionRange;
 	const char* ObjectBaseSkinName;
 	const char* SpellName;
+	//const char* DisplayName;
 	WardType Type;
 
 
-	WardStruct(float _Duration, float _Range, const char* _ObjectBaseSkinName, const char* _SpellName, WardType _Type)
-		: Duration(_Duration), Range(_Range), ObjectBaseSkinName(_ObjectBaseSkinName), SpellName(_SpellName), Type(_Type)
+	WardStruct(float _Duration, float _Range, float _VisionRange, const char* _ObjectBaseSkinName, const char* _SpellName, WardType _Type)
+		: Duration(_Duration), Range(_Range), VisionRange(_VisionRange), ObjectBaseSkinName(_ObjectBaseSkinName), SpellName(_SpellName), Type(_Type)
 	{
 		
 	}

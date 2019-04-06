@@ -28,7 +28,7 @@ void Trackers::Init()
 	JungleTimer::Init();
 	SideBar::Init();
 	LastPosition::Init();
-	//WardsTraps::Init();
+	WardsTraps::Init();
 }
 
 
@@ -47,8 +47,8 @@ void Trackers::Tick(void * UserData)
 	SideBar::TickLoader();
 	JungleTimer::TickLoader();
 
-	
-	//WardsTraps::TickLoader();
+	LastPosition::TickLoader();
+	WardsTraps::TickLoader();
 }
 
 void Trackers::DrawMenu(void * UserData)
@@ -72,7 +72,7 @@ void Trackers::DrawMenu(void * UserData)
 		JungleTimer::MenuLoader();
 		SideBar::MenuLoader();
 		LastPosition::MenuLoader();
-		//WardsTraps::MenuLoader();
+		WardsTraps::MenuLoader();
 
 
 		Menu::Tree("Trackers Configs", "Trackers.Config", false, []()
@@ -99,5 +99,5 @@ void Trackers::Draw(_In_ void* UserData)
 	JungleTimer::DrawLoader();
 	SideBar::DrawLoader();
 	LastPosition::DrawLoader();
-	//WardsTraps::DrawLoader();
+	WardsTraps::DrawLoader();
 }

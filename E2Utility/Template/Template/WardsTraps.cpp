@@ -3,6 +3,7 @@
 #include <string.h>
 #include "DrawHelper.h"
 #include <iomanip>
+#include "resource.h"
 
 
 std::vector< HeroWard> _heroNoWards;
@@ -14,6 +15,17 @@ std::vector<unsigned int> trinketAdjust;
 DWORD WardLastCheck = 0.0f;
 
 const float visionDuration = 50000000.0f;
+Vector3 visionDirection = Vector3(100.0f, 100.0f, 100.0f);
+bool WardsTrapsFirstRun = false;
+
+
+bool TrackVisionRange = false;
+bool VisionRangeEnable = false;
+bool TrackWardsTraps = false;
+bool TrackWards = false;
+bool TrackTraps = false;
+bool MinimapTrack = false;
+
 
 void WardsTraps::Init()
 {
@@ -21,6 +33,17 @@ void WardsTraps::Init()
 	_wardObjects.clear();
 	_wardStructs.clear();
 	WardLastCheck = 0.0f;
+	WardsTrapsFirstRun = false;
+
+	TrackVisionRange = Menu::Get<bool>("Trackers.WardsTraps.VisionRange.Use");
+	VisionRangeEnable = false;
+	MinimapTrack = Menu::Get<bool>("Trackers.WardsTraps.Wards.Minimap");
+
+	//Trackers.WardsTraps.Wards.Minimap
+	TrackWardsTraps = Menu::Get<bool>("Trackers.WardsTraps.Use");
+	TrackWards = Menu::Get<bool>("Trackers.WardsTraps.Wards.Use");
+	TrackTraps = Menu::Get<bool>("Trackers.WardsTraps.Traps.Use");
+
 	/*
 	spellcast: LootedTrinketTotem
 	SightWard 
@@ -33,23 +56,23 @@ void WardsTraps::Init()
 
 	//oncreate Cupcake Trap / spellcast : CaitynYordleTrap
 
-	/*
-	_wardStructs.emplace_back(90.0f, 1100.0f, 1000.0f,"YellowTrinket", "TrinketTotemLvl1", WardType::Trinket); //Normal Trinket Ward  Duration 84.706 + (5.294*level)
+	
+	_wardStructs.emplace_back(90.0f, 100.0f, 1000.0f,"YellowTrinket", "TrinketTotemLvl1", WardType::Trinket); //Normal Trinket Ward  Duration 84.706 + (5.294*level)
 
-	_wardStructs.emplace_back(150.0f, 1100.0f, 1000.0f, "SightWard", "ItemGhostWard", WardType::Green); //ward from Supporter items
-	_wardStructs.emplace_back(150.0f, 1100.0f, 1000.0f, "YellowTrinket", "LootedTrinketTotem", WardType::Green); //ward from Supporter items
+	_wardStructs.emplace_back(150.0f, 100.0f, 1000.0f, "SightWard", "ItemGhostWard", WardType::Green); //ward from Supporter items
+	_wardStructs.emplace_back(150.0f, 100.0f, 1000.0f, "YellowTrinket", "LootedTrinketTotem", WardType::Trinket); //ward from Supporter items
+	_wardStructs.emplace_back(visionDuration, 75.0f, 700.0f, "BlueTrinket", "LootedTrinketOrb", WardType::Blue); //JammerDevice
 
 
-	_wardStructs.emplace_back(visionDuration, 1100.0f, 1000.0f,"JammerDevice", "JammerDevice", WardType::Pink); //JammerDevice
-	_wardStructs.emplace_back(visionDuration, 1100.0f, 700.0f, "BlueTrinket", "TrinketOrbLvl3", WardType::Blue); //JammerDevice
-
+	_wardStructs.emplace_back(visionDuration, 75.0f, 1000.0f,"JammerDevice", "JammerDevice", WardType::Pink); //JammerDevice
+	_wardStructs.emplace_back(visionDuration, 75.0f, 700.0f, "BlueTrinket", "TrinketOrbLvl3", WardType::Blue); //JammerDevice
 
 	_wardStructs.emplace_back(30.0f, 80.0f, 80.0f, "CaitlynTrap", "CaitlynYordleTrap", WardType::Trap); //JammerDevice
 	_wardStructs.emplace_back(120.0f, 80.0f, 0.0f, "NidaleeSpear", "Bushwhack", WardType::Trap); //JammerDevice
-	_wardStructs.emplace_back(60.0f, 300.0f, 850.0f, "ShacoBox", "JackInTheBox", WardType::Trap); //JammerDevice
+	_wardStructs.emplace_back(60.0f, 100.0f, 850.0f, "ShacoBox", "JackInTheBox", WardType::Trap); //JammerDevice
 	_wardStructs.emplace_back(300.0f, 150.0f, 450.0f, "TeemoMushroom", "BantamTrap", WardType::Trap); //JammerDevice
-	_wardStructs.emplace_back(120.0f, 150.0f, 450.0f, "JhinTrap", "JhinETrap", WardType::Trap); //JammerDevice
-	*/
+	_wardStructs.emplace_back(120.0f, 125.0f, 450.0f, "JhinTrap", "JhinETrap", WardType::Trap); //JammerDevice
+	
 
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::CreateObject, WardsTraps::OnCreate);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::DeleteObject, WardsTraps::OnDelete);
@@ -58,10 +81,62 @@ void WardsTraps::Init()
 
 void WardsTraps::MenuLoader()
 {
+	Menu::Tree("Wards Traps", "Trackers.WardsTraps", false, []()
+	{
+		Menu::Checkbox("Enable Wards Traps Tracker", "Trackers.WardsTraps.Use", true);
+
+		Menu::Checkbox("Track Wards", "Trackers.WardsTraps.Wards.Use", true);
+		Menu::Checkbox("Draw Vision Wards on the Minimap", "Trackers.WardsTraps.Wards.Minimap", true);
+		Menu::Checkbox("Track Traps", "Trackers.WardsTraps.Traps.Use", true);
+
+
+		
+		Menu::Tree("Vision Range", "Trackers.WardsTraps.VisionRange", false, []()
+		{
+
+			Menu::Checkbox("Use Vision Range", "Trackers.WardsTraps.VisionRange.Use", true);
+			Menu::Hotkey("Vision Key", "Trackers.WardsTraps.VisionRange.Key", 85); //32 is space bar
+			Menu::HotkeyToggle("Vision Toggle Key", "Trackers.WardsTraps.VisionRange.Toggle", 74, false);
+		});
+		
+	});
+
 }
 
 void WardsTraps::TickLoader()
 {
+	if (Game::IsOverlayOpen || WardsTrapsFirstRun == false)
+	{
+		WardsTrapsFirstRun = true;
+		TrackVisionRange = Menu::Get<bool>("Trackers.WardsTraps.VisionRange.Use");
+		TrackWardsTraps = Menu::Get<bool>("Trackers.WardsTraps.Use");
+		TrackWards = Menu::Get<bool>("Trackers.WardsTraps.Wards.Use");
+		TrackTraps = Menu::Get<bool>("Trackers.WardsTraps.Traps.Use");
+		MinimapTrack = Menu::Get<bool>("Trackers.WardsTraps.Wards.Minimap");
+		//SdkUiConsoleWrite("trackvision %d", TrackVisionRange);
+	}
+
+	if (!TrackWardsTraps)
+	{
+		return;
+	}
+
+	if (TrackVisionRange)
+	{
+		//SdkUiConsoleWrite("ishere 23");
+		if (Menu::Get<KeyToggle_t>("Trackers.WardsTraps.VisionRange.Toggle").Toggle || Menu::Get<Hotkey>("Trackers.WardsTraps.VisionRange.Key").Active)
+		{
+			//SdkUiConsoleWrite("ishere 2");
+			VisionRangeEnable = true;
+		}
+		else
+		{
+			VisionRangeEnable = false;
+		}
+	}
+
+
+	//SdkUiConsoleWrite("ishere 1");
 
 	if (WardLastCheck + 300 > GetTickCount())
 	{
@@ -98,7 +173,6 @@ void WardsTraps::TickLoader()
 		}
 	}
 
-	return;
 
 	if (!trinketAdjust.empty())
 	{
@@ -160,7 +234,11 @@ void WardsTraps::TickLoader()
 
 void WardsTraps::DrawLoader()
 {
-
+	if (!TrackWardsTraps)
+	{
+		return;
+	}
+	//return;
 	/*
 	auto minions { pSDK->EntityManager->GetAllyWards( 1000.0f, &Player.GetPosition()) };
 
@@ -218,81 +296,74 @@ void WardsTraps::DrawLoader()
 
 
 
+	if (_wardObjects.empty())
+	{
+		return;
+	}
+
+	std::stringstream ss1;
+	ss1.precision(1); //for decimal
+	ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
+	int sec = 0;
+	int mins = 0;
+
+	Vector2 screenPos2;
 
 	for (auto& ward : _wardObjects)
 	{
-		/*
-		
-		   if (ward.Position.IsOnScreen())
-            {
-                if (greenCircle || ward.Data.Type != WardType.Green)
-                {
-                    if (ward.Object == null || !ward.Object.IsValid ||
-                        (ward.Object != null && ward.Object.IsValid && !ward.Object.IsVisible))
-                    {
-                        Render.Circle.DrawCircle(ward.Position, circleRadius, color, circleThickness);
-                    }
-                }
-                if (ward.Data.Type == WardType.Green && !ward.Data.Duration.Equals(int.MaxValue))
-                {
-                    _text.DrawTextCentered(
-                        string.Format(
-                            "{0} {1} {0}", ward.IsFromMissile ? (ward.Corrected ? "?" : "??") : string.Empty,
-                            (ward.EndTime - Game.Time).FormatTime(totalSeconds)),
-                        Drawing.WorldToScreen(ward.Position),
-                        new SharpDX.Color(color.R, color.G, color.B, color.A));
-                }
-            }
-					*/
-
-
-		if (ward.Position.IsOnScreen())
+		if (ward.Position.IsOnScreen(50.0f) && ward.Position.IsValid())
 		{
-			if (ward.Data.Type == WardType::Pink)
+			ss1.str("");
+			if (ward.Data.Type == WardType::Pink && TrackWards)
 			{
+				/*
+				auto ve2 = Renderer::WorldToScreen(ward.Position);
+				ve2.x += 5.0f;
 
-				Draw::Circle(&ward.Position, 100.0f, &Color::Red, 1, &Vector3(100.0f, 100.0f, 100.0f));
-				
-				//DrawHelper::DrawCircleMap(ward.Position, 100.0f, &Color::Red, 150.0f, 500);
+
+				Draw::LineScreen(&Renderer::WorldToScreen(ward.Position), &ve2, 5.0f, &Color::Red);
+				*/
+
+
+				Draw::Circle(&ward.Position, ward.Data.Range, &Color::Red, 0, &visionDirection);
+
+				if (MinimapTrack)
+				{
+					//Vector2 mini = Renderer::WorldToMinimap(ward.Position);
+					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(WT_Pink), &Renderer::WorldToMinimap(ward.Position), true);
+				}
+				//MinimapTrack
+
 			}
-
-			if (ward.Data.Type == WardType::Blue)
+			else if (ward.Data.Type == WardType::Blue && TrackWards)
 			{
-
-				Draw::Circle(&ward.Position, 100.0f, &Color::Blue, 0, &Vector3(100.0f, 100.0f, 100.0f));
-
-				//DrawHelper::DrawCircleMap(ward.Position, 100.0f, &Color::Red, 150.0f, 500);
+				Draw::Circle(&ward.Position, ward.Data.Range, &Color::Blue, 0, &visionDirection);
 			}
-
-			if ( (ward.Data.Type == WardType::Green || ward.Data.Type == WardType::Trap || ward.Data.Type == WardType::Trinket)  && !ward.Data.Duration != visionDuration)
+			else if ( ( (ward.Data.Type == WardType::Green || ward.Data.Type == WardType::Trinket) && TrackWards || (ward.Data.Type == WardType::Trap && TrackTraps))  && !ward.Data.Duration != visionDuration)
 			{
 
-				Draw::Circle(&ward.Position, 100.0f, &Color::Green, 0, &Vector3(100.0f, 100.0f, 100.0f));
+				Draw::Circle(&ward.Position, ward.Data.Range, &(ward.Data.Type == WardType::Trap ? Color::Magenta : Color::Green), 0, &visionDirection);
 
+				screenPos2 = Renderer::WorldToScreen(ward.Position);
+				screenPos2.x += -5.0f;
+				screenPos2.y += -5.0f;
 
+				sec = ward.EndTime() - Game::Time();
 
-				Vector2 screenPos2{ Renderer::WorldToScreen(ward.Position) };
-				//screenPos2.x += (float)Menu::Get<int>("Trackers.InhibitorTimer.Minimap.DrawingX") - 8.0f;
-				//screenPos2.y += (float)Menu::Get<int>("Trackers.InhibitorTimer.Minimap.DrawingY") - 7.0f;
-
-				std::stringstream ss1;
-				ss1.precision(1); //for decimal
-				ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
-
-
-				int sec = ward.EndTime() - Game::Time();
-
-				int mins = sec / 60;
+				mins = sec / 60;
 				sec = sec % 60;
 
 				ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
 
-				DrawHelper::DrawOutlineText(NULL, &screenPos2, ss1.str().c_str(), "Calibri Bold", &Color::White, 28, 6, 0,
+				DrawHelper::DrawOutlineText(NULL, &screenPos2, ss1.str().c_str(), "Calibri Bold", &Color::White, 26, 6, 0,
 					&Color::Black, false);
 
 			}
 
-
+			if (VisionRangeEnable)
+			{
+				Draw::Circle(&ward.Position, ward.Data.VisionRange, &Color::DarkBlue, 0, &visionDirection);
+			}
 		}
 
 
@@ -307,20 +378,12 @@ bool __cdecl WardsTraps::OnCreate(void * Object, unsigned int NetworkID, void * 
 {
 	UNREFERENCED_PARAMETER(UserData);
 	//UNREFERENCED_PARAMETER(NetworkID);
-	/*
-	if (!Menu::Get<bool>("Trackers.AbilityTimer.Use"))
+	if (!TrackWardsTraps)
 	{
 		return false;
 	}
-
-
-	if (AbilitiesMap.empty())
-	{
-		return false;
-	}
-	*/
 	auto sender = pSDK->EntityManager->GetObjectFromPTR(Object);
-	if (Object == nullptr || sender == nullptr || sender == NULL || NetworkID == 0)
+	if (Object == nullptr || sender == nullptr || sender == NULL || NetworkID == 0 || sender->IsAlly())
 	{
 		return false;
 	}
@@ -344,13 +407,13 @@ bool __cdecl WardsTraps::OnCreate(void * Object, unsigned int NetworkID, void * 
 	{
 		return false;
 	}
-	SdkUiConsoleWrite("3rd Ward Create GetName [%s]", objectName);
+//	SdkUiConsoleWrite("3rd Ward Create GetName [%s]", objectName);
 
 
 
 
-	//return false;
-	if (sender->IsMissile())
+	/*
+		if (sender->IsMissile())
 	{
 		auto missile = sender->AsMissileClient();
 		if (missile->IsValid() && missile->GetOwner() != NULL && !missile->GetOwner()->IsAlly())
@@ -362,7 +425,11 @@ bool __cdecl WardsTraps::OnCreate(void * Object, unsigned int NetworkID, void * 
 
 		}
 	}
-	else if ( sender->IsRealWard() || sender->IsMinion())
+	else 
+	*/
+
+	//return false;
+	if ( sender->IsRealWard() || sender->IsMinion())
 	{
 
 		
@@ -395,7 +462,7 @@ bool __cdecl WardsTraps::OnCreate(void * Object, unsigned int NetworkID, void * 
 
 
 		//auto ownder = wardObject->GetObjectOwner();
-		SdkUiConsoleWrite("3rd Ward Created GetCharName [%s]", wardObject->GetCharName());
+		//SdkUiConsoleWrite("3rd Ward Created GetCharName [%s]", wardObject->GetCharName());
 		
 		if (wardObject != NULL && wardObject != nullptr) //gotta add ally checker later
 		{
@@ -442,14 +509,14 @@ bool __cdecl WardsTraps::OnCreate(void * Object, unsigned int NetworkID, void * 
 
 						trinketAdjust.emplace_back(NetworkID);
 
-						SdkUiConsoleWrite("wobj Create Time [%f] Type %d", time, int(sender->AsAIMinionClient()->GetResource().Type));
+						//SdkUiConsoleWrite("wobj Create Time [%f] Type %d", time, int(sender->AsAIMinionClient()->GetResource().Type));
 
 					}
 
 
 					WardObject wObj = WardObject(ward, wardObject->GetPosition(), Game::Time() , wardObject, time);
 					_wardObjects.emplace_back(wObj);
-					SdkUiConsoleWrite("wobj Added  ");
+					//SdkUiConsoleWrite("wobj Added  ");
 
 				}
 
@@ -467,6 +534,10 @@ bool __cdecl WardsTraps::OnCreate(void * Object, unsigned int NetworkID, void * 
 bool __cdecl WardsTraps::OnDelete(void * Object, unsigned int NetworkID, void * UserData)
 {
 	UNREFERENCED_PARAMETER(UserData);
+	if (!TrackWardsTraps)
+	{
+		return false;
+	}
 	//UNREFERENCED_PARAMETER(NetworkID);
 	/*
 	if (!Menu::Get<bool>("Trackers.AbilityTimer.Use"))
@@ -481,7 +552,7 @@ bool __cdecl WardsTraps::OnDelete(void * Object, unsigned int NetworkID, void * 
 	}
 	*/
 	auto sender = pSDK->EntityManager->GetObjectFromPTR(Object);
-	if (Object == nullptr || sender == nullptr || sender == NULL || NetworkID == 0)
+	if (Object == nullptr || sender == nullptr || sender == NULL || NetworkID == 0 || sender->IsAlly())
 	{
 		return false;
 	}
@@ -510,7 +581,7 @@ bool __cdecl WardsTraps::OnDelete(void * Object, unsigned int NetworkID, void * 
 	if (sender->IsRealWard() || sender->IsMinion())
 	{
 		auto wardObject = sender->AsAIBaseClient();
-		SdkUiConsoleWrite("3rd Ward deleted [%s]", wardObject->GetCharName());
+		//SdkUiConsoleWrite("3rd Ward deleted [%s]", wardObject->GetCharName());
 
 		if (wardObject != NULL && wardObject != nullptr) //gotta add ally checker later
 		{
@@ -548,6 +619,10 @@ bool __cdecl WardsTraps::OnDelete(void * Object, unsigned int NetworkID, void * 
 void __cdecl WardsTraps::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, void * UserData)
 {
 	UNREFERENCED_PARAMETER(UserData);
+	if (!TrackWardsTraps)
+	{
+		return;
+	}
 	//return;
 	/*
 	if (!Menu::Get<bool>("Trackers.CooldownTracker.Use"))
@@ -572,7 +647,7 @@ void __cdecl WardsTraps::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, vo
 	//return;
 
 	auto sender = pSDK->EntityManager->GetObjectFromPTR(AI);
-	if (AI == nullptr || sender == nullptr || sender == NULL || !sender->IsHero()) //later need to add not ally
+	if (AI == nullptr || sender == nullptr || sender == NULL || !sender->IsHero() || sender->IsAlly()) //later need to add not ally
 	{
 		return;
 	}
@@ -596,7 +671,7 @@ void __cdecl WardsTraps::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, vo
 	//sender->AsAIHeroClient()->GetLevel()
 
 
-	SdkUiConsoleWrite("4th SpellName: %s Level : %d ", spellName, sender->AsAIHeroClient()->GetLevel());
+	//SdkUiConsoleWrite("4th SpellName: %s Level : %d ", spellName, sender->AsAIHeroClient()->GetLevel());
 	//SdkUiConsoleWrite("MissileEffectName: %s", SpellCast->Spell.MissileEffectName);
 
 
@@ -625,10 +700,10 @@ void __cdecl WardsTraps::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, vo
 			{
 				if (strcmp(ward.SpellName, "TrinketTotemLvl1") == 0)
 				{
-					int level = sender->AsAIHeroClient()->GetLevel();
+					//int level = sender->AsAIHeroClient()->GetLevel();
 
-					time = 84.706 + (5.294* (level-1));
-					SdkUiConsoleWrite("wobj SpellCast [%f]", time);
+					time = 84.706 + (5.294* (sender->AsAIHeroClient()->GetLevel()));
+					//SdkUiConsoleWrite("wobj SpellCast [%f]", time);
 				}
 				
 			}
@@ -639,7 +714,7 @@ void __cdecl WardsTraps::SpellCastStart(void * AI, PSDK_SPELL_CAST SpellCast, vo
 			//CheckDuplicateWards(wObj);
 
 			_wardObjects.emplace_back(wObj);
-			SdkUiConsoleWrite("ScriptName: added %s", spellName);
+			//SdkUiConsoleWrite("ScriptName: added %s", spellName);
 		}
 
 	}

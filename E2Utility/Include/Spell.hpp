@@ -8,6 +8,9 @@
 #pragma warning(pop)
 
 namespace Spell {
+	static bool CanCastSpell() {
+		return !pCore->Orbwalker->IsNextAttackReady() && !pCore->Orbwalker->IsOnWindUp();
+	}
 
 #pragma region Abstract Classes
 	class SpellBase {
@@ -99,6 +102,9 @@ namespace Spell {
 			return extraTime == 0 ? (State() == SpellState::Ready)
 				: Handle().CooldownExpires + extraTime / 1000.f - Game::Time() < 0;
 		}
+		bool CanCast() {
+			return IsReady() && CanCastSpell();
+		}
 		bool IsInRange(AIBaseClient* targetEntity) {
 			auto from{ RangeCheckFrom && RangeCheckFrom->IsValid() ? RangeCheckFrom->GetPosition() : Player.GetPosition() };
 			return (targetEntity->Distance(from) <= Range);
@@ -106,7 +112,7 @@ namespace Spell {
 		bool IsInRange(Vector3* targetPosition) {
 			auto from{ RangeCheckFrom && RangeCheckFrom->IsValid() ? RangeCheckFrom->GetPosition() : Player.GetPosition() };
 			return (targetPosition->Distance(from) <= Range);			
-		}
+		}		
 
 		virtual void DrawRange(PSDKCOLOR color, float lineWidth = 3.f) {
 			UNREFERENCED_PARAMETER(lineWidth);

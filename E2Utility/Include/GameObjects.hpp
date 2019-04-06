@@ -224,6 +224,9 @@ public:
 	bool IsParticle() {
 		return Object != NULL && (GetTypeID() == (int)GameObjectType::obj_GeneralParticleEmitter);
 	}
+	bool IsMonster() {
+		IsMinion() && GetTeamID() == TEAM_TYPE_NEUTRAL;
+	}
 
 	bool IsValid() {
 		return Object != NULL && pSDK->EntityManager->IsValidObj(GetNetworkID());
@@ -284,7 +287,6 @@ public:
 	bool IsValidTarget(bool CheckIfSpellCanHit = true) {
 		return IsValid() && IsAlive() && !IsZombie() && IsVisible() && IsRealTarget() && (!CheckIfSpellCanHit || CanSpellHit());
 	}
-
 	bool IsRealWard();
 	bool IsJunglePlant();
 	bool IsBarrel();
@@ -848,6 +850,8 @@ public:
 	AIHeroClient() {};
 	~AIHeroClient() {};
 
+	MAKE_GET(NeutralKills, int, SdkGetHeroNeutralKills);
+
 	int GetLevel() {
 		int Level = 1;
 		CHECKFAIL(SdkGetHeroExperience(Object, NULL, &Level));
@@ -992,13 +996,9 @@ public:
 			return true;
 		}		
 		return false;
-	}
+	}		
 
-	
-
-	MAKE_GET(NeutralKills, int, SdkGetHeroNeutralKills);
-
-	void DrawDamageOnHP(float dmg) {
+	void DrawDamageOnHP(float dmg, PSDKCOLOR Color = NULL) {
 		static int constexpr barHeight  {11};
 		static int constexpr barWidth   {105};
 		static int constexpr barXOffset {-45};
@@ -1015,7 +1015,7 @@ public:
 			Vector2 curHealthPos{ barPos.x + barWidth * (h.Current / h.Max), barPos.y };
 			Vector2 endPos{ barPos.x + percentHealthAfterDamage,  barPos.y };
 
-			Draw::LineScreen(&endPos, &curHealthPos, barHeight, &DmgColor);
+			Draw::LineScreen(&endPos, &curHealthPos, barHeight, (Color ? Color : &DmgColor));
 		}		
 	}
 };

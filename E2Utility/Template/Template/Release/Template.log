@@ -1,16 +1,18 @@
 ﻿D:\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Release\) contains files shared from another project (Template.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  JungleTimer.cpp
+  WardsTraps.cpp
+d:\rproject\e2utility\template\template\wardstraps.h(148): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\rproject\e2utility\template\template\wardstraps.h(172): warning C4244: 'argument': conversion from 'double' to 'const unsigned int', possible loss of data
 d:\rproject\e2utility\template\template\drawhelper.h(53): warning C4018: '<': signed/unsigned mismatch
 d:\rproject\e2utility\template\template\drawhelper.h(78): warning C4018: '<': signed/unsigned mismatch
-d:\rproject\e2utility\template\template\jungletimer.cpp(362): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\rproject\e2utility\template\template\jungletimer.cpp(402): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-  Trackers.cpp
-d:\rproject\e2utility\template\template\teleportdecode.h(90): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
-d:\rproject\e2utility\template\template\wardstraps.h(147): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\rproject\e2utility\template\template\wardstraps.h(171): warning C4244: 'argument': conversion from 'double' to 'const unsigned int', possible loss of data
+d:\rproject\e2utility\template\template\wardstraps.cpp(15): warning C4244: 'initializing': conversion from 'float' to 'DWORD', possible loss of data
+d:\rproject\e2utility\template\template\wardstraps.cpp(35): warning C4244: '=': conversion from 'float' to 'DWORD', possible loss of data
+d:\rproject\e2utility\template\template\wardstraps.cpp(108): warning C4551: function call missing argument list
+d:\rproject\e2utility\template\template\wardstraps.cpp(342): warning C4805: '!=': unsafe mix of type 'bool' and type 'float' in operation
+d:\rproject\e2utility\template\template\wardstraps.cpp(351): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+d:\rproject\e2utility\template\template\wardstraps.cpp(705): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   Generating code
-  252 of 6843 functions ( 3.7%) were compiled, the rest were copied from previous compilation.
-    4 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+  48 of 7187 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+    46 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Template.vcxproj -> D:\RProject\E2Utility\Template\Release\E2Utility.dll

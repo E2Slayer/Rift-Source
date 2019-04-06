@@ -129,8 +129,8 @@ void SideBar::MenuLoader()
 
 			Menu::Checkbox("Draw Summoner Spells Timer", "Trackers.SideBar.SS.Use", true);
 			//Menu::DropList("Summoner Spells Timer Format", "Trackers.SideBar.SS.Format", std::vector<std::string>{ "MM:SS", "SS"}, 0);
-			Menu::SliderInt("Summoner Spells Timer Position X-axis", "Trackers.SideBar.SS.DrawingX", 0, -200, 200);
-			Menu::SliderInt("Summoner Spells Timer Position Y-axis", "Trackers.SideBar.SS.DrawingY", 0, -200, 200);
+			Menu::SliderInt("Summoner Spells Timer Position X-axis", "Trackers.SideBar.SS.DrawingX", -10, -200, 200);
+			Menu::SliderInt("Summoner Spells Timer Position Y-axis", "Trackers.SideBar.SS.DrawingY", -10, -200, 200);
 			Menu::SliderInt("Summoner Spells Timer Font Height", "Trackers.SideBar.SS.FontSize", 20, 10, 30);
 			Menu::SliderInt("Summoner Spells Timer Font Width", "Trackers.SideBar.SS.FontSize2", 4, 1, 10);
 			Menu::DropList("^-> Summoner Spells Timer Color", "Trackers.SideBar.SS.Color", ColorMenuList, 11);
@@ -149,7 +149,7 @@ void SideBar::MenuLoader()
 			Menu::SliderInt("Ultimate Timer Position X-axis", "Trackers.SideBar.Ultimate.DrawingX", 0, -200, 200);
 			Menu::SliderInt("Ultimate Timer Position Y-axis", "Trackers.SideBar.Ultimate.DrawingY", 0, -200, 200);
 			Menu::SliderInt("Ultimate Timer Font Height", "Trackers.SideBar.Ultimate.FontSize", 20, 10, 30);
-			Menu::SliderInt("Ultimate Timer Font Width", "Trackers.SideBar.Ultimate.FontSize2", 3, 1, 10);
+			Menu::SliderInt("Ultimate Timer Font Width", "Trackers.SideBar.Ultimate.FontSize2", 4, 1, 10);
 			Menu::DropList("^-> Summoner Ultimate Timer Color", "Trackers.SideBar.Ultimate.Color", ColorMenuList, 11);
 			Menu::DropList("^-> Summoner Ultimate Timer OutLine Color", "Trackers.SideBar.Ultimate.OutLineColor", ColorMenuList, 0);
 		});
@@ -162,7 +162,7 @@ void SideBar::MenuLoader()
 			Menu::SliderInt("Missing Timer Position X-axis", "Trackers.SideBar.MissTimer.DrawingX", 0, -200, 200);
 			Menu::SliderInt("Missing Timer Position Y-axis", "Trackers.SideBar.MissTimer.DrawingY", 0, -200, 200);
 			Menu::SliderInt("Missing Timer Font Height", "Trackers.SideBar.MissTimer.FontSize", 24, 10, 30);
-			Menu::SliderInt("Missing Timer Font Width", "Trackers.SideBar.MissTimer.FontSize2", 4, 1, 10);
+			Menu::SliderInt("Missing Timer Font Width", "Trackers.SideBar.MissTimer.FontSize2", 6, 1, 10);
 			Menu::DropList("^-> Missing Timer Color", "Trackers.SideBar.MissTimer.Color", ColorMenuList, 11);
 			Menu::DropList("^-> Missing Timer OutLine Color", "Trackers.SideBar.MissTimer.OutLineColor", ColorMenuList, 0);
 		});
@@ -176,7 +176,7 @@ void SideBar::MenuLoader()
 			Menu::SliderInt("Death Timer Position X-axis", "Trackers.SideBar.DeathTimer.DrawingX", 0, -200, 200);
 			Menu::SliderInt("Death Timer Position Y-axis", "Trackers.SideBar.DeathTimer.DrawingY", 0, -200, 200);
 			Menu::SliderInt("Death Timer Font Height", "Trackers.SideBar.DeathTimer.FontSize", 24, 10, 30);
-			Menu::SliderInt("Death Timer Font Width", "Trackers.SideBar.DeathTimer.FontSize2", 4, 1, 10);
+			Menu::SliderInt("Death Timer Font Width", "Trackers.SideBar.DeathTimer.FontSize2", 6, 1, 10);
 			Menu::DropList("^-> Death Timer Color", "Trackers.SideBar.DeathTimer.Color", ColorMenuList, 10);
 			Menu::DropList("^-> Death Timer OutLine Color", "Trackers.SideBar.DeathTimer.OutLineColor", ColorMenuList, 0);
 		});

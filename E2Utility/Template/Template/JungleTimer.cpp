@@ -350,6 +350,8 @@ void JungleTimer::DrawLoader()
 	ss1.precision(1); //for decimal
 	ss1.setf(std::ios_base::fixed, std::ios_base::floatfield);
 	
+	float currentTime = Game::Time();
+
 	for (auto &camp : jungleCamp)
 	{
 		
@@ -395,6 +397,7 @@ void JungleTimer::DrawLoader()
 	for (auto &camp : jungleExploit)
 	{
 
+		
 
 		if (camp.TimeLeft > 0.0f)
 		{
@@ -473,7 +476,7 @@ bool JungleTimer::OnCreate(void* Object, unsigned int NetworkID, void* UserData)
 		return false;
 	}
 	
-
+	float currentTime = Game::Time();
 
 	
 	//SdkUiConsoleWrite(" caaaaaaa respawned %s", objectName);
@@ -502,7 +505,8 @@ bool JungleTimer::OnCreate(void* Object, unsigned int NetworkID, void* UserData)
 
 	for (auto &camp : jungleExploit)
 	{
-		if (Game::Time() < 1200.0f && _stricmp(camp.Name, objectName) == 0 && sender->GetPosition().Distance(camp.Position) < 100.0f)
+		/*
+		if (currentTime < 1200.0f && _stricmp(camp.Name, objectName) == 0 && sender->GetPosition().Distance(camp.Position) < 100.0f)
 		{
 			if (sender->GetPosition().Distance(herald) < 100.0f)
 			{
@@ -511,14 +515,25 @@ bool JungleTimer::OnCreate(void* Object, unsigned int NetworkID, void* UserData)
 			}
 			
 		}
-		
-		if (_stricmp(camp.Name, objectName) == 0 && sender->GetPosition().Distance(camp.Position) < 100.0f)
+		*/
+		if (_stricmp(camp.Name, objectName) == 0 && sender->GetPosition().Distance(camp.Position) < 50.0f)
 		{
 
-			camp.SpawnTime = sender->AsAIMinionClient()->GetSpawnTime() + camp.RespawnTimer;
-				
-			//SdkUiConsoleWrite("exploit %s", objectName);
-			camp.Created = true;
+			//float respTime = sender->AsAIMinionClient()->GetSpawnTime();
+
+			if (sender->GetPosition().Distance(herald) < 100.0f && currentTime < 1200.0f)
+			{
+				camp.SpawnTime = 1200.0f;
+				continue;
+			}
+			else if (currentTime > camp.SpawnTime)
+			{
+				camp.SpawnTime = sender->AsAIMinionClient()->GetSpawnTime() + camp.RespawnTimer;
+
+				//SdkUiConsoleWrite("exploit %s", objectName);
+				camp.Created = true;
+			}
+
 
 				
 		}

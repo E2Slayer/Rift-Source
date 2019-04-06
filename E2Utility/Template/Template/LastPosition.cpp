@@ -144,7 +144,7 @@ void LastPosition::TickLoader()
 	{
 
 		auto lpPos = lp.Unit->GetPosition();
-		if (lp.Unit->IsAlive() && !lp.LastPosition.Distance(zeroVector) > 100.0f && lp.LastPosition.Distance(lpPos) > 500.0f)
+		if (lp.Unit->IsAlive()  && lp.LastPosition.Distance(lpPos) > 500.0f)
 		{
 			lp.Teleported = false;
 			lp.LastSeen = currentTime;
@@ -157,6 +157,7 @@ void LastPosition::TickLoader()
 			lp.Teleported = false;
 			lp.AbortedTimeDifference = 0.0f;
 			lp.TeleportStartTime = 0.0f;
+			lp.DrawCheck = false;
 			if (lp.Unit->IsAlive())
 			{
 				lp.LastSeen = currentTime;
@@ -175,60 +176,28 @@ void LastPosition::TickLoader()
 			if (lp.Teleported)
 			{
 				lp.DrawPosition = EnemyFountainLocation;
+				
 			}
 			else if (!lp.Teleported)
 			{
 				lp.DrawPosition = lp.LastPosition;
 			}
 
-			
+			lp.DrawCheck = true;
 
 			//Vector2 mpPos = { Renderer::WorldToMinimap(pos) };
 
 			//Vector2 mPos = { Renderer::WorldToScreen(pos) };
 
-			if (lp.LastSeen != 0.0f && currentTime - lp.LastSeen > 3.0f)
-			{
-				lp.DrawCheck = true;
-
-
-				float tempTime = (currentTime) - lp.AbortedTimeDifference;
-				float tempLastSeen = lp.LastSeen;
-
-				if (lp.isTeleporting)
-				{
-					if (lp.TeleportStartTime - lp.AbortedTimeDifference > 0.0f)
-					{
-						tempTime = lp.TeleportStartTime - lp.AbortedTimeDifference;
-					}
-					else
-					{
-						tempTime = currentTime;
-					}
-				}
-
-				if (tempTime < 0.0f)
-				{
-					tempTime = currentTime;
-				}
-
-
-
-				//TeleportStartTime
-
-				//isTeleporting
-				lp.Radius = std::abs((tempTime - tempLastSeen - 1.0f)*lp.Unit->GetMovementSpeed()*1.1f);
-
-				
-
-			}
-			else
-			{
-				lp.DrawCheck = false;
-
-			}
+		
+			
 
 			
+
+		}
+		else
+		{
+			lp.DrawCheck = false;
 
 		}
 
@@ -260,8 +229,30 @@ void LastPosition::DrawLoader()
 
 		mPos = { Renderer::WorldToScreen(lp.DrawPosition) };
 
-		if (lp.DrawCheck)
+		if (lp.DrawCheck )
 		{
+			if (lp.LastSeen != 0.0f && currentTime - lp.LastSeen > 3.0f)
+			{
+				float tempTime = (currentTime)-lp.AbortedTimeDifference;
+				float tempLastSeen = lp.LastSeen;
+				if (lp.isTeleporting)
+				{
+					if (lp.TeleportStartTime - lp.AbortedTimeDifference > 0.0f)
+					{
+						tempTime = lp.TeleportStartTime - lp.AbortedTimeDifference;
+					}
+					else
+					{
+						tempTime = currentTime;
+					}
+				}
+				if (tempTime < 0.0f)
+				{
+					tempTime = currentTime;
+				}
+				lp.Radius = std::abs((tempTime - tempLastSeen - 1.0f)*lp.Unit->GetMovementSpeed()*1.1f);
+			}
+
 			if (lp.DrawPosition.IsOnScreen(float(Menu::Get<int>("Trackers.LastPosition.World.Expand.MaxRange"))) && Menu::Get<bool>("Trackers.LastPosition.World.Expand.Use") && lp.Radius <= Menu::Get<int>("Trackers.LastPosition.World.Expand.MaxRange")) //map
 			{
 				//Draw::Circle(&pos, radius, &Color::White, 0, &Vector3(100.0f,100.0f,100.0f));
@@ -302,31 +293,32 @@ void LastPosition::DrawLoader()
 				DrawHelper::DrawOutlineText(NULL, &tempPos, ss1.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.Color")), Menu::Get<int>("Trackers.LastPosition.Minimap.FontSize"), Menu::Get<int>("Trackers.LastPosition.Minimap.FontSize2"), 0,
 					&DropLists::GetColor(Menu::Get<int>("Trackers.LastPosition.Minimap.OutLineColor")), false);
 			}
-		}
 		
-		if (lp.DrawPosition.IsOnScreen(50.0f) && Menu::Get<bool>("Trackers.LastPosition.World.Icon")) //map
-		{
-
-			SdkDrawSpriteFromResource(MAKEINTRESOURCEA(lp.ChampIMG), &mPos, true);
-
-		}
-
-		if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Icon")) //minimap
-		{
-			SdkDrawSpriteFromResource(MAKEINTRESOURCEA(lp.ChampIMG), &mpPos, true);
-		}
-
-		if (lp.isTeleporting)
-		{
-			if (lp.DrawPosition.IsOnScreen(50.0f) && Menu::Get<bool>("Trackers.LastPosition.World.Recall")) //map
+		
+			if (lp.DrawPosition.IsOnScreen(50.0f) && Menu::Get<bool>("Trackers.LastPosition.World.Icon")) //map
 			{
 
-				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(LP_Teleport), &mPos, true);
+				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(lp.ChampIMG), &mPos, true);
+
 			}
 
-			if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Recall")) //minimap
+			if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Icon")) //minimap
 			{
-				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(LP_Teleport), &mpPos, true);
+				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(lp.ChampIMG), &mpPos, true);
+			}
+
+			if (lp.isTeleporting)
+			{
+				if (lp.DrawPosition.IsOnScreen(50.0f) && Menu::Get<bool>("Trackers.LastPosition.World.Recall")) //map
+				{
+
+					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(LP_Teleport), &mPos, true);
+				}
+
+				if (Menu::Get<bool>("Trackers.LastPosition.Minimap.Recall")) //minimap
+				{
+					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(LP_Teleport), &mpPos, true);
+				}
 			}
 		}
 	}
@@ -369,6 +361,7 @@ void __cdecl LastPosition::RecallTrack(void * Unit, const char * Name, const cha
 
 	*/
 
+	float currentTime = Game::Time();
 
 	for (auto &value : lastPositions)
 	{
@@ -377,7 +370,7 @@ void __cdecl LastPosition::RecallTrack(void * Unit, const char * Name, const cha
 			if (testStruct.Status == TeleportTypes::Start)
 			{
 				value.isTeleporting = true;
-				value.TeleportStartTime = Game::Time() ;
+				value.TeleportStartTime = currentTime;
 				//value.Aborted = false;
 				//value.AbortedTime = 0.0f;
 			}
@@ -388,7 +381,7 @@ void __cdecl LastPosition::RecallTrack(void * Unit, const char * Name, const cha
 
 				//auto temp = value.AbortedTimeDifference;
 				
-				value.AbortedTimeDifference += (Game::Time() - value.TeleportStartTime);
+				value.AbortedTimeDifference += (currentTime - value.TeleportStartTime);
 				
 				//value.AbortedTimeDifference = (Game::Time() - value.AbortedTimeDifference) - value.TeleportStartTime;
 				//value.Aborted = true;
@@ -400,10 +393,11 @@ void __cdecl LastPosition::RecallTrack(void * Unit, const char * Name, const cha
 				value.Teleported = true;
 				value.isTeleporting = false;
 				//value.Aborted = false;
-				value.LastSeen = Game::Time();
+				value.LastSeen = currentTime;
 				//value.AbortedTime = 0.0f;
 				value.AbortedTimeDifference = 0.0f;
 				value.TeleportStartTime = 0.0f;
+				value.DrawPosition = EnemyFountainLocation;
 			}
 
 		}
