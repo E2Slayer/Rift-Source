@@ -50,6 +50,24 @@ namespace Geometry {
 			}
 		};
 
+		inline void Draw3D(float Height, int width = 1, PSDKCOLOR Color = &Color::White) {
+			for (size_t i = 0; i < Points.size(); i++) {
+				auto nextIndex = (Points.size() - 1 == i) ? 0 : (i + 1);
+				auto start = Points[i].To3D(Height);
+				auto end = Points[nextIndex].To3D(Height);
+				Draw::Line(&start, &end, (float)width, Color);
+			}
+		};
+
+		inline void DrawScreen(float Height, int width = 1, PSDKCOLOR Color = &Color::White) {
+			for (size_t i = 0; i < Points.size(); i++) {
+				auto nextIndex = (Points.size() - 1 == i) ? 0 : (i + 1);
+				auto start = Points[i];
+				auto end = Points[nextIndex];
+				Draw::LineScreen(&start, &end, (float)width, Color);
+			}
+		};
+
 		/// Creates Paths from polygon for Clipper
 		inline Path ToClipperPath() {
 			Path result;

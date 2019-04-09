@@ -23,7 +23,7 @@ void __cdecl OnLoad(void* UserData)
 		Activator::Init();
 		Detector::Init();
 		Drawings::Init();
-		Trackers::Init();
+		//Trackers::Init();
 		Others::Init();
 		
 		//Game::PrintChat(R"(<font color="#832232">test.</font>)");

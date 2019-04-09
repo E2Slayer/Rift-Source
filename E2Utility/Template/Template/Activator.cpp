@@ -8,6 +8,7 @@ void Activator::Init()
 {
 
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, Activator::Tick);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, Activator::Update);
 	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, Activator::DrawMenu);
 	//pSDK->EventHandler->RegisterCallback(CallbackEnum::ModuleLoadAndUnload)
 
@@ -22,8 +23,25 @@ void Activator::Init()
 	
 }
 
+void Activator::Update(void * UserData)
+{
+	if (!Menu::Get<bool>("Activator.Config.Enable"))
+	{
+		return;
+	}
+
+	if (Player.IsAlive() && !Player.IsRecalling())
+	{
+		Cleansers::UpdateLoader();
+	}
+}
+
 void Activator::Tick(void * UserData)
 {
+
+
+
+
 	if (!Menu::Get<bool>("Activator.Config.Enable"))
 	{
 		return;
@@ -39,7 +57,7 @@ void Activator::Tick(void * UserData)
 
 	if (Player.IsAlive() && !Player.IsRecalling())
 	{
-
+		Cleansers::TickLoader();
 		ItemStruct* currentItems = ItemRetriever::GetAllPlayerItems();
 		for (int i = 0; i < 7; i++)
 		{
@@ -52,7 +70,6 @@ void Activator::Tick(void * UserData)
 			Consumables::TickLoader(currentItems[i]);
 			Offensives::TickLoader(currentItems[i]);
 			Defensives::TickLoader(currentItems[i]);
-			Cleansers::TickLoader(currentItems[i]);
 			
 		}
 	}

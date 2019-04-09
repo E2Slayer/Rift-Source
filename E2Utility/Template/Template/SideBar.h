@@ -172,6 +172,9 @@ struct EnemyObject
 
 		EXPlength = 0.0f;
 
+		if (strstr(_Unit->GetCharName(), "Dummy") == 0)
+			return;
+
 		auto spells = _Unit->GetSpells();
 		for (auto &spellInside : spells)
 		{
@@ -183,6 +186,7 @@ struct EnemyObject
 			}
 			else if (int(spellInside.Slot) == 4)
 			{
+				
 				SummonerSpells1 = spellInside;
 				SummonerSpells1CD = time;
 
