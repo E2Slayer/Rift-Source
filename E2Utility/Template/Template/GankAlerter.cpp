@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GankAlerter.h"
 #include "DropLists.h"
-
+#include "DrawHelper.h"
 
 
 
@@ -437,7 +437,8 @@ void GankAlerter::GankChecker(ChampionObject* value, bool isDrawing)
 								//Drawings.GankAlerter.Name
 								if (Menu::Get<bool>("Drawings.GankAlerter.Name"))
 								{
-									Draw::Text(&playerPos.Extended(targetPos, 200.0f), NULL, value->Hero->GetCharName(), "Arial", &lineColor, 24, 8);
+							
+									DrawHelper::DrawOutlineText(NULL, &Renderer::WorldToScreen(playerPos.Extended(targetPos, 200.0f)), value->Hero->GetCharName(), "Arial", &lineColor, 24, 8);
 								}
 							}
 						}

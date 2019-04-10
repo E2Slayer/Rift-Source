@@ -200,6 +200,7 @@
     <ClInclude Include="Drawings.h" />
     <ClInclude Include="DropLists.h" />
     <ClInclude Include="GankAlerter.h" />
+    <ClInclude Include="GlobalSettings.h" />
     <ClInclude Include="InhibitorTimer.h" />
     <ClInclude Include="ItemRetriever.h" />
     <ClInclude Include="ItemStruct.h" />
@@ -239,8 +240,10 @@
     <ClCompile Include="Defensives.cpp" />
     <ClCompile Include="Detector.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="DrawHelper.cpp" />
     <ClCompile Include="Drawings.cpp" />
     <ClCompile Include="GankAlerter.cpp" />
+    <ClCompile Include="GlobalSettings.cpp" />
     <ClCompile Include="InhibitorTimer.cpp" />
     <ClCompile Include="ItemRetriever.cpp" />
     <ClCompile Include="ItemStruct.cpp" />

@@ -111,8 +111,13 @@ struct SidePositionList
 
 };
 
+
+constexpr int RequiredExp[] = { 0, 280, 660, 1140, 1720, 2400, 3180, 4060, 5040, 6120, 7300, 8580, 9960, 11440, 13020, 14700, 16480, 18360, 9999999999999 };
+
 struct EnemyObject
 {
+	
+
 	TeleportTypes _teleportStatus;
 	//SDK_SPELL RSpell;
 	AIHeroClient* Unit;
@@ -209,6 +214,13 @@ struct EnemyObject
 
 	void EnemyUpdate()
 	{
+
+
+
+
+
+
+
 		auto spells = Unit->GetSpells();
 		for (auto &spellInside : spells)
 		{
@@ -237,6 +249,28 @@ struct EnemyObject
 			}
 
 		}
+
+	
+		/*
+		HPlength = Unit->GetHealthPercent()*0.73f;
+
+		MPlength = Unit->GetManaPercent()*0.73f;
+
+
+
+		float percent = 0.0f;
+		if (Unit->GetLevel() == 18)
+		{
+			percent = 100.0f;
+		}
+		else
+		{
+			percent = (100.0f / (RequiredExp[Unit->GetLevel()] - RequiredExp[Unit->GetLevel() - 1]) * (Unit->GetExperience() - RequiredExp[Unit->GetLevel() - 1]));
+		}
+
+		EXPlength = percent * 0.73f;
+
+		*/
 	}
 };
 
@@ -249,7 +283,7 @@ public:
 	static void MenuLoader();
 	static void TickLoader();
 	static void DrawLoader();
-
+	static void PositionUpdater(bool IsOverlay);
 
 	static void __cdecl RecallTrack(void* Unit, const char* Name, const char* Type, void* UserData);
 };

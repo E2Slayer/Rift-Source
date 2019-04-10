@@ -12,7 +12,7 @@ const enum MenuTypes
 	AllyHealth = (1 << 5),
 	AllyNumber = (1 << 6),
 	Instant = (1 << 7),
-	Custom = (1 << 8),
+	EnemyMinimumRange = (1 << 8),
 	None = (1 << 9)
 };
 

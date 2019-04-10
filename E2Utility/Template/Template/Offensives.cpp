@@ -48,13 +48,13 @@ void Offensives::Init()
 	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::YoumuusGhostblade, "Youmuus Ghostblade", "YoumuusGhostblade", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Active, 700.0f));
 	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::Spellbinder, "Spell Binder", "Spellbinder", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Active, 700.0f));
 	//OffensiveItemList.emplace_back(ItemStruct((int)ItemID::EdgeofNight, "Edge of Night", "EdgeofNight", subCategoryOff, MenuTypes::EnemyNumber, SpellTypes::Active, 1500.0f));
-	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::TwinShadows, "Twin Shadows", "TwinShadows", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Active, 1000.0f));
+	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::TwinShadows, "Twin Shadows", "TwinShadows", subCategoryOff, MenuTypes::EnemyHealth | MenuTypes::EnemyMinimumRange, SpellTypes::Active, 1000.0f));
 
 
 
-	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::BilgewaterCutlass, "Bilgewater Cutlass", "BilgewaterCutlass", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Targeted, 700.0f));
-	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::BladeoftheRuinedKing, "Blade of the Ruined King", "BladeoftheRuinedKing", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Targeted, 700.0f));
-	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::HextechGunblade, "Hextech Gunblade", "HextechGunblade", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Targeted, 550.0f));
+	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::BilgewaterCutlass, "Bilgewater Cutlass", "BilgewaterCutlass", subCategoryOff, MenuTypes::EnemyHealth | MenuTypes::MyHealth, SpellTypes::Targeted, 700.0f));
+	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::BladeoftheRuinedKing, "Blade of the Ruined King", "BladeoftheRuinedKing", subCategoryOff, MenuTypes::EnemyHealth | MenuTypes::MyHealth, SpellTypes::Targeted, 700.0f));
+	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::HextechGunblade, "Hextech Gunblade", "HextechGunblade", subCategoryOff, MenuTypes::EnemyHealth | MenuTypes::MyHealth, SpellTypes::Targeted, 550.0f));
 
 	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::HextechGLP800, "Hextech GLP-800", "HextechGLP800", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Targeted, 1100.0f));
 	OffensiveItemList.emplace_back(ItemStruct((int)ItemID::HextechProtobelt01, "Hextech Protobelt-01", "HextechProtobelt01", subCategoryOff, MenuTypes::EnemyHealth, SpellTypes::Targeted, 1100.0f));

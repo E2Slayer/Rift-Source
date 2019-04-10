@@ -94,6 +94,9 @@
     <Filter Include="Arquivos de Recurso\LastPosition\Teleport">
       <UniqueIdentifier>{dbea15a0-73e8-4670-8c68-8530cb5e4d1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="My Script Files\Global Settings">
+      <UniqueIdentifier>{5d2cde91-c187-4429-bc88-5dc9d4d2b84f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -279,6 +282,9 @@
     <ClInclude Include="WardsTraps.h">
       <Filter>My Script Files\Trackers\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="GlobalSettings.h">
+      <Filter>My Script Files\Global Settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -382,6 +388,12 @@
     </ClCompile>
     <ClCompile Include="WardsTraps.cpp">
       <Filter>My Script Files\Trackers</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalSettings.cpp">
+      <Filter>My Script Files\Global Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawHelper.cpp">
+      <Filter>My Script Files\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

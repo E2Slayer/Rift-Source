@@ -9,6 +9,7 @@
 #include "Drawings.h"
 #include "Trackers.h"
 #include "Others.h"
+#include "GlobalSettings.h"
 
 
 PLUGIN_SETUP("E2Utility", OnLoad);
@@ -23,9 +24,12 @@ void __cdecl OnLoad(void* UserData)
 		Activator::Init();
 		Detector::Init();
 		Drawings::Init();
-		//Trackers::Init();
+		Trackers::Init();
 		Others::Init();
 		
+		GlobalSettings::Init();
+		//CustomRanges::Init();
+
 		//Game::PrintChat(R"(<font color="#832232">test.</font>)");
 	}
 }

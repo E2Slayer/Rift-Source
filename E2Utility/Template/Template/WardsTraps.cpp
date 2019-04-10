@@ -86,7 +86,7 @@ void WardsTraps::MenuLoader()
 		Menu::Checkbox("Enable Wards Traps Tracker", "Trackers.WardsTraps.Use", true);
 
 		Menu::Checkbox("Track Wards", "Trackers.WardsTraps.Wards.Use", true);
-		Menu::Checkbox("Draw Vision Wards on the Minimap", "Trackers.WardsTraps.Wards.Minimap", true);
+		Menu::Checkbox("Draw Wards (Green, Pink) on the Minimap", "Trackers.WardsTraps.Wards.Minimap", true);
 		Menu::Checkbox("Track Traps", "Trackers.WardsTraps.Traps.Use", true);
 
 
@@ -311,7 +311,7 @@ void WardsTraps::DrawLoader()
 
 	for (auto& ward : _wardObjects)
 	{
-		if (ward.Position.IsOnScreen(50.0f) && ward.Position.IsValid())
+		if (ward.Position.IsValid())
 		{
 			ss1.str("");
 			if (ward.Data.Type == WardType::Pink && TrackWards)
@@ -324,8 +324,10 @@ void WardsTraps::DrawLoader()
 				Draw::LineScreen(&Renderer::WorldToScreen(ward.Position), &ve2, 5.0f, &Color::Red);
 				*/
 
-
-				Draw::Circle(&ward.Position, ward.Data.Range, &Color::Red, 0, &visionDirection);
+				if (ward.Position.IsOnScreen(50.0f))
+				{
+					Draw::Circle(&ward.Position, ward.Data.Range, &Color::Red, 0, &visionDirection);
+				}
 
 				if (MinimapTrack)
 				{
@@ -337,32 +339,46 @@ void WardsTraps::DrawLoader()
 			}
 			else if (ward.Data.Type == WardType::Blue && TrackWards)
 			{
-				Draw::Circle(&ward.Position, ward.Data.Range, &Color::Blue, 0, &visionDirection);
+				if (ward.Position.IsOnScreen(50.0f))
+				{
+					Draw::Circle(&ward.Position, ward.Data.Range, &Color::Blue, 0, &visionDirection);
+				}
 			}
 			else if ( ( (ward.Data.Type == WardType::Green || ward.Data.Type == WardType::Trinket) && TrackWards || (ward.Data.Type == WardType::Trap && TrackTraps))  && !ward.Data.Duration != visionDuration)
 			{
+				if (ward.Position.IsOnScreen(50.0f))
+				{
+					Draw::Circle(&ward.Position, ward.Data.Range, &(ward.Data.Type == WardType::Trap ? Color::Magenta : Color::Green), 0, &visionDirection);
 
-				Draw::Circle(&ward.Position, ward.Data.Range, &(ward.Data.Type == WardType::Trap ? Color::Magenta : Color::Green), 0, &visionDirection);
+					screenPos2 = Renderer::WorldToScreen(ward.Position);
+					screenPos2.x += -5.0f;
+					screenPos2.y += -5.0f;
 
-				screenPos2 = Renderer::WorldToScreen(ward.Position);
-				screenPos2.x += -5.0f;
-				screenPos2.y += -5.0f;
+					sec = ward.EndTime() - Game::Time();
 
-				sec = ward.EndTime() - Game::Time();
+					mins = sec / 60;
+					sec = sec % 60;
 
-				mins = sec / 60;
-				sec = sec % 60;
+					ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
 
-				ss1 << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << sec;
+					DrawHelper::DrawOutlineText(NULL, &screenPos2, ss1.str().c_str(), "Calibri Bold", &Color::White, 26, 6, 0,
+						&Color::Black, false);
+				}
 
-				DrawHelper::DrawOutlineText(NULL, &screenPos2, ss1.str().c_str(), "Calibri Bold", &Color::White, 26, 6, 0,
-					&Color::Black, false);
+				if (MinimapTrack && (ward.Data.Type == WardType::Green || ward.Data.Type == WardType::Trinket))
+				{
+					//Vector2 mini = Renderer::WorldToMinimap(ward.Position);
+					SdkDrawSpriteFromResource(MAKEINTRESOURCEA(WT_Green), &Renderer::WorldToMinimap(ward.Position), true);
+				}
 
 			}
 
 			if (VisionRangeEnable)
 			{
-				Draw::Circle(&ward.Position, ward.Data.VisionRange, &Color::DarkBlue, 0, &visionDirection);
+				if (ward.Position.IsOnScreen(50.0f))
+				{
+					Draw::Circle(&ward.Position, ward.Data.VisionRange, &Color::DarkBlue, 0, &visionDirection);
+				}
 			}
 		}
 

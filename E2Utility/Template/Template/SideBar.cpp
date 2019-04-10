@@ -42,7 +42,7 @@ Vector2 SS2Pos;
 
 
 
-const int RequiredExp[] = { 0, 280, 660, 1140, 1720, 2400, 3180, 4060, 5040, 6120, 7300, 8580, 9960, 11440, 13020, 14700, 16480, 18360, 9999999999999 };
+//const int RequiredExp[] = { 0, 280, 660, 1140, 1720, 2400, 3180, 4060, 5040, 6120, 7300, 8580, 9960, 11440, 13020, 14700, 16480, 18360, 9999999999999 };
 
 void SideBar::Init()
 {
@@ -60,7 +60,6 @@ void SideBar::Init()
 	for (auto[netID, value] : enemyList)
 	{
 		_enemyObject.emplace_back(EnemyObject(value));
-	//	SdkUiConsoleWrite("did");
 	}
 
 	/*
@@ -266,6 +265,49 @@ void SideBar::MenuLoader()
 	});
 }
 
+void SideBar::PositionUpdater(bool IsOverlay)
+{
+	if (Game::IsOverlayOpen() && IsOverlay)
+	{
+		int screenPosSelection = Menu::Get<int>("Trackers.SideBar.Location");
+		arrayStyle = Menu::Get<int>("Trackers.SideBar.Style");
+		SidebarGab = Menu::Get<int>("Trackers.SideBar.Main.Gap");
+		//int gabMainFrames = float(Menu::Get<int>("Trackers.SideBar.Main.Gap"));
+
+		//Vector2 MainFramePos;
+
+		Vector2 tempPos;
+		if (screenPosSelection == 0) // on the left
+		{
+			tempPos = Vector2(0.0f + 50.0f, (PlayerResolution.Height / 2.0f) - (PlayerResolution.Height / 4.0f) - (PlayerResolution.Height / 10.0f));
+
+		}
+		else if (screenPosSelection == 1) // on the right
+		{
+			tempPos = Vector2(PlayerResolution.Width - 50.0f, (PlayerResolution.Height / 2.0f) - (PlayerResolution.Height / 4.0f) - (PlayerResolution.Height / 10.0f));
+		}
+		else if (screenPosSelection == 2) // on the top
+		{
+			tempPos = Vector2((PlayerResolution.Width / 2.0f) - (PlayerResolution.Width / 4.0f), 50.0f);
+		}
+
+
+
+		for (auto &value : SideBarMenuList)
+		{
+			value.UpdateInsideFloats();
+		}
+
+	}
+		//SideBarMenuList[0].UpdateInsideFloats(); // Main Frame update
+
+
+
+
+
+	
+}
+
 void SideBar::TickLoader()
 {
 	if (!Menu::Get<bool>("Trackers.SideBar.Use"))
@@ -283,7 +325,7 @@ void SideBar::TickLoader()
 		SidebarGab = Menu::Get<int>("Trackers.SideBar.Main.Gap");
 		//int gabMainFrames = float(Menu::Get<int>("Trackers.SideBar.Main.Gap"));
 
-		Vector2 MainFramePos;
+		//Vector2 MainFramePos;
 
 		Vector2 tempPos;
 		if (screenPosSelection == 0) // on the left
@@ -330,6 +372,7 @@ void SideBar::TickLoader()
 			for (auto& enemy : _enemyObject)
 			{
 
+				enemy.PositionList.MainStructPos = tempPos;
 
 				enemy.PositionList.HpBarPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[7].DrawX) + enemy.HPlength, tempPos.y + 20.0f + SideBarMenuList[7].DrawY);
 				enemy.PositionList.HpBarOrignalPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[7].DrawX), tempPos.y + 20.0f + SideBarMenuList[7].DrawY);
@@ -379,6 +422,21 @@ void SideBar::TickLoader()
 	SidebarTick = GetTickCount();
 
 
+	auto enemyList{ pSDK->EntityManager->GetEnemyHeroes() };
+
+	for (auto[netID, value] : enemyList)
+	{
+		for (auto& enemy : _enemyObject)
+		{
+			if (netID == enemy.Unit->GetNetworkID())
+			{
+				enemy.Unit = value;
+			}
+		}
+
+		//_enemyObject.emplace_back(EnemyObject(value));
+	}
+
 	for (auto& enemy : _enemyObject)
 	{
 		enemy.EnemyUpdate();
@@ -399,21 +457,14 @@ void SideBar::TickLoader()
 		if (SideBarMenuList[10].Enable)
 		{
 
+			//SdkUiConsoleWrite("here");
 
-
+			
 			enemy.HPlength = enemy.Unit->GetHealthPercent()*length;
 
 			enemy.MPlength = enemy.Unit->GetManaPercent()*length;
 
 		
-			//HpBarPos = Vector2((MainFramePosition.x - 34.0f) + hp * length, MainFramePosition.y + 20.0f);
-
-		
-		//	float mp = enemy.Unit->GetManaPercent();
-
-			//MpBarPos = Vector2((MainFramePosition.x - 34.0f) + mp * length, MainFramePosition.y + 26.0f);
-
-			//float exp = enemy.Unit->GetExperience();
 
 			float percent = 0.0f;
 			if (enemy.Unit->GetLevel() == 18)
@@ -426,6 +477,18 @@ void SideBar::TickLoader()
 			}
 
 			enemy.EXPlength = percent * length;
+			
+			Vector2 tempPos = enemy.PositionList.MainStructPos;
+				
+
+			enemy.PositionList.HpBarPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[7].DrawX) + enemy.HPlength, tempPos.y + 20.0f + SideBarMenuList[7].DrawY);
+			enemy.PositionList.HpBarOrignalPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[7].DrawX), tempPos.y + 20.0f + SideBarMenuList[7].DrawY);
+
+			enemy.PositionList.MpBarPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[8].DrawX) + enemy.MPlength, tempPos.y + 26.0f + SideBarMenuList[8].DrawY);
+			enemy.PositionList.MpBarOrignalPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[8].DrawX), tempPos.y + 26.0f + SideBarMenuList[8].DrawY);
+
+			enemy.PositionList.ExpBarPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[9].DrawX) + enemy.EXPlength, tempPos.y + 32.0f + SideBarMenuList[9].DrawY);
+			enemy.PositionList.ExpBarOrignalPos = Vector2((tempPos.x - 34.0f + SideBarMenuList[9].DrawX), tempPos.y + 32.0f + SideBarMenuList[9].DrawY);
 
 
 

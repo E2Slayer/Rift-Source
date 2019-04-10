@@ -104,7 +104,7 @@ void CloneDetector::DrawLoader()
 		{
 			for (auto & value : CloneDrawingList)
 			{
-				if (value.Object->GetPosition().IsValid() && value.Object->GetPosition().IsOnScreen())
+				if (value.Object->GetPosition().IsValid() && value.Object->GetPosition().IsOnScreen() && value.Object->IsVisible())
 				{
 					int selection = Menu::Get<int>("Detector.CloneDetector.Style");
 

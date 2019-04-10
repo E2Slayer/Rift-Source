@@ -186,7 +186,19 @@ void ItemStruct::MenuGenerator()
 			//Menu::Checkbox(DisplayString(this->displayName, "Use After Auto Attack Only"), MenuString("AfterAA"), true);
 		}
 
+		if (this->enumState & MenuTypes::EnemyMinimumRange)
+		{
+			std::string menuIDInside = menuIDInside0;
+			menuIDInside += "EnemyMinimumRange";
+			std::string displayMenu = this->displayName;
+			displayMenu += " Enemy Minimum Range";
 
+			Menu::SliderInt(displayMenu.c_str(), menuIDInside, 2000, 1000, 5000);
+			//Menu::Checkbox(DisplayString(this->displayName, "Use After Auto Attack Only"), MenuString("AfterAA"), true);
+		}
+
+
+		//float enemyMinimumRange = float(Menu::Get<int>(menuIDInside0+"EnemyMinimumRange"));
 
 	});
 }
@@ -259,10 +271,30 @@ void ItemStruct::CastItem()
 
 		if (Player.GetHealthPercent() <= myHealthPct)
 		{
-			SpellCaster(this->spellType, this->spellRange);
+			if (this->GetItemID() == int(ItemID::BilgewaterCutlass) || this->GetItemID() == int(ItemID::BladeoftheRuinedKing) || this->GetItemID() == int(ItemID::HextechGunblade))
+			{
+				if (Player.CountEnemiesInRange(1500.0f) >= 1)
+				{
+					//Menu::SliderInt(name.c_str(), oss.str(), 35, 1, 100);
+					auto target = pCore->TS->GetTarget(this->spellRange);
+					if (target != NULL && target != nullptr)
+					{
+						if (target->IsValidTarget() && target->GetServerPosition().IsValid())
+						{
+							SpellCaster(this->spellType, this->spellRange);
+						}
+					}
+				}
+			}
+			else
+			{
+				SpellCaster(this->spellType, this->spellRange);
+			}
 			
 
 		}
+
+		
 
 	}
 
@@ -357,8 +389,10 @@ void ItemStruct::CastItem()
 		}
 	}
 
-	if (this->enumState & MenuTypes::EnemyHealth)
+	if (this->enumState & MenuTypes::EnemyHealth && this->GetItemID() != int(ItemID::TwinShadows))
 	{
+
+
 		std::string menuIDInside0 = menuIDInside;
 		menuIDInside0 += "EnemyHealth";
 		float enemyHealthPct = (float)Menu::Get<int>(menuIDInside0);
@@ -386,7 +420,7 @@ void ItemStruct::CastItem()
 
 		std::string menuIDInside0 = menuIDInside;
 		menuIDInside0 += "EnemyNumber";
-		int enemyNumbers = Menu::Get<int>(menuIDInside0);
+		int enemyNumbers = Menu::Get<int>(menuIDInside);
 		//Menu::SliderInt(name.c_str(), oss.str(), 2, 1, 5);
 
 		if (Player.CountEnemiesInRange(this->spellRange) >= enemyNumbers)
@@ -405,9 +439,31 @@ void ItemStruct::CastItem()
 		//Menu::Checkbox(name.c_str(), oss.str(), true);
 	}
 
-	if (this->enumState & MenuTypes::Custom)
+	if (this->enumState & MenuTypes::EnemyMinimumRange)
 	{
+		std::string menuIDInside0 = menuIDInside;
+		float enemyMinimumRange = float(Menu::Get<int>(menuIDInside0+"EnemyMinimumRange"));
 
+		float enemyHealthPct = (float)Menu::Get<int>(menuIDInside0 + "EnemyHealth");
+
+
+		if (Player.CountEnemiesInRange(5000.0f) >= 1)
+		{
+			auto target = pCore->TS->GetTarget(5000.0f);
+			if (target != NULL && target != nullptr)
+			{
+				if (target->IsValidTarget() && target->GetServerPosition().IsValid())
+				{
+					//SdkUiConsoleWrite("are you hre");
+
+					if (Player.Distance(target) >= enemyMinimumRange && target->GetHealthPercent() <= enemyHealthPct) 
+					{
+						//SdkUiConsoleWrite("Cast1234");
+						SpellCaster(this->spellType, this->spellRange);
+					}
+				}
+			}
+		}
 	}
 
 

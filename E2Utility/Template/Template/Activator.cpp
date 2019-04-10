@@ -89,6 +89,7 @@ void Activator::DrawMenu(void * UserData)
 		{
 			Menu::Checkbox("Enable Activator", "Activator.Config.Enable", true);
 			Menu::Hotkey("Activator Combo Key", "Activator.Config.ComboKey", 32); //32 is space bar
+			//Menu::Hotkey("Activator Jungle Clear Key", "Activator.Config.JungleClearKey", 67); //32 is space bar
 
 			Menu::Checkbox("Enable Humanizer", "Activator.Config.HumanizerEnable", true);
 			Menu::SliderInt("Humanizer Delay (ms)", "Activator.Config.HumanizerDelay", 200, 10, 500);

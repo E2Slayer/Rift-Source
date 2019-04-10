@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SharedExperience.h"
 #include "DropLists.h"
+#include "DrawHelper.h"
 
 std::vector<MinionObject> MinionsObjects;
 
@@ -937,7 +938,7 @@ void SharedExperience::DrawLoader()
 
 			int fontSize = Menu::Get<int>("Detector.SharedXP.FontSize");
 
-			Draw::Text(NULL, &posHP, "0 (0.0s)", "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
+			DrawHelper::DrawOutlineText(NULL, &posHP, "0 (0.0s)", "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
 		}
 	}
 	else
@@ -1072,18 +1073,18 @@ void SharedExperience::DrawLoader()
 
 									if (detectNumber <= drawHero.NearByHeroes && Menu::Get<bool>("Detector.SharedXP.ChangeColor"))
 									{
-
-										Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.ColorWarning")), fontSize, 6);
+										//DrawHelper::DrawOutlineText
+										DrawHelper::DrawOutlineText(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.ColorWarning")), fontSize, 6);
 									}
 									else if (detectNumber > drawHero.NearByHeroes)
 									{
 
-										Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
+										DrawHelper::DrawOutlineText(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
 									}
 									else
 									{
 	
-										Draw::Text(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
+										DrawHelper::DrawOutlineText(NULL, &posHP, ss.str().c_str(), "Calibri Bold", &DropLists::GetColor(Menu::Get<int>("Detector.SharedXP.Enemy.Color")), fontSize, 6);
 									}
 								}
 							}

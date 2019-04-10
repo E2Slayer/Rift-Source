@@ -22,12 +22,16 @@ void CustomRanges::Draw(void * UserData)
 {
 
 	//std::vector<ItemStruct> currentItems = ItemRetriever::GetAllPlayerItems();
-	ItemStruct* currentItems = ItemRetriever::GetAllPlayerItems();
+//	ItemStruct* currentItems = ItemRetriever::GetAllPlayerItems();
 	Vector3 pos{ Player.GetPosition() };
 	Vector2 screenPos{ Renderer::WorldToScreen(pos) };
 	//for (auto const& value : currentItems)
 
 
+
+
+
+	/*
 	if (pos.IsValid() )
 	{
 
@@ -79,28 +83,10 @@ void CustomRanges::Draw(void * UserData)
 			Draw::Text(&shop->GetPosition(), NULL, shop->GetName(), "Arial", &Color::Red, 24, 6);
 		}
 
-		//Draw::Circle(&blueFountain, 900.0f, &Color::Red);
-
-
-
-		//screenPos.y -= 20.0f;
-		//auto hi = Menu::Get<Hotkey_t>("Others.AntiAFK.Toggle").Active;
-	//	Draw::Text(NULL, &screenPos, std::to_string(Menu::Get<KeyToggle_t>("Others.AntiAFK.Toggle").Toggle), "Arial", &Color::Red, 24, 6);
-
-
-
-		//Menu::Get<Hotkey>("Others.AntiAFK.Toggle").Active
-		/*
-		if (hi)
-		{
-			Draw::Text(NULL, &screenPos, "Active", "Arial", &Color::White, 24, 6);
-		}
-		else
-		{
-			Draw::Text(NULL, &screenPos, "nah", "Arial", &Color::White, 24, 6);
-		}*/
-
 	}
+	*/
+
+
 
 
 
