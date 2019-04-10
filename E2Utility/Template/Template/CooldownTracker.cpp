@@ -16,6 +16,9 @@
 	float Additional;
 */
 
+constexpr int CDRequiredExp[] = { 0, 280, 660, 1140, 1720, 2400, 3180, 4060, 5040, 6120, 7300, 8580, 9960, 11440, 13020, 14700, 16480, 18360, 9999999999999 };
+
+
 std::vector<ManualSpell> ManualSpellLists;
 
 std::vector<ManualSpell> ActualManualSpellLists;
@@ -33,6 +36,8 @@ CooldownMenu CooldownMenuList;
 bool CDMySelf;
 bool CDAlly;
 bool CDEnemy;
+
+bool ExpBar;
 
 bool CDFirstRun = false;
 
@@ -322,11 +327,21 @@ void CooldownTracker::MenuLoader()
 			//Menu::DropList("^-> Summoner Spells Cooldown Timer OutLine Color", "Trackers.CooldownTracker.SSTOutLineColor", ColorMenuList, 0);
 		});
 
+		
 		Menu::Tree("HUD Settings", "Trackers.CooldownTracker.HUD", false, []()
 		{
 			Menu::Checkbox("Draw HUD", "Trackers.CooldownTracker.HUD.Use", true);
 			Menu::SliderInt("Summoner Spells Icon Position X-axis", "Trackers.CooldownTracker.HUD.DrawingX", 0, -200, 200);
 			Menu::SliderInt("Summoner Spells Icon Position Y-axis", "Trackers.CooldownTracker.HUD.DrawingY", 0, -200, 200);
+		});
+
+
+		Menu::Tree("Experience Bar Settings", "Trackers.CooldownTracker.EXPBar", false, []()
+		{
+			Menu::Checkbox("DrawExperience Bar", "Trackers.CooldownTracker.EXPBar.Use", false);
+
+			//Menu::SliderInt("Summoner Spells Icon Position X-axis", "Trackers.CooldownTracker.HUD.DrawingX", 0, -200, 200);
+			//Menu::SliderInt("Summoner Spells Icon Position Y-axis", "Trackers.CooldownTracker.HUD.DrawingY", 0, -200, 200);
 		});
 	});
 }
@@ -358,6 +373,8 @@ void CooldownTracker::TickLoader()
 		CDMySelf = Menu::Get<bool>("Trackers.CooldownTracker.Myself");
 		CDAlly = Menu::Get<bool>("Trackers.CooldownTracker.Ally");
 		CDEnemy = Menu::Get<bool>("Trackers.CooldownTracker.Enemy");
+
+		ExpBar = Menu::Get<bool>("Trackers.CooldownTracker.EXPBar.Use");
 
 		SCTformat = Menu::Get<int>("Trackers.CooldownTracker.SCTFormat");
 
@@ -512,13 +529,36 @@ void CooldownTracker::DrawLoader()
 			{
 				continue;
 			}
+			Vector2 HUDPosition{ value.Hero->GetHealthBarScreenPos() };
+
+			if (ExpBar && value.Hero->GetLevel() < 18)
+			{
+
+				float percent = (100.0f / (CDRequiredExp[value.Hero->GetLevel()] - CDRequiredExp[value.Hero->GetLevel() - 1]) * (value.Hero->GetExperience() - CDRequiredExp[value.Hero->GetLevel() - 1]));
+				
+
+				//EXPlength = percent * 0.73f;
+				//float AdjustMainFrameX = float(Menu::Get<int>("Trackers.CooldownTracker.HUD.DrawingX"));
+				//float AdjustMainFrameY = float(Menu::Get<int>("Trackers.CooldownTracker.HUD.DrawingY"));
+
+				Vector2 tempPos = HUDPosition;
+				tempPos.x += -47.0f;
+				tempPos.y += -32.0f;
+				Draw::LineScreen(&tempPos, &Vector2(tempPos.x + percent * 1.05f, tempPos.y), 5.0f, &Color::Black);
+				
+				tempPos.x += 1.0f;
+				tempPos.y += 1.0f;
+				Draw::LineScreen(&tempPos, &Vector2(tempPos.x + percent*1.05f, tempPos.y), 5.0f, &Color::Purple);
+
+			}
+
 
 			if (CDMySelf && value.Hero->GetNetworkID() == Player.GetNetworkID() ||
 				CDAlly && value.Hero->IsAlly() && value.Hero->GetNetworkID() != Player.GetNetworkID() ||
 				CDEnemy && !value.Hero->IsAlly()
 				)
 			{
-				Vector2 HUDPosition{ value.Hero->GetHealthBarScreenPos() };
+				
 
 				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(CD_HudSelf), &Vector2(HUDPosition.x + 6.0f, HUDPosition.y - 8.0f), true);
 				auto SpellPosition = HUDPosition;
