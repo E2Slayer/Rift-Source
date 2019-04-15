@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="..\..\Include\clipper.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="CallBacks.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Child.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Parent.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="WardsTraps.cpp">
+      <Filter>Features\Trackers</Filter>
+    </ClCompile>
+    <ClCompile Include="TextHelpers.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Trackers.cpp">
+      <Filter>Features\Trackers\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CooldownTracker.cpp">
+      <Filter>Features\Trackers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawings.cpp">
+      <Filter>Features\Drawings\Main</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Include\clipper.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Common.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Game.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\GameObjects.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IControl.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IDamageLib.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IEntityManager.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IEventHandler.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IHealthPrediction.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Interface Structs.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Interruptible.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IOrbwalker.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IPrediction.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ITargetSelector.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\ItemID.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\KeyCodes.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Macros.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Menu.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Renderer.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\SDK Extensions.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\sdkapi.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Spell.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Vectors.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="WardsTraps.h">
+      <Filter>Features\Trackers</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBacks.h">
+      <Filter>Classes\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Child.h">
+      <Filter>Classes\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader.h">
+      <Filter>Classes\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Parent.h">
+      <Filter>Classes\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="TextHelpers.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Trackers.h">
+      <Filter>Features\Trackers\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="CooldownTracker.h">
+      <Filter>Features\Trackers</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteImageLoader.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawings.h">
+      <Filter>Features\Drawings\Main</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="SDK">
+      <UniqueIdentifier>{d620f3b1-67aa-465f-b4eb-97c55eab30ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes">
+      <UniqueIdentifier>{e58e3da7-ff3b-452f-b405-0544c99c1d9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features">
+      <UniqueIdentifier>{06d7a833-750c-4c38-a017-23c6bb0a951b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Trackers">
+      <UniqueIdentifier>{db083b50-754e-459a-81c9-846f1493190e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Headers">
+      <UniqueIdentifier>{21ddade3-0b21-4eaa-a54b-adbe48549f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{73f03857-5e25-4ce9-8152-fcfda657f085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\WardsTraps">
+      <UniqueIdentifier>{ad88c0ed-6ab5-49e0-be9d-2fcd7f82005e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{680329b8-f0d0-4031-b8ec-0f756bfc5937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Trackers\Main">
+      <UniqueIdentifier>{07af11b3-bd97-4fc3-bada-ad106408bd45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Cooldowns">
+      <UniqueIdentifier>{7b57ef13-62c4-4524-88be-4ebcffecf031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Cooldowns\SummonersSpells">
+      <UniqueIdentifier>{ffb1bae8-f26a-49ed-83f0-ffd6b4e8ebc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Drawings">
+      <UniqueIdentifier>{f48590af-bb52-4e0a-9ea0-715e28111ae2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Drawings\Main">
+      <UniqueIdentifier>{70ada8c7-9654-4dfa-a2d5-bddf465235b2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\WardsTraps\WT_Green.png">
+      <Filter>Resources\WardsTraps</Filter>
+    </Image>
+    <Image Include="Resources\WardsTraps\WT_Pink.png">
+      <Filter>Resources\WardsTraps</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_Dash.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_Dash_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_Empty.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_Empty_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_flashPerksHextechFlashtraption.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_flashPerksHextechFlashtraption_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_flashPerksHextechFlashtraptionBlue.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_flashPerksHextechFlashtraptionBlue_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_Mark.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\Summoner_Mark_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerBarrier.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerBarrier_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerBoost.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerBoost_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerClairvoyance.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerClairvoyance_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerDot.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerDot_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerExhaust.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerExhaust_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerFlash.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerFlash_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerFlashPerksHextechFlashtraptionV2.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerFlashPerksHextechFlashtraptionV2_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerHaste.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerHaste_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerHeal.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerHeal_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerMana.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerMana_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerSmite.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerSmite_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerSnowball.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerSnowball_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerTeleport.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\SS\SummonerTeleport_Cooldown.png">
+      <Filter>Resources\Cooldowns\SummonersSpells</Filter>
+    </Image>
+    <Image Include="Resources\Cooldowns\CD_HudSelf.png">
+      <Filter>Resources\Cooldowns</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="E2Utility2.0.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
