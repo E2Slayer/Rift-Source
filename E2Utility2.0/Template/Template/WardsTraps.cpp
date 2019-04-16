@@ -206,6 +206,7 @@ void WardsTraps::Initialized()
 	_wardObjects.shrink_to_fit();
 	trinketAdjust.shrink_to_fit();
 
+	
 
 
 }

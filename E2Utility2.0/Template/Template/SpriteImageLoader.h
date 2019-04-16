@@ -180,8 +180,6 @@ const std::string ChampionNameList[]
 
 	"Poppy",
 
-	"PracticeTool_TargetDummy",
-
 	"Pyke",
 
 	"Quinn",
@@ -292,8 +290,9 @@ const std::string ChampionNameList[]
 
 	"Zoe",
 
-	"Zyra"
+	"Zyra",
 
+	"PracticeTool_TargetDummy"
 
 };
 
@@ -338,6 +337,36 @@ const std::string SmallSummonerSpellsList[]
 class SpriteImageLoader
 {
 public:
+	static unsigned int GetChampionIMG(const char* name)
+	{
+		const int ArraySize = (sizeof(ChampionNameList) / sizeof(*ChampionNameList)) ;
+		for (int i = 0; i < ArraySize; ++i)
+		{
+			if (_stricmp(name, ChampionNameList[i].c_str()) == 0)
+			{
+				return i + 145;
+			}
+		}
+
+
+		return 233; //233 is default
+	}
+
+	static unsigned int GetSummonerSpellIMG(const char* name)
+	{
+		const int ArraySize = (sizeof(SummonerSpellsList) / sizeof(*SummonerSpellsList));
+		for (int i = 0; i < ArraySize; ++i)
+		{
+			if (_stricmp(name, SummonerSpellsList[i].c_str()) == 0)
+			{
+				return i + 290;
+			}
+		}
+
+
+		return 233; //233 is default
+	}
+
 	static unsigned int GetSmallSummonerSpellIMG(const char* name, bool IsOnCooldown)
 	{
 		const int ArraySize = (sizeof(SmallSummonerSpellsList) / sizeof(*SmallSummonerSpellsList))*2;

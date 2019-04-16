@@ -3,7 +3,7 @@
 #include "WardsTraps.h"
 #include "Parent.h"
 #include "CooldownTracker.h"
-
+#include "SideBar.h"
 
 
 /*
@@ -33,10 +33,11 @@ Loader::~Loader()
 void Loader::OnInit()
 {
 
-	ListCallBacks.emplace_back(std::make_shared<WardsTraps>());
+	//ListCallBacks.emplace_back(std::make_shared<WardsTraps>());
 
 	ListCallBacks.emplace_back(std::make_shared<CooldownTracker>());
 
+	ListCallBacks.emplace_back(std::make_shared<SideBar>());
 
 	
 	for (std::shared_ptr<CallBacks> & value : ListCallBacks)
@@ -71,6 +72,7 @@ std::shared_ptr<CallBacks> Loader::GetCallBacks()
 
 	callBacks = std::make_shared<CooldownTracker>();
 
+	//callBacks = std::make_shared<SideBar>();
 
 	if (callBacks)
 		//(callBacks)->OnInit();

@@ -117,6 +117,8 @@ void CooldownTracker::OnTick(void* userData)
 
 void CooldownTracker::OnDraw(void* userData)
 {
+
+
 	if (!CooldownTrackerSettings.EnableCooldownTracker)
 	{
 		return;
@@ -127,6 +129,8 @@ void CooldownTracker::OnDraw(void* userData)
 		return;
 	}
 
+
+	
 
 	for (auto& value : CooldownChampList)
 	{
@@ -142,7 +146,7 @@ void CooldownTracker::OnDraw(void* userData)
 				GetNetworkID()) || // "Ally" is included localplayer
 			CooldownTrackerSettings.TrackEnemy && !value.Hero->IsAlly()) // Enemy
 		{
-			value.UpdateCDChamp();
+			value.UpdatePosition();
 
 			if (CooldownTrackerSettings.EnableHUD)
 			{
@@ -172,9 +176,7 @@ SpellsStartPosition[i], false);
 					if (value.CooldownSpells[i].Cooldown > 0.0f)
 					{
 						TextHelpers::DrawOutlineText(nullptr, &value.SpellsTimerPosition[i],
-						                             TextHelpers::TimeFormat(
-							                             value.CooldownSpells[i].Cooldown,
-							                             TimerStyle(CooldownTrackerSettings.SSTimerFormat)).c_str(), "",
+						                             (TextHelpers::TimeFormat(value.CooldownSpells[i].Cooldown,TimerStyle(CooldownTrackerSettings.SSTimerFormat))), "",
 						                             &Color::White
 						                             , 18, 4, 0, &Color::Black);
 					}
@@ -199,9 +201,9 @@ SpellsStartPosition[i], false);
 					if (value.CooldownSpells[i].Cooldown > 0.0f)
 					{
 						TextHelpers::DrawOutlineText(nullptr, &value.SpellsTimerPosition[i],
-						                             TextHelpers::TimeFormat(
+						                             (TextHelpers::TimeFormat(
 							                             value.CooldownSpells[i].Cooldown,
-							                             TimerStyle(CooldownTrackerSettings.CDTimerFormat)).c_str(), "",
+							                             TimerStyle(CooldownTrackerSettings.CDTimerFormat))), "",
 						                             &Color::White
 						                             , 18, 4, 0, &Color::Black);
 					}
@@ -223,7 +225,7 @@ void CooldownTracker::OnProcessSpell(void* AI, PSDK_SPELL_CAST SpellCast, void* 
 {
 	UNREFERENCED_PARAMETER(UserData);
 
-	if (!CooldownTrackerSettings.EnableCooldownTracker)
+	if (!CooldownTrackerSettings.EnableCooldownTracker || ActualManualSpellLists.empty())
 	{
 		return;
 	}

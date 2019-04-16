@@ -2,6 +2,7 @@
 #include "Trackers.h"
 #include "SpriteImageLoader.h"
 #include "TextHelpers.h"
+#include "ChampInfo.h"
 
 constexpr int CDRequiredExp[] = {
 	0, 280, 660, 1140, 1720, 2400, 3180, 4060, 5040, 6120, 7300, 8580, 9960, 11440, 13020, 14700, 16480, 18360, INT_MAX
@@ -41,6 +42,7 @@ struct CooldownInisdeStruct
 	int SpellIMG;
 	//bool IsSummonerSpell;
 	float Percent;
+
 
 	CooldownInisdeStruct(SDK_SPELL _Spell, float _Cooldown, bool _IsLearned, int _SpellIMG)
 		: Spell(_Spell), Cooldown(_Cooldown), IsLearned(_IsLearned), SpellIMG(_SpellIMG)
@@ -125,7 +127,7 @@ struct CooldownChamp
 	std::map<int, Vector2> SpellsEndPosition;
 	std::map<int, Vector2> SpellsTimerPosition;
 
-
+	float ExpPercent;
 	Vector2 HeroHealthPos;
 	//CooldownPositionList CDPosList = CooldownPositionList(Vector3(0.0f, 0.0f, 0.0f));
 
@@ -201,27 +203,12 @@ struct CooldownChamp
 			}
 		}
 
-
 		if (Hero->GetLevel() < 18)
 		{
-			const float percent = (100.0f / (CDRequiredExp[Hero->GetLevel()] - CDRequiredExp[Hero->GetLevel() - 1]) * (
-				Hero->GetExperience() - CDRequiredExp[Hero->GetLevel() - 1]));
 
-
-			//EXPlength = percent * 0.73f;
-			//float AdjustMainFrameX = float(Menu::Get<int>("Trackers.CooldownTracker.HUD.DrawingX"));
-			//float AdjustMainFrameY = float(Menu::Get<int>("Trackers.CooldownTracker.HUD.DrawingY"));
-
-			Vector2 tempPos = HeroHealthPos;
-			tempPos.x += -47.0f + CooldownTrackerSettings.ExpbarPosX;
-			tempPos.y += -32.0f + CooldownTrackerSettings.ExpbarPosY;
-
-			SpellsStartPosition.try_emplace(6, &tempPos);
-
-			tempPos.x += percent * 1.05f;
-
-			SpellsEndPosition.try_emplace(6, &tempPos);
+			ExpPercent = ChampInfo::ExperiencePercentage(Hero->GetLevel(), Hero->GetExperience())* 1.05F;
 		}
+
 	}
 
 	void UpdateCDChamp()
@@ -296,8 +283,6 @@ struct CooldownChamp
 
 		if (Hero->GetLevel() < 18)
 		{
-			const float percent = (100.0f / (CDRequiredExp[Hero->GetLevel()] - CDRequiredExp[Hero->GetLevel() - 1]) * (
-				Hero->GetExperience() - CDRequiredExp[Hero->GetLevel() - 1]));
 
 			Vector2 tempPos = HeroHealthPos;
 			tempPos.x += -47.0f + CooldownTrackerSettings.ExpbarPosX;
@@ -305,8 +290,86 @@ struct CooldownChamp
 
 			SpellsStartPosition[6] = &tempPos;
 
-			tempPos.x += percent * 1.05f;
+			tempPos.x += ChampInfo::ExperiencePercentage(Hero->GetLevel(), Hero->GetExperience()) * 1.05f;
 
+			SpellsEndPosition[6] = &tempPos;
+		}
+	}
+
+	void UpdatePosition()
+	{
+		HeroHealthPos = Hero->GetHealthBarScreenPos();
+
+
+		auto spells = Hero->GetSpells();
+		if (spells.empty())
+		{
+			return;
+		}
+
+		Vector2 SpellsPosition = HeroHealthPos;
+		SpellsPosition.x += -43.0f + CooldownTrackerSettings.CDBarPosX;
+		SpellsPosition.y += -3.0f + CooldownTrackerSettings.CDBarPosY;
+
+		Vector2 SSPosition = HeroHealthPos;
+		SSPosition.x += 63.0f + CooldownTrackerSettings.SSPosX;
+		SSPosition.y += -24.0f + CooldownTrackerSettings.SSPosY;
+
+
+		const float currentTime = Game::Time();
+		for (auto& spellInside : spells)
+		{
+			const int slot = static_cast<int>(spellInside.Slot);
+			if (slot < 0 || slot > 6)
+			{
+				continue;
+			}
+
+			if (slot == 4 || slot == 5)
+			{
+				if (slot == 5)
+				{
+					SSPosition.y += 15.0f;
+				}
+
+
+				SpellsStartPosition[spellInside.Slot] = &SSPosition;
+
+				Vector2 timerPos = Vector2(SSPosition.x + 18.0F + CooldownTrackerSettings.SSTimerPosX,
+					SSPosition.y + CooldownTrackerSettings.SSTimerPosY);
+
+				SpellsTimerPosition[spellInside.Slot] = &timerPos;
+			}
+			else
+			{
+				if (CooldownSpells[spellInside.Slot].IsLearned)
+				{
+					auto LengthAdjustedPos = Vector2(
+						SpellsPosition.x + CooldownSpells[spellInside.Slot].Percent * CooldownTrackerSettings.
+						CDBarLength,
+						SpellsPosition.y);
+
+					SpellsStartPosition[spellInside.Slot] = &SpellsPosition;
+					SpellsEndPosition[spellInside.Slot] = &LengthAdjustedPos;
+
+					LengthAdjustedPos = Vector2(SpellsPosition.x + 2.0F + CooldownTrackerSettings.CDTimerPosX,
+						SpellsPosition.y + 9.0F + CooldownTrackerSettings.CDTimerPosY);
+
+					SpellsTimerPosition[spellInside.Slot] = &LengthAdjustedPos;
+				}
+				SpellsPosition.x += CooldownTrackerSettings.CDBarGab;
+			}
+		}
+
+		if (Hero->GetLevel() < 18)
+		{
+
+			Vector2 tempPos = HeroHealthPos;
+			tempPos.x += -47.0f + CooldownTrackerSettings.ExpbarPosX;
+			tempPos.y += -32.0f + CooldownTrackerSettings.ExpbarPosY;
+
+			SpellsStartPosition[6] = &tempPos;
+			tempPos.x += ExpPercent;
 			SpellsEndPosition[6] = &tempPos;
 		}
 	}

@@ -35,6 +35,9 @@
     <ClCompile Include="Drawings.cpp">
       <Filter>Features\Drawings\Main</Filter>
     </ClCompile>
+    <ClCompile Include="SideBar.cpp">
+      <Filter>Features\Trackers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\clipper.hpp">
@@ -145,6 +148,15 @@
     <ClInclude Include="Drawings.h">
       <Filter>Features\Drawings\Main</Filter>
     </ClInclude>
+    <ClInclude Include="TeleportDecode.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="SideBar.h">
+      <Filter>Features\Trackers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChampInfo.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SDK">
@@ -185,6 +197,12 @@
     </Filter>
     <Filter Include="Features\Drawings\Main">
       <UniqueIdentifier>{70ada8c7-9654-4dfa-a2d5-bddf465235b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\SideBar">
+      <UniqueIdentifier>{385ebfb1-527e-4f86-809b-595ef27070d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\SideBar\Champions">
+      <UniqueIdentifier>{d51539a2-e852-4582-b0a1-2d7775947955}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -304,6 +322,492 @@
     </Image>
     <Image Include="Resources\Cooldowns\CD_HudSelf.png">
       <Filter>Resources\Cooldowns</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Aatrox.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Ahri.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Akali.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Alistar.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Amumu.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Anivia.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Annie.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Ashe.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\AurelionSol.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Azir.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Bard.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Blitzcrank.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Brand.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Braum.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Caitlyn.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Camille.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Cassiopeia.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Chogath.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Corki.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Darius.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Default.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Diana.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Draven.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\DrMundo.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Ekko.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Elise.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Evelynn.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Ezreal.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\FiddleSticks.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Fiora.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Fizz.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Galio.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Gangplank.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Garen.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Gnar.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Gragas.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Graves.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Hecarim.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Heimerdinger.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Illaoi.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Irelia.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Ivern.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Janna.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\JarvanIV.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Jax.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Jayce.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Jhin.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Jinx.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Kaisa.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Kalista.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Karma.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Karthus.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Kassadin.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Katarina.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Kayle.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Kayn.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Kennen.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Khazix.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Kindred.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Kled.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\KogMaw.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Leblanc.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\LeeSin.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Leona.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Lissandra.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Lucian.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Lulu.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Lux.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Malphite.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Malzahar.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Maokai.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\MasterYi.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\MissFortune.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\MonkeyKing.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Mordekaiser.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Morgana.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Nami.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Nasus.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Nautilus.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Neeko.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Nidalee.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Nocturne.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Nunu.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Olaf.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Orianna.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Ornn.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Pantheon.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Poppy.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\PracticeTool_TargetDummy.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Pyke.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Quinn.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Rakan.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Rammus.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\RekSai.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Renekton.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Rengar.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Riven.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Rumble.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Ryze.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Sejuani.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Shaco.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Shen.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Shyvana.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Singed.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Sion.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Sivir.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Skarner.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Sona.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Soraka.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Swain.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Sylas.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Syndra.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\TahmKench.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Taliyah.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Talon.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Taric.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Teemo.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Thresh.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Tristana.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Trundle.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Tryndamere.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\TwistedFate.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Twitch.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Udyr.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Urgot.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Varus.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Vayne.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Veigar.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Velkoz.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Vi.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Viktor.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Vladimir.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Volibear.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Warwick.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Xayah.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Xerath.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\XinZhao.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Yasuo.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Yorick.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Zac.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Zed.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Ziggs.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Zilean.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Zoe.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\Champions\Zyra.png">
+      <Filter>Resources\SideBar\Champions</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_Default.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_HUD.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_Invisible.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_RecallAbort.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_RecallFinish.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_RecallStart.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_SSInvisible.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_summonerbarrier.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_summonerboost.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_summonerdot.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_summonerexhaust.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_summonerflash.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_summonerhaste.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_summonerheal.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_summonersmite.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_summonerteleport.png">
+      <Filter>Resources\SideBar</Filter>
+    </Image>
+    <Image Include="Resources\SideBar\SB_Ultimate.png">
+      <Filter>Resources\SideBar</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
