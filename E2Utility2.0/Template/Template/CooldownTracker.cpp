@@ -6,9 +6,14 @@
 // Got the information from https://leagueoflegends.fandom.com/wiki/Experience_(summoner)
 
 unsigned int PlayerNetID;
+std::vector<ManualSpell> ManualSpellLists;
+std::vector<ManualSpell> ActualManualSpellLists;
+std::vector<CooldownChamp> CooldownChampList;
+
+CooldownBasicChampList CDList;
 
 
-void CooldownTracker::SettingsUpdate() const // Updating settings section
+void CooldownTracker::SettingsUpdate() // Updating settings section
 {
 	CooldownTrackerSettings.EnableCooldownTracker = Menu::Get<bool>("Trackers.CooldownTracker.Use");
 
@@ -63,16 +68,69 @@ CooldownTracker::~CooldownTracker()
 
 DWORD CooldownTick;
 
+
+void CooldownTracker::TickLoader(CooldownBasicChampList& cdlist)
+{
+	unsigned short int currentTime = Game::Time();
+	for (auto& tracker : cdlist.TrackerInfo)
+	{
+
+
+		if (!tracker.Hero->GetPosition().IsValid() || !tracker.Hero->IsVisible() || !tracker.Hero->GetHealthBarPos().IsValid()
+			|| !tracker.Hero->GetPosition().IsOnScreen() || !tracker.Hero->IsAlive() || tracker.Hero->IsZombie())
+		{
+			continue;
+		}
+
+		/*
+		std::stringstream ss;
+		ss.precision(0);
+		ss.setf(std::ios_base::fixed, std::ios_base::floatfield);
+		ss << "hello";
+		*/
+
+
+
+		//SdkUiConsoleWrite("tick");
+
+
+		auto spells = tracker.Hero->GetSpells();
+
+		if (spells.empty())
+		{
+			return;
+		}
+
+	//	tracker.CooldownSpells[1].Cooldown = 0;
+		int i = 0;
+		for (auto& spellInside : spells)
+		{
+			if (spellInside.CooldownExpires > currentTime)
+			{
+				tracker.CooldownSpells[i].Cooldown = spellInside.CooldownExpires - currentTime;
+			}
+
+			//spellInside.CooldownExpires - currentTime;
+			++i;
+		}
+
+
+	}
+}
+
 void CooldownTracker::OnTick(void* userData)
 {
 
+
+	TickLoader(CDList);
+	return;
 	//SdkUiConsoleWrite("tracker Tick? !!");
 	if (Game::IsOverlayOpen())
 	{
 		SettingsUpdate();
 	}
 
-
+	//return;
 
 	if (CooldownTick + 100 > GetTickCount())
 	{
@@ -108,22 +166,25 @@ void CooldownTracker::OnTick(void* userData)
 				//	SdkUiConsoleWrite(" %d Time :  %f ", i, time);
 				float spellCD = value.CooldownSpells[i].Spell.TotalCooldown;
 
-				if (!ActualManualSpellLists.empty() && i != 4 && i != 5)
+				if (!ActualManualSpellLists.empty() )
 				{
-					for (auto& manual : ActualManualSpellLists)
+					if (i != 4 && i != 5)
 					{
-						if ((_stricmp(manual.SpellName, value.CooldownSpells[i].Spell.ScriptName) == 0 ||
-							int(manual.Slot) == int(value.CooldownSpells[i].Spell.Slot)) && _stricmp(
-							manual.Champ, value.Hero->GetCharName()) == 0 && manual.IsAlly == value.Hero->IsAlly())
+						for (auto& manual : ActualManualSpellLists)
 						{
-							//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
-							if (manual.CooldownExpires - currentTime > 0.0f)
+							if ((_stricmp(manual.SpellName, value.CooldownSpells[i].Spell.ScriptName) == 0 ||
+								int(manual.Slot) == int(value.CooldownSpells[i].Spell.Slot)) && _stricmp(
+									manual.Champ, value.Hero->GetCharName()) == 0 && manual.IsAlly == value.Hero->IsAlly())
 							{
-								time = manual.CooldownExpires - currentTime;
-								// modify cooldowns because they don't be tracked correctly by riot's spell datas
-								spellCD = manual.Cooldown;
+								//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
+								if (manual.CooldownExpires - currentTime > 0.0f)
+								{
+									time = manual.CooldownExpires - currentTime;
+									// modify cooldowns because they don't be tracked correctly by riot's spell datas
+									spellCD = manual.Cooldown;
+								}
+								//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
 							}
-							//SdkUiConsoleWrite(" Script : %s Time: %f ", manual.SpellName, time);
 						}
 					}
 				}
@@ -134,25 +195,93 @@ void CooldownTracker::OnTick(void* userData)
 	}
 }
 
+
+void CooldownTracker::DrawLoader(const CooldownBasicChampList& cdlist)
+{
+	//float currentTime = Game::Time();
+	for (auto& tracker : cdlist.TrackerInfo)
+	{
+	
+		if (!tracker.Hero->GetPosition().IsValid() || !tracker.Hero->IsVisible() || !tracker.Hero->GetHealthBarPos().IsValid()
+			|| !tracker.Hero->GetPosition().IsOnScreen() || !tracker.Hero->IsAlive() || tracker.Hero->IsZombie())
+		{
+			continue;
+		}
+
+
+
+
+		Vector2 hpbar = tracker.Hero->GetHealthBarScreenPos();
+
+
+		//auto HUDPosition = Vector2(hpbar.x + 6.0F, hpbar.y - 8.0f);
+		SdkDrawSpriteFromResource(MAKEINTRESOURCEA(108), &hpbar, true);
+
+		//SdkDrawSpriteFromResource(MAKEINTRESOURCEA(CD_HudSelf), &HUDPosition, true);
+
+		//SdkDrawSpriteFromResource(MAKEINTRESOURCEA(CD_HudSelf), &HUDPosition, true);
+
+		/*
+		std::stringstream ss;
+		ss.precision(0);
+		ss.setf(std::ios_base::fixed, std::ios_base::floatfield);
+		ss << "hello";
+		*/
+
+		std::string hi;
+		
+		for (auto& spells : tracker.CooldownSpells)
+		{
+
+
+			hi += std::to_string(spells.Cooldown ? spells.Cooldown : 0) + " ";
+
+
+		}
+		
+		
+
+		//Draw::Text(&tracker.TestNewPos, nullptr, "test");
+		Draw::Text(nullptr, &hpbar, hi);
+
+		//Draw::Text()
+
+	}
+}
+
+
 void CooldownTracker::OnDraw(void* userData)
 {
+	//Draw::Text(nullptr, &Player.GetHealthBarScreenPos(), "test");
 
+	DrawLoader(CDList);
+	//SdkUiConsoleWrite("hi1");
+
+	return;
 
 	if (!CooldownTrackerSettings.EnableCooldownTracker)
 	{
-		return;
+		//return;
 	}
-
+	//SdkUiConsoleWrite("hi2");
 	if (CooldownChampList.empty())
 	{
 		return;
 	}
-
+	//SdkUiConsoleWrite("hi3");
 	const bool HUDusage = CooldownTrackerSettings.EnableHUD;
 	const bool ExpBarUsage = CooldownTrackerSettings.EnableExpbar;
 
+
+	
 	for (auto& value : CooldownChampList)
 	{
+		if(!value.IsVisible)
+			//continue;
+
+
+
+		
 		if (!value.Hero->GetPosition().IsValid() || !value.Hero->IsVisible() || !value.Hero->GetHealthBarPos().IsValid()
 			|| !value.Hero->GetPosition().IsOnScreen() || !value.Hero->IsAlive() || value.Hero->IsZombie())
 		{
@@ -160,10 +289,15 @@ void CooldownTracker::OnDraw(void* userData)
 		}
 
 
-		/*
+
+		//Draw::Text(value.HeroHealthPosPointer, nullptr, "test");
+		
+
+		
 		if (CooldownTrackerSettings.TrackMyself && value.NetID == PlayerNetID || // Me 
 			(CooldownTrackerSettings.TrackAlly && value.Hero->IsAlly() && value.NetID != PlayerNetID) || // "Ally" is included localplayer
-			CooldownTrackerSettings.TrackEnemy && !value.Hero->IsAlly()) // Enemy*/
+			CooldownTrackerSettings.TrackEnemy && !value.Hero->IsAlly()) // Enemy
+		
 		{
 			value.UpdatePosition();
 
@@ -178,7 +312,10 @@ void CooldownTracker::OnDraw(void* userData)
 				                 7.0f, &Color::Grey);
 			}
 
-			//Draw::LineScreen(&SpellPosition, &Vector2(SpellPosition.x + 105.0f, SpellPosition.y), 7.0f, &Color::Grey);
+	
+
+			
+			
 			for (int i = 0; i != 6; ++i)
 			{
 				if (i == 4 || i == 5) // Summoners Spells
@@ -308,8 +445,11 @@ void CooldownTracker::Initialized()
 		{
 			if (hero != nullptr)
 			{
-				_spellDatas.try_emplace(netID, hero);
 				CooldownChampList.emplace_back(CooldownChamp(hero, netID));
+
+				CDList.TrackerInfo.emplace_back(hero, netID);
+
+
 
 				// Find champions that need to be manually tracked.
 
@@ -325,6 +465,11 @@ void CooldownTracker::Initialized()
 		}
 	}
 
+
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Tick, CooldownTracker::OnTick);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Update, CooldownTracker::OnDraw);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::Overlay, CooldownTracker::OnDrawMenu);
+	pSDK->EventHandler->RegisterCallback(CallbackEnum::SpellCastEnd, CooldownTracker::OnProcessSpell);
 
 	/*
 	auto hi = this->GetMenu();
@@ -562,3 +707,4 @@ void CooldownTracker::ManualSpellListInit()
 
 	ManualSpellLists.emplace_back(ManualSpell("TwistedFate", "RedCardPreAttack", SpellSlot::W, skillcds, 0.0f, false));
 }
+

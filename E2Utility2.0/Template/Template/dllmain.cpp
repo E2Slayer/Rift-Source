@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
 #include "../../Include/SDK Extensions.h"
-#include "Loader.h"
+#include "CooldownTracker.h"
+//#include "Loader.h"
 
 PLUGIN_SETUP("E2Utility2.0", OnLoad);
 
@@ -13,7 +14,9 @@ void __cdecl OnLoad(void* UserData)
 	{
 		//MyTemplateClass::Init();
 
-		Loader::OnInit();
+		//Loader::OnInit();
+
+		CooldownTracker::Initialized();
 		//Game::PrintChat(R"(<font color="#832232">Template Loaded.</font>)");
 	}
 }

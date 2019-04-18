@@ -48,9 +48,7 @@ struct CooldownInisdeStruct
 		: Spell(_Spell), Cooldown(_Cooldown), IsLearned(_IsLearned), SpellIMG(_SpellIMG)
 	{
 		//_Spell.TotalCooldown
-		Percent = _Cooldown > 0 && std::abs(_Spell.TotalCooldown) > FLT_EPSILON
-			          ? 1.0f - _Cooldown / _Spell.TotalCooldown
-			          : 1.0f;
+		Percent = _Cooldown > 0 && std::abs(_Spell.TotalCooldown) > FLT_EPSILON  ? 1.0f - _Cooldown / _Spell.TotalCooldown : 1.0f;
 	}
 
 
@@ -62,9 +60,7 @@ struct CooldownInisdeStruct
 			this->IsLearned = Spell.Learned;
 		}
 
-		Percent = newTime > 0 && std::abs(totalCD) > FLT_EPSILON
-			          ? 1.0f - newTime / totalCD
-			          : 1.0f;
+		Percent = newTime > 0 && std::abs(totalCD) > FLT_EPSILON ? 1.0f - newTime / totalCD : 1.0f;
 	}
 };
 
@@ -118,27 +114,101 @@ inline struct CooldownTrackerSettingsStruct
 
 
 
+struct CooldownSpellInfo
+{
+	SDK_SPELL Spell;
+	unsigned short int Cooldown;
+	bool IsLearned;
+	unsigned short int SpellIMG;
+	//float Percent;
+
+
+	CooldownSpellInfo(SDK_SPELL _Spell, int _Cooldown, bool _IsLearned, int _SpellIMG)
+		: Spell(_Spell), Cooldown(_Cooldown), IsLearned(_IsLearned), SpellIMG(_SpellIMG)
+	{
+		//_Spell.TotalCooldown
+		//Percent = _Cooldown > 0 && std::abs(_Spell.TotalCooldown) > FLT_EPSILON ? 1.0f - _Cooldown / _Spell.TotalCooldown : 1.0f;
+	}
+};
+
+struct CooldownBasicChampInfo
+{
+	AIHeroClient* Hero;
+	unsigned int NetID;
+	std::vector<CooldownSpellInfo> CooldownSpells;
+	Vector2 HeroHealthPos;
+
+
+	CooldownBasicChampInfo(AIHeroClient* _Hero, unsigned int _NetID)
+		: Hero(_Hero), NetID(_NetID)
+	{
+		HeroHealthPos = _Hero->GetHealthBarScreenPos();
+
+		auto spells = _Hero->GetSpells();
+	
+		if (spells.empty())
+		{
+			return;
+		}
+
+
+		const float currentTime = Game::Time();
+		for (auto& spellInside : spells)
+		{
+			if (int(spellInside.Slot) < 0 || int(spellInside.Slot) > 6)
+			{
+				continue;
+			}
+			CooldownSpells.emplace_back(CooldownSpellInfo(spellInside, 0,
+				spellInside.Learned,
+				SpriteImageLoader::GetSmallSummonerSpellIMG(
+					spellInside.ScriptName, false)));
+		}
+	}
+};
+
+
+
+
+struct CooldownBasicChampList
+{
+	std::vector<CooldownBasicChampInfo> TrackerInfo;
+
+
+};
+
+
+
+
+
+
+
+
 struct CooldownChamp
 {
-	std::vector < AIHeroClient*> Hero;
-	std::vector<unsigned int> NetID;
-	std::vector<std::vector<CooldownInisdeStruct>> CooldownSpells;
+	AIHeroClient* Hero;
+	unsigned int NetID;
+	std::vector<CooldownInisdeStruct> CooldownSpells;
 
-	std::vector <std::map<int, Vector2>> SpellsStartPosition;
-	std::vector < std::map<int, Vector2>> SpellsEndPosition;
-	std::vector < std::map<int, Vector2>> SpellsTimerPosition;
+	std::map<int, Vector2> SpellsStartPosition;
+	std::map<int, Vector2> SpellsEndPosition;
+	std::map<int, Vector2> SpellsTimerPosition;
 
-	std::vector<float> ExpPercent;
-	std::vector < Vector2> HeroHealthPos;
+	bool IsVisible;
+	float ExpPercent;
+	Vector2 HeroHealthPos;
+
+	PSDKVECTOR HeroHealthPosPointer;
+
 	//CooldownPositionList CDPosList = CooldownPositionList(Vector3(0.0f, 0.0f, 0.0f));
 
-	CooldownChamp(std::vector < AIHeroClient*> _Hero, std::vector<unsigned int> _NetID)
-		: Hero(_Hero), NetID(_NetID)
+	CooldownChamp(AIHeroClient* _Hero, unsigned int _NetID)
+		: Hero(_Hero), NetID(_NetID) , IsVisible(false)
 	{
 		CooldownSpells.clear();
 		HeroHealthPos = _Hero->GetHealthBarScreenPos();
-
-
+		HeroHealthPosPointer = &Hero->GetPosition();
+	
 		auto spells = _Hero->GetSpells();
 		if (spells.empty())
 		{
@@ -154,6 +224,7 @@ struct CooldownChamp
 		SSPosition.x += 63.0f + CooldownTrackerSettings.SSPosX;
 		SSPosition.y += -24.0f + CooldownTrackerSettings.SSPosY;
 
+		Vector2* test = &HeroHealthPos;
 
 		const float currentTime = Game::Time();
 		for (auto& spellInside : spells)
@@ -214,7 +285,14 @@ struct CooldownChamp
 
 	void UpdateCDChamp()
 	{
-
+		if(Hero->IsVisibleOnScreen())
+		{
+			IsVisible = true;
+		}
+		else
+		{
+			IsVisible = false;
+		}
 
 		auto spells = Hero->GetSpells();
 		if (spells.empty())
@@ -245,13 +323,8 @@ struct CooldownChamp
 	void UpdatePosition()
 	{
 		HeroHealthPos = Hero->GetHealthBarScreenPos();
+	
 
-
-		auto spells = Hero->GetSpells();
-		if (spells.empty())
-		{
-			return;
-		}
 
 		Vector2 SpellsPosition = HeroHealthPos;
 		SpellsPosition.x += -43.0f + CooldownTrackerSettings.CDBarPosX;
@@ -263,9 +336,8 @@ struct CooldownChamp
 
 
 
-		for (auto& spellInside : spells)
+		for (int slot = 0; slot <6; ++slot)
 		{
-			const int slot = static_cast<int>(spellInside.Slot);
 
 			if (slot == 4 || slot == 5)
 			{
@@ -275,29 +347,29 @@ struct CooldownChamp
 				}
 
 
-				SpellsStartPosition[spellInside.Slot] = &SSPosition;
+				SpellsStartPosition[slot] = &SSPosition;
+
 
 				Vector2 timerPos = Vector2(SSPosition.x + 18.0F + CooldownTrackerSettings.SSTimerPosX,
 					SSPosition.y + CooldownTrackerSettings.SSTimerPosY);
 
-				SpellsTimerPosition[spellInside.Slot] = &timerPos;
+				SpellsTimerPosition[slot] = &timerPos;
 			}
 			else
 			{
-				if (CooldownSpells[spellInside.Slot].IsLearned)
+				if (CooldownSpells[slot].IsLearned)
 				{
-					auto LengthAdjustedPos = Vector2(
-						SpellsPosition.x + CooldownSpells[spellInside.Slot].Percent * CooldownTrackerSettings.
-						CDBarLength,
-						SpellsPosition.y);
+					
+					
+					auto LengthAdjustedPos = Vector2(SpellsPosition.x + CooldownSpells[slot].Percent * CooldownTrackerSettings.CDBarLength,SpellsPosition.y);
 
-					SpellsStartPosition[spellInside.Slot] = &SpellsPosition;
-					SpellsEndPosition[spellInside.Slot] = &LengthAdjustedPos;
+					SpellsStartPosition[slot] = &SpellsPosition;
+					SpellsEndPosition[slot] = &LengthAdjustedPos;
 
 					LengthAdjustedPos = Vector2(SpellsPosition.x + 2.0F + CooldownTrackerSettings.CDTimerPosX,
 						SpellsPosition.y + 9.0F + CooldownTrackerSettings.CDTimerPosY);
 
-					SpellsTimerPosition[spellInside.Slot] = &LengthAdjustedPos;
+					SpellsTimerPosition[slot] = &LengthAdjustedPos;
 				}
 				SpellsPosition.x += CooldownTrackerSettings.CDBarGab;
 			}
@@ -318,23 +390,23 @@ struct CooldownChamp
 };
 
 
-class CooldownTracker : public Trackers
+class CooldownTracker 
 {
 private:
-	std::vector<ManualSpell> ManualSpellLists;
-	std::vector<ManualSpell> ActualManualSpellLists;
-	std::vector<CooldownChamp> CooldownChampList;
-	std::map<unsigned int, AIHeroClient*> _spellDatas;
+
+	
 public:
 	CooldownTracker();
 	~CooldownTracker();
-
-	void OnTick(void* userData) override;
-	void OnDraw(void* userData) override;
-	void OnDrawMenu(void* userData) override;
-	void OnProcessSpell(void* ai, PSDK_SPELL_CAST cast, void* userData) override;
-	void Initialized() override;
+	static void Initialized();
+	static void TickLoader(CooldownBasicChampList& cdlist);
+	static void OnTick(void* userData);
+	static void OnDraw(void* userData);
+	static void OnDrawMenu(void* userData);
+	static void OnProcessSpell(void* ai, PSDK_SPELL_CAST cast, void* userData);
 	//void Menu() override;
-	void SettingsUpdate() const;
-	void ManualSpellListInit();
+	static void SettingsUpdate();
+	static void ManualSpellListInit();
+
+	static void DrawLoader(const CooldownBasicChampList& cdlist);
 };
