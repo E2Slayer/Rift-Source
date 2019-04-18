@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "SideBar.h"
+#include "TextHelpers.h"
+#include "resource.h"
 
 
 std::map<unsigned int, float> _teleports;
@@ -12,14 +14,15 @@ SideBar::SideBar()
 
 
 SideBar::~SideBar()
-{
-}
+= default;
 
 void SideBar::Initialized()
 {
 	
 	SdkUiConsoleWrite("Sidebar Init");
 	SettingsUpdate();
+
+	//_enemyObject.emplace_back((EnemyObject(&Player)));
 	auto enemyList{ pSDK->EntityManager->GetEnemyHeroes() };
 	if (!enemyList.empty())
 	{
@@ -30,22 +33,41 @@ void SideBar::Initialized()
 	}
 }
 
+DWORD SidebarTick;
+
 void SideBar::OnTick(void* userData)
 {
 	if (Game::IsOverlayOpen())
 	{
-		
 
 		SettingsUpdate();
 	}
 
-	int i = 0;
+
+
+
+	if (SidebarTick + 500 > GetTickCount())
+	{
+		return;
+	}
+	SidebarTick = GetTickCount();
+
+
 	for (auto& enemy : _enemyObject)
 	{
-		enemy.PositionUpdate(i);
+		if (!enemy.Unit->IsValid())
+		{
+			continue;
+		}
 		enemy.EnemyUpdate();
-		++i;
 	}
+
+
+
+
+
+
+
 
 	/*
 	for (auto& enemy : _enemyObject)
@@ -58,13 +80,28 @@ void SideBar::OnTick(void* userData)
 
 void SideBar::OnDraw(void* userData)
 {
+
 	for (auto& enemy : _enemyObject)
 	{
 
-
+		/*
+		if(!enemy.Unit->IsValid())
+		{
+			return;
+		}
+		*/
 		//SdkUiConsoleWrite("Sidebar drawing secne");
 		SdkDrawSpriteFromResource(MAKEINTRESOURCEA(enemy.ChampIMG), &enemy.HUDPosition, true); // Champion Face
 
+
+		
+		if (!enemy.Unit->IsVisible() || !enemy.Unit->IsAlive()) //Make champion icon darker for Mising and Death Timer
+		{
+
+			SdkDrawSpriteFromResource(MAKEINTRESOURCEA(SB_Invisible), &enemy.HUDPosition, true);
+
+		}
+		
 		//Vector2 background = Vector2(enemy.DrawingStartPosition[HpBar].x, enemy.DrawingStartPosition[HpBar].y - 2.0f);
 
 		//Draw::LineScreen(&background, &Vector2(background.x + 75.0f, background.y), 20.0f, &Color::Black);
@@ -74,9 +111,85 @@ void SideBar::OnDraw(void* userData)
 
 		Draw::LineScreen(&enemy.DrawingStartPosition[MpBar], &enemy.DrawingEndPosition[MpBar], 5.0f, &Color::Blue);
 
-		//Draw::LineScreen(&enemy.DrawingStartPosition[ExpBar], &enemy.DrawingEndPosition[ExpBar], 5.0f, &Color::Purple);
+		
+		TextHelpers::DrawOutlineText(nullptr, &enemy.DrawingStartPosition[Level],
+		                             std::to_string(enemy.Unit->GetLevel()), "",&Color::White, 20, 4, 0, &Color::Black);
+
+		
+
 	
 
+
+		if (enemy.MissingTimerBool)
+		{
+			TextHelpers::DrawOutlineText(nullptr, &enemy.DrawingStartPosition[DeathMissingTimer],
+				(TextHelpers::TimeFormat(enemy.LastVisibleLeftTime, TimerStyle(1))), "",
+				&Color::White
+				, 24, 6, 0, &Color::Black);
+		}
+	
+		
+		if (!enemy.Unit->IsAlive()) // Death Timer
+		{
+			TextHelpers::DrawOutlineText(nullptr, &enemy.DrawingStartPosition[DeathMissingTimer],
+				(TextHelpers::TimeFormat(enemy.DeathEndTimeLeftTime, TimerStyle(1))), "",
+				&Color::Red
+				, 24, 6, 0, &Color::Black);
+
+		}
+
+
+
+		//Draw::LineScreen(&enemy.DrawingStartPosition[ExpBar], &enemy.DrawingEndPosition[ExpBar], 5.0f, &Color::Purple);
+
+
+
+
+		SdkDrawSpriteFromResource(MAKEINTRESOURCEA(enemy.SummonerSpells1IMG), &enemy.DrawingStartPosition[SummonerSpell1], true); // Summoner Spell 1 Drawing
+		if (enemy.SummonerSpells1CD > 0.0f)
+		{
+			SdkDrawSpriteFromResource(MAKEINTRESOURCEA(SB_SSInvisible), &enemy.DrawingStartPosition[SummonerSpell1], true); // when its CD
+
+
+			TextHelpers::DrawOutlineText(nullptr, &enemy.DrawingEndPosition[SummonerSpell1],
+				(TextHelpers::TimeFormat(enemy.SummonerSpells1CD, TimerStyle(1))), "",
+				&Color::White
+				, 18, 4, 0, &Color::Black);
+
+			
+
+		}
+
+		SdkDrawSpriteFromResource(MAKEINTRESOURCEA(enemy.SummonerSpells2IMG), &enemy.DrawingStartPosition[SummonerSpell2], true); // Summoner Spell 1 Drawing
+		if (enemy.SummonerSpells2CD > 0.0f)
+		{
+			SdkDrawSpriteFromResource(MAKEINTRESOURCEA(SB_SSInvisible), &enemy.DrawingStartPosition[SummonerSpell2], true); // when its CD
+			TextHelpers::DrawOutlineText(nullptr, &enemy.DrawingEndPosition[SummonerSpell2],
+				(TextHelpers::TimeFormat(enemy.SummonerSpells2CD, TimerStyle(1))), "",
+				&Color::White
+				, 18, 4, 0, &Color::Black);
+		}
+
+
+
+		SdkDrawSpriteFromResource(MAKEINTRESOURCEA(SB_HUD), &enemy.MainFramePosition, true); // HUD Hud MainFrame
+
+
+		if (enemy.IsRLearned)
+		{
+			if (enemy.SpellRCD > 0.0F) // on cd Ultimate
+			{
+				TextHelpers::DrawOutlineText(nullptr, &enemy.DrawingEndPosition[Ultimate],
+					(TextHelpers::TimeFormat(enemy.SpellRCD, TimerStyle(2))), "",
+					&Color::White
+					, 16, 3, 0, &Color::Black);
+
+			}
+			else if (enemy.SpellRCD < 0.0f) //ready
+			{
+				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(SB_Ultimate), &enemy.DrawingStartPosition[Ultimate], true);
+			}
+		}
 
 	}
 }
@@ -285,7 +398,7 @@ void SideBar::OnRecall(void* Unit, const char* Name, const char* Type, void* Use
 
 }
 
-void SideBar::SettingsUpdate() const
+void SideBar::SettingsUpdate()
 {
 //	CooldownTrackerSettings.EnableCooldownTracker = Menu::Get<bool>("Trackers.CooldownTracker.Use");
 
@@ -294,4 +407,12 @@ void SideBar::SettingsUpdate() const
 	SideBarSettings.SidebarGab = Menu::Get<int>("Trackers.SideBar.Main.Gap");
 	SideBarSettings.MainFramePosX = Menu::Get<int>("Trackers.SideBar.Main.DrawingX");
 	SideBarSettings.MainFramePosY = Menu::Get<int>("Trackers.SideBar.Main.DrawingY");
+
+	int i = 0;
+	for (auto& enemy : _enemyObject)
+	{
+		enemy.PositionUpdate(i);
+		++i;
+	}
+
 }

@@ -117,21 +117,22 @@ inline struct CooldownTrackerSettingsStruct
 } CooldownTrackerSettings;
 
 
+
 struct CooldownChamp
 {
-	AIHeroClient* Hero;
-	unsigned int NetID;
-	std::vector<CooldownInisdeStruct> CooldownSpells;
+	std::vector < AIHeroClient*> Hero;
+	std::vector<unsigned int> NetID;
+	std::vector<std::vector<CooldownInisdeStruct>> CooldownSpells;
 
-	std::map<int, Vector2> SpellsStartPosition;
-	std::map<int, Vector2> SpellsEndPosition;
-	std::map<int, Vector2> SpellsTimerPosition;
+	std::vector <std::map<int, Vector2>> SpellsStartPosition;
+	std::vector < std::map<int, Vector2>> SpellsEndPosition;
+	std::vector < std::map<int, Vector2>> SpellsTimerPosition;
 
-	float ExpPercent;
-	Vector2 HeroHealthPos;
+	std::vector<float> ExpPercent;
+	std::vector < Vector2> HeroHealthPos;
 	//CooldownPositionList CDPosList = CooldownPositionList(Vector3(0.0f, 0.0f, 0.0f));
 
-	CooldownChamp(AIHeroClient* _Hero, unsigned int _NetID)
+	CooldownChamp(std::vector < AIHeroClient*> _Hero, std::vector<unsigned int> _NetID)
 		: Hero(_Hero), NetID(_NetID)
 	{
 		CooldownSpells.clear();
@@ -213,8 +214,6 @@ struct CooldownChamp
 
 	void UpdateCDChamp()
 	{
-		//CooldownSpells.clear();
-		HeroHealthPos = Hero->GetHealthBarScreenPos();
 
 
 		auto spells = Hero->GetSpells();
@@ -223,77 +222,24 @@ struct CooldownChamp
 			return;
 		}
 
-		Vector2 SpellsPosition = HeroHealthPos;
-		SpellsPosition.x += -43.0f + CooldownTrackerSettings.CDBarPosX;
-		SpellsPosition.y += -3.0f + CooldownTrackerSettings.CDBarPosY;
-
-		Vector2 SSPosition = HeroHealthPos;
-		SSPosition.x += 63.0f + CooldownTrackerSettings.SSPosX;
-		SSPosition.y += -24.0f + CooldownTrackerSettings.SSPosY;
-
 
 		const float currentTime = Game::Time();
 		for (auto& spellInside : spells)
 		{
 			const int slot = static_cast<int>(spellInside.Slot);
-			if (slot < 0 || slot > 6)
-			{
-				continue;
-			}
 
 			CooldownSpells[spellInside.Slot].Spell = spellInside;
 			CooldownSpells[spellInside.Slot].Cooldown = spellInside.CooldownExpires - currentTime;
 			CooldownSpells[spellInside.Slot].IsLearned = spellInside.Learned;
-			if (slot == 4 || slot == 5)
-			{
-				if (slot == 5)
-				{
-					SSPosition.y += 15.0f;
-				}
 
-				CooldownSpells[spellInside.Slot].SpellIMG = SpriteImageLoader::GetSmallSummonerSpellIMG(spellInside.ScriptName, CooldownSpells[spellInside.Slot].Cooldown > 0.0f);
+			CooldownSpells[spellInside.Slot].SpellIMG = SpriteImageLoader::GetSmallSummonerSpellIMG(spellInside.ScriptName, CooldownSpells[spellInside.Slot].Cooldown > 0.0f);
 
-				SpellsStartPosition[spellInside.Slot] = &SSPosition;
 
-				Vector2 timerPos = Vector2(SSPosition.x + 18.0F + CooldownTrackerSettings.SSTimerPosX,
-				                           SSPosition.y + CooldownTrackerSettings.SSTimerPosY);
-
-				SpellsTimerPosition[spellInside.Slot] = &timerPos;
-			}
-			else
-			{
-				if (CooldownSpells[spellInside.Slot].IsLearned)
-				{
-					auto LengthAdjustedPos = Vector2(
-						SpellsPosition.x + CooldownSpells[spellInside.Slot].Percent * CooldownTrackerSettings.
-						CDBarLength,
-						SpellsPosition.y);
-
-					SpellsStartPosition[spellInside.Slot] = &SpellsPosition;
-					SpellsEndPosition[spellInside.Slot] = &LengthAdjustedPos;
-
-					LengthAdjustedPos = Vector2(SpellsPosition.x + 2.0F + CooldownTrackerSettings.CDTimerPosX,
-					                            SpellsPosition.y + 9.0F + CooldownTrackerSettings.CDTimerPosY);
-
-					SpellsTimerPosition[spellInside.Slot] = &LengthAdjustedPos;
-				}
-				SpellsPosition.x += CooldownTrackerSettings.CDBarGab;
-			}
 		}
 
-		if (Hero->GetLevel() < 18)
-		{
+		ExpPercent = ChampInfo::ExperiencePercentage(Hero->GetLevel(), Hero->GetExperience()) * 1.05f;
 
-			Vector2 tempPos = HeroHealthPos;
-			tempPos.x += -47.0f + CooldownTrackerSettings.ExpbarPosX;
-			tempPos.y += -32.0f + CooldownTrackerSettings.ExpbarPosY;
-
-			SpellsStartPosition[6] = &tempPos;
-
-			tempPos.x += ChampInfo::ExperiencePercentage(Hero->GetLevel(), Hero->GetExperience()) * 1.05f;
-
-			SpellsEndPosition[6] = &tempPos;
-		}
+		
 	}
 
 	void UpdatePosition()
@@ -316,14 +262,10 @@ struct CooldownChamp
 		SSPosition.y += -24.0f + CooldownTrackerSettings.SSPosY;
 
 
-		const float currentTime = Game::Time();
+
 		for (auto& spellInside : spells)
 		{
 			const int slot = static_cast<int>(spellInside.Slot);
-			if (slot < 0 || slot > 6)
-			{
-				continue;
-			}
 
 			if (slot == 4 || slot == 5)
 			{

@@ -15,11 +15,11 @@ TextHelpers::~TextHelpers()
 void TextHelpers::DrawOutlineText(PSDKVECTOR WorldPos, PSDKPOINT ScreenPos, const std::string& Text, const char* Face,
 	PSDKCOLOR Color, int Height, int Width, int Weight, PSDKCOLOR OutlineColor)
 {
-	Draw::Text(nullptr, &Vector2(ScreenPos->x + 1.0, ScreenPos->y + 1.0), Text, "Calibri Bold", OutlineColor, Height, Width, Weight);
+	//Draw::Text(nullptr, &Vector2(ScreenPos->x + 1.0, ScreenPos->y + 1.0), Text, "Calibri Bold", OutlineColor, Height, Width, Weight);
 	Draw::Text(nullptr, ScreenPos, Text, "Calibri Bold", Color, Height, Width, Weight);
 }
 
-std::string TextHelpers::TimeFormat(float Seconds, TimerStyle timerStlye)
+std::string TextHelpers::TimeFormat(const float& Seconds, TimerStyle timerStlye)
 {
 
 	std::stringstream ss1;

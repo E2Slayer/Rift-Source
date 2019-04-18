@@ -5,6 +5,8 @@
 
 // Got the information from https://leagueoflegends.fandom.com/wiki/Experience_(summoner)
 
+unsigned int PlayerNetID;
+
 
 void CooldownTracker::SettingsUpdate() const // Updating settings section
 {
@@ -59,6 +61,8 @@ CooldownTracker::CooldownTracker()
 CooldownTracker::~CooldownTracker()
 = default;
 
+DWORD CooldownTick;
+
 void CooldownTracker::OnTick(void* userData)
 {
 
@@ -67,6 +71,15 @@ void CooldownTracker::OnTick(void* userData)
 	{
 		SettingsUpdate();
 	}
+
+
+
+	if (CooldownTick + 100 > GetTickCount())
+	{
+		return;
+	}
+	CooldownTick = GetTickCount();
+
 
 	if (!CooldownTrackerSettings.EnableCooldownTracker)
 	{
@@ -81,6 +94,12 @@ void CooldownTracker::OnTick(void* userData)
 
 		for (auto& value : CooldownChampList)
 		{
+			if (!value.Hero->GetPosition().IsValid() || !value.Hero->IsVisible() || !value.Hero->GetHealthBarPos().IsValid()
+				|| !value.Hero->GetPosition().IsOnScreen() || !value.Hero->IsAlive() || value.Hero->IsZombie())
+			{
+				continue;
+			}
+
 			value.UpdateCDChamp();
 
 			for (int i = 0; i < 6; ++i)
@@ -129,8 +148,8 @@ void CooldownTracker::OnDraw(void* userData)
 		return;
 	}
 
-
-	
+	const bool HUDusage = CooldownTrackerSettings.EnableHUD;
+	const bool ExpBarUsage = CooldownTrackerSettings.EnableExpbar;
 
 	for (auto& value : CooldownChampList)
 	{
@@ -141,14 +160,14 @@ void CooldownTracker::OnDraw(void* userData)
 		}
 
 
-		if (CooldownTrackerSettings.TrackMyself && value.Hero->GetNetworkID() == Player.GetNetworkID() || // Me 
-			(CooldownTrackerSettings.TrackAlly && value.Hero->IsAlly() && value.Hero->GetNetworkID() != Player.
-				GetNetworkID()) || // "Ally" is included localplayer
-			CooldownTrackerSettings.TrackEnemy && !value.Hero->IsAlly()) // Enemy
+		/*
+		if (CooldownTrackerSettings.TrackMyself && value.NetID == PlayerNetID || // Me 
+			(CooldownTrackerSettings.TrackAlly && value.Hero->IsAlly() && value.NetID != PlayerNetID) || // "Ally" is included localplayer
+			CooldownTrackerSettings.TrackEnemy && !value.Hero->IsAlly()) // Enemy*/
 		{
 			value.UpdatePosition();
 
-			if (CooldownTrackerSettings.EnableHUD)
+			if (HUDusage)
 			{
 				auto HUDPosition = Vector2(value.HeroHealthPos.x + 6.0F, value.HeroHealthPos.y - 8.0f);
 				SdkDrawSpriteFromResource(MAKEINTRESOURCEA(CD_HudSelf), &HUDPosition, true);
@@ -166,8 +185,7 @@ void CooldownTracker::OnDraw(void* userData)
 				{
 					if (CooldownTrackerSettings.EnableCDTimer)
 					{
-						SdkDrawSpriteFromResource(MAKEINTRESOURCEA(value.CooldownSpells[i].SpellIMG), &value.
-SpellsStartPosition[i], false);
+						SdkDrawSpriteFromResource(MAKEINTRESOURCEA(value.CooldownSpells[i].SpellIMG), &value.SpellsStartPosition[i], false);
 
 
 						//TextHelpers::TimeFormat(value.CooldownSpells[i].Cooldown, true);
@@ -212,7 +230,7 @@ SpellsStartPosition[i], false);
 			}
 
 
-			if (CooldownTrackerSettings.EnableExpbar)
+			if (ExpBarUsage)
 			{
 				Draw::LineScreen(&value.SpellsStartPosition[6], &value.SpellsEndPosition[6],
 				                 static_cast<float>(CooldownTrackerSettings.ExpbarWidth), &Color::Purple);
@@ -270,11 +288,14 @@ void CooldownTracker::OnProcessSpell(void* AI, PSDK_SPELL_CAST SpellCast, void* 
 	}
 }
 
+
 void CooldownTracker::Initialized()
 {
 	ManualSpellListInit();
 
 	SettingsUpdate();
+
+	PlayerNetID = Player.GetNetworkID();
 
 	auto ally1{pSDK->EntityManager->GetAllyHeroes()};
 	auto enemy1{pSDK->EntityManager->GetEnemyHeroes()};

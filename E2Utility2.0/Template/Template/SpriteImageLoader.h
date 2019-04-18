@@ -359,7 +359,7 @@ public:
 		{
 			if (_stricmp(name, SummonerSpellsList[i].c_str()) == 0)
 			{
-				return i + 290;
+				return i + 297;
 			}
 		}
 

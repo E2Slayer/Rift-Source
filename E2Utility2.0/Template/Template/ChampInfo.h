@@ -11,7 +11,7 @@ private:
 
 public:
 
-	static float ExperiencePercentage(int currentLevel, float currentExp)
+	static float ExperiencePercentage(const int& currentLevel, const float& currentExp)
 	{
 		if (currentLevel >= 18)
 			return 0.0F;
