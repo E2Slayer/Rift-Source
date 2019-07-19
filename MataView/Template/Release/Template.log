@@ -1,8 +1,0 @@
-﻿D:\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Release\) contains files shared from another project (Template.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  AbilityTracker.cpp
-  Generating code
-  9 of 2494 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
-    5 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  Template.vcxproj -> D:\RProject\test\rift-sdk-extensions-master\Template\Release\MataView.dll
