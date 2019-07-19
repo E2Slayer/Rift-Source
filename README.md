@@ -1,5 +1,9 @@
 # Rift-Source
-Sources of my Rift plugins for League of Legends
+Sources of my Rift plugins for League of Legends.
+
+Dlls that are associated with these codes can be found in the below link
+
+https://github.com/E2Slayer/Rift
 
 ## Information
 
