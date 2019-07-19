@@ -15,17 +15,19 @@ Sources of my Rift plugins for League of Legends
 
 I did not have any plan to release these sources in public because I have created this repo for tracking and back-up'ing my sources for myself.
 So, a lot of things are still messy and unorganized, and I was still pretty new at C++ when I was coding those. 
+
 Please understand low quality codes.
+
 And Enjoy ! 
 
 ## Special Thanks
 
 * **ZEDith** - Recommended me as a developer in Rift
-* **Lizzaran** - His codes have actually carried me to build E2Utility - [Lizzaran](https://github.com/Lizzaran)
+* **Lizzaran** - A lot of features in E2Utility were inspired by his SFXUtility. Without his codes, I could not release E2Utility. - [Lizzaran](https://github.com/Lizzaran)
 * **RMAN** - Serious hard working contributions on Rift SDK, and guided me the way to be a better coder from a newbie coder like me- [RMAN200](https://github.com/rman200)
 * **Yoke, Alexsis** - Always have been helpful and enjoyed my plugin. <3
 
 
 ## License
 
-- This git repo is under the **GNU V3** license. [Find it here](https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md).
+- This git repo is under the **GNU V3** license.
